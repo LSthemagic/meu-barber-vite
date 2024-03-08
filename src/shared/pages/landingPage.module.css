@@ -1,0 +1,110 @@
+.container {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+  background-color: var(--marrom-claro);
+}
+
+.hero {
+  background-image: url("path/to/textured-background.jpg"); /* Add a textured background image */
+  background-size: cover;
+  background-position: center;
+  padding: 50px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.hero h1 {
+  font-size: 3em;
+  margin-bottom: 20px;
+  color: var(--marrom-escuro);
+}
+
+.hero p {
+  font-size: 1.2em;
+  color: var(--marrom-medio);
+  line-height: 1.5;
+}
+
+.slider-wrapper {
+  flex: 1;
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+}
+
+.slider {
+  display: flex;
+}
+
+.slide {
+  flex: 1;
+  margin: 0 10px;
+  overflow: hidden;
+}
+
+/* Adjust image size and behavior */
+.slide img {
+  width: 80%; /* Adjust width as needed for desired image size */
+  height: auto; /* Maintain aspect ratio */
+  object-fit: contain; /* Resize image to fit within slide while maintaining aspect ratio */
+  transition: transform 0.3s ease-in-out;
+  align-items: center;
+  justify-content: center;
+  display: flex;
+}
+
+.slide:hover img {
+  transform: scale(1.1); /* Subtle zoom on hover */
+}
+
+.card-section {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+  gap: 20px;
+  padding: 20px;
+  background-color: var(--marrom-claro);
+}
+
+.card {
+  justify-content: center;
+  background-color: #fff;
+  border-radius: 10px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  text-align: center;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer; /* Add a pointer cursor for potential card interaction */
+}
+
+.card:hover {
+  border-radius: 10px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  transform: scale(1.02); /* Subtle scale on hover */
+}
+
+.card h3 {
+  font-size: 1.2em;
+  margin-bottom: 10px;
+  font-weight: bold;
+  color: var(--marrom-escuro);
+}
+
+.card-content {
+  font-size: 1em;
+  color: var(--marrom-medio);
+  line-height: 1.5;
+}
+
+/* Responsive navigation buttons (consider hiding on larger screens for a cleaner look) */
+@media (max-width: 768px) {
+  .slick-prev,
+  .slick-next {
+    display: block;
+  }
+}
+
+/* Style remaining sections like 'AboutSection', 'Equipe', etc. (use similar responsive techniques) */

@@ -1,28 +1,28 @@
-const express = require('express');
+const express = require("express");
 const UserModel = require("../../../User/api/models/User.cjs");
-const BarberModel = require("../../../Barber/services/models/Barber.cjs")
+const BarberModel = require("../../../Barber/services/models/Barber.cjs");
 const router = express.Router();
-require('dotenv').config()
+require("dotenv").config();
 const nodemailer = require("nodemailer");
 
 let codingRamdom = Math.floor(1000 + Math.random() * 1000);
 
 const sendEmail = async (email, codingRamdom) => {
-
-    const transport = nodemailer.createTransport({
-        host: 'smtp.gmail.com',
-        port: 587,
-        secure: false,
-        auth: {
-            user: process.env.REACT_APP_NODEMAILER_EMAIL,
-            pass: process.env.REACT_APP_NODEMAILER_PASSWORD
-        }
-    })
-    transport.sendMail({
-        from: `MEU BARBER <${process.env.REACT_APP_NODEMAILER_EMAIL}>`,
-        to: email,
-        subject: 'MEU BARBER',
-        html: ` <html lang="PT-BR">
+	const transport = nodemailer.createTransport({
+		host: "smtp.gmail.com",
+		port: 587,
+		secure: false,
+		auth: {
+			user: process.env.REACT_APP_NODEMAILER_EMAIL,
+			pass: process.env.REACT_APP_NODEMAILER_PASSWORD
+		}
+	});
+	transport
+		.sendMail({
+			from: `MEU BARBER <${process.env.REACT_APP_NODEMAILER_EMAIL}>`,
+			to: email,
+			subject: "MEU BARBER",
+			html: ` <html lang="PT-BR">
         <head>
           <meta charset="UTF-8">
           <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -78,73 +78,74 @@ const sendEmail = async (email, codingRamdom) => {
           </div>
         </body>
       </html>`
-    }).then((resp) => console.log(""))
-        .catch((err) => console.log("erro ", err))
-}
+		})
+		.then((resp) => console.log(""))
+		.catch((err) => console.log("erro ", err));
+};
 router.post("/req-email", async (req, res) => {
-    try {
-        const { email } = req.body;
-        if (await UserModel.findOne({ email })) {
-            return res.status(400).json({
-                error: true,
-                message: "Esse email já foi cadastrado."
-            })
-        }
-        sendEmail(email, codingRamdom);
-        return res.json({
-            error: false,
-            message: "Solicitação enviada com sucesso!"
-        })
-    } catch (error) {
-        return res.status(400).json({
-            error: true,
-            message: "Error ao enviar email."
-        })
-    }
-})
+	try {
+		const { email } = req.body;
+		if (await UserModel.findOne({ email })) {
+			return res.status(400).json({
+				error: true,
+				message: "Esse email já foi cadastrado."
+			});
+		}
+		sendEmail(email, codingRamdom);
+		return res.json({
+			error: false,
+			message: "Solicitação enviada com sucesso!"
+		});
+	} catch (error) {
+		return res.status(400).json({
+			error: true,
+			message: "Error ao enviar email."
+		});
+	}
+});
 router.post("/req-email-barber", async (req, res) => {
-  try {
-      const { email } = req.body;
-      if (await BarberModel.findOne({ email })) {
-          return res.status(400).json({
-              error: true,
-              message: "Esse email já foi cadastrado."
-          })
-      }
-      sendEmail(email, codingRamdom);
-      return res.json({
-          error: false,
-          message: "Solicitação enviada com sucesso!"
-      })
-  } catch (error) {
-      return res.status(400).json({
-          error: true,
-          message: "Error ao enviar email."
-      })
-  }
-})
+	try {
+		const { email } = req.body;
+		if (await BarberModel.findOne({ email })) {
+			return res.status(400).json({
+				error: true,
+				message: "Esse email já foi cadastrado."
+			});
+		}
+		sendEmail(email, codingRamdom);
+		return res.json({
+			error: false,
+			message: "Solicitação enviada com sucesso!"
+		});
+	} catch (error) {
+		return res.status(400).json({
+			error: true,
+			message: "Error ao enviar email."
+		});
+	}
+});
 router.post("/auth-code", async (req, res) => {
-    try {
-        const { code } = req.body;
-        if (code && code.toString() !== codingRamdom.toString()) {
-            return res.status(400).json({
-                error: true,
-                message: `O código enviado é inválido.`
-            });
-        }
+	try {
+		const { code } = req.body;
+		if (code && code.toString() !== codingRamdom.toString()) {
+			return res.status(400).json({
+				error: true,
+				message: `O código enviado é inválido.`
+			});
+		}
 
-        return res.json({
-            error: false,
-            message: `Código verificado enviado com sucesso!`,
-            data: code,
-        });
-    } catch (err) {
-        console.log("error auth-code", err);
-        res.status(500).json({
-            error: true,
-            message: "Erro interno ao processar o código de verificação."
-        });
-    }
+		return res.json({
+			error: false,
+			message: `Código verificado enviado com sucesso!`,
+			data: code
+		});
+	} catch (err) {
+		console.log("error auth-code", err);
+		res.status(500).json({
+			error: true,
+			message: "Erro interno ao processar o código de verificação."
+		});
+	}
 });
 
-module.exports = router
+module.exports = router;

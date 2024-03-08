@@ -5,17 +5,17 @@ import AuthenticateBarber from "../pages/authenticateBarber/AuthenticateBarber";
 import PageNotFound from "../../shared/pages/PageNotFound";
 
 const BarberRoutes = () => {
-    return (
-        <>
-            <Routes>
-                <Route path="/barber-home" element={<HomeBarber />} />
-                <Route path="/registerBarber" element={<RegisterBarber />} />
-                <Route path="/authenticateBarber" element={<AuthenticateBarber />} />
+	return (
+		<>
+			<Routes>
+				<Route path="/barber-home" element={<HomeBarber />} />
+				<Route path="/registerBarber" element={<RegisterBarber />} />
+				<Route path="/authenticateBarber" element={<AuthenticateBarber />} />
 
-                <Route path="*" element={<PageNotFound/>}/>
-            </Routes>
-        </>
-    );
+				<Route path="*" element={<PageNotFound />} />
+			</Routes>
+		</>
+	);
 };
 
-export default BarberRoutes
+export default BarberRoutes;
