@@ -1,0 +1,44 @@
+/* Estilo para o container principal */
+.container {
+  margin-top: 10px;
+  
+}
+
+/* Estilo para o calendário */
+.fc-header-toolbar {
+  background-color: #795548 !important; /* Marrom escuro */
+  color: #fff !important;
+}
+
+.fc-button-primary {
+  background-color: #533f38 !important; /* Marrom mais escuro */
+}
+
+.fc-button-primary:hover {
+  background-color: #6d4c41 !important; /* Marrom mais claro ao passar o mouse */
+}
+
+/* Estilo para o popover */
+.popoverStyle {
+  background-color: #8d6e63 !important; /* Marrom para o popover */
+  color: #fff !important;
+  border: none !important;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.2) !important;
+}
+
+/* Estilo para o título do popover */
+.popoverStyle .popover-header {
+  background-color: #6d4c41 !important; /* Marrom mais escuro para o título do popover */
+  color: #fff !important;
+  border-bottom: none !important;
+}
+
+/* Estilo para o conteúdo do popover */
+.popoverStyle .popover-body {
+  padding: 10px !important;
+}
+
+/* Estilo para o texto do calendário */
+.fc-daygrid-event, .fc-timegrid-event {
+  color: #8d6e63 !important; /* Marrom para o texto dos eventos do calendário */
+}

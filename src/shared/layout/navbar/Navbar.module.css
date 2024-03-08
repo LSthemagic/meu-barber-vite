@@ -1,0 +1,95 @@
+/* Cores da paleta */
+:root {
+  --marrom-claro: #E7D7B7;
+  --marrom-medio: #964B00;
+  --marrom-escuro: #5C4033;
+}
+/* E7D7B7, #964B00, #4B4B4B */
+/* Media queries para responsividade */
+@media (max-width: 768px) {
+  /* Estilos para telas menores */
+}
+
+.navbar {
+  background-color: var(--marrom-escuro) !important;
+}
+
+.customNavbar {
+  background-color: var(--marrom-escuro) !important;
+  color: white !important;
+}
+
+.nav-item {
+  color: white !important;
+}
+
+.navbar-nav .nav-link {
+  color: white !important;
+}
+
+.titleContainer {
+  display: flex;
+  align-items: center;
+}
+
+.title {
+  margin-right: 10px;
+  color: white !important;
+}
+
+.logo {
+  max-width: 50px;
+  height: auto;
+}
+
+.links {
+  display: flex;
+}
+
+.links a {
+  color: white;
+  text-decoration: none;
+  margin-right: 10px;
+  transition: text-decoration 0.3s ease-in-out;
+}
+
+.links a:hover {
+  text-decoration: underline;
+  color: var(--marrom-medio); /* Alterado para marrom médio */
+}
+
+.custom-btn {
+  color: var(--marrom-escuro) !important;
+  box-shadow: 0 0 5px rgba(255, 255, 255, 0.5) !important;
+  background-color: var(--marrom-medio); /* Alterado para marrom médio */
+}
+
+.custom-input:focus {
+  border-color: white !important;
+  box-shadow: none !important; /* Remove a sombra padrão */
+}
+
+.custom-btn:active {
+  background-color: var(--marrom-escuro) !important;
+  color: white !important;
+}
+
+/* Personalizações adicionais */
+
+.navbar-brand {
+  font-size: 1.5rem;
+}
+
+.custom-input {
+  border-radius: 5px;
+  padding: 5px 10px;
+}
+
+.custom-btn {
+  background-color: var(--marrom-medio); /* Alterado para marrom médio */
+  border-color: var(--marrom-escuro);
+}
+
+.custom-btn:hover {
+  background-color: var(--marrom-escuro);
+}
