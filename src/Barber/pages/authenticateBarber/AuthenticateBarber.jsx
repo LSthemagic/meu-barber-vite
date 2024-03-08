@@ -1,9 +1,5 @@
 const AuthenticateBarber = () => {
-    return(
-        <h1>
-            authenticate Barber
-        </h1>
-    )
-}
+	return <h1>authenticate Barber</h1>;
+};
 
-export default AuthenticateBarber
+export default AuthenticateBarber;

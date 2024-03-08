@@ -10,21 +10,21 @@ import BarberRoutes from "../../Barber/routes/routes";
 import PageNotFound from "../../shared/pages/PageNotFound";
 
 const AppRoutes = () => {
-  return (
-    <BrowserRouter>
-      <Navbar />
-      <Routes>
-        <Route path="/" element={<Home />} />
-        <Route path="/calendar" element={<Calendar />} />
-        <Route path="/UserList" element={<UserList />} />
-        <Route path="/register" element={<Register />} />
-        <Route path="/authenticate" element={<Authenticate />} />
-        <Route path="/barber/*" element={<BarberRoutes />} />
-        <Route path="*"  element={<PageNotFound/>} />
-      </Routes>
-      <Footer />
-    </BrowserRouter>
-  );
+	return (
+		<BrowserRouter>
+			<Navbar />
+			<Routes>
+				<Route path="/" element={<Home />} />
+				<Route path="/calendar" element={<Calendar />} />
+				<Route path="/UserList" element={<UserList />} />
+				<Route path="/register" element={<Register />} />
+				<Route path="/authenticate" element={<Authenticate />} />
+				<Route path="/barber/*" element={<BarberRoutes />} />
+				<Route path="*" element={<PageNotFound />} />
+			</Routes>
+			<Footer />
+		</BrowserRouter>
+	);
 };
 
 export default AppRoutes;
