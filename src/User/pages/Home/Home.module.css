@@ -177,6 +177,7 @@
 }
 
 /* Define o container dos ícones para ser um flexbox */
+/* Define o container dos ícones para ser um flexbox */
 .sharedIcons {
 	display: flex;
 	justify-content: center;

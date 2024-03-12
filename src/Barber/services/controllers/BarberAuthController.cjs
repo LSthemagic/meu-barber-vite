@@ -119,6 +119,11 @@ router.get("/scheduled", async (req, res) => {
 		const barbeiro = await BarberModel.findOne({
 			email: emailBarbeiro
 		}).lean();
+	try {
+		const { email: emailBarbeiro } = req.headers;
+		const barbeiro = await BarberModel.findOne({
+			email: emailBarbeiro
+		}).lean();
 
 		if (!barbeiro) {
 			return res.status(404).json({
@@ -129,6 +134,12 @@ router.get("/scheduled", async (req, res) => {
 
 		const clientsScheduled = barbeiro.clientes || [];
 
+		if (clientsScheduled.length === 0) {
+			return res.status(404).json({
+				error: true,
+				message: "Nenhum cliente agendado encontrado"
+			});
+		}
 		if (clientsScheduled.length === 0) {
 			return res.status(404).json({
 				error: true,
@@ -147,3 +158,4 @@ router.get("/scheduled", async (req, res) => {
 });
 
 module.exports = router;
+
