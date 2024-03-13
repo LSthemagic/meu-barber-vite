@@ -119,11 +119,6 @@ router.get("/scheduled", async (req, res) => {
 		const barbeiro = await BarberModel.findOne({
 			email: emailBarbeiro
 		}).lean();
-	try {
-		const { email: emailBarbeiro } = req.headers;
-		const barbeiro = await BarberModel.findOne({
-			email: emailBarbeiro
-		}).lean();
 
 		if (!barbeiro) {
 			return res.status(404).json({

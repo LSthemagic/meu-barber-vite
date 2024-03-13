@@ -3,92 +3,109 @@
 	--marrom-claro: #e7d7b7;
 	--marrom-medio: #964b00;
 	--marrom-escuro: #5c4033;
-}
-/* E7D7B7, #964B00, #4B4B4B */
-/* Media queries para responsividade */
-@media (max-width: 768px) {
-	/* Estilos para telas menores */
-}
-
-.navbar {
+  }
+  .menuOpen{
+	color: var(--marrom-claro) !important;
+  }
+  /* Media queries para responsividade */
+  @media (max-width: 768px) {
+	.navbar-collapse {
+	  background-color: var(--marrom-escuro) !important; /* Fundo da navbar em telas menores */
+	  padding: 10px; /* Espaçamento interno da navbar em telas menores */
+	}
+  
+	.navbar-nav {
+	  width: 100%; /* Garante que a lista de navegação ocupe a largura total da navbar */
+	  justify-content: space-around; /* Distribui os itens uniformemente na navbar */
+	}
+  
+	.nav-item {
+	  margin: 5px 0; /* Espaçamento vertical entre os itens da navbar */
+	}
+	
+  }
+  
+  /* Estilos padrão da navbar */
+  .navbar {
 	background-color: var(--marrom-escuro) !important;
-}
-
-.customNavbar {
+  }
+  
+  .customNavbar {
 	background-color: var(--marrom-escuro) !important;
 	color: white !important;
-}
-
-.nav-item {
+  }
+  
+  .nav-item {
 	color: white !important;
-}
-
-.navbar-nav .nav-link {
+  }
+  
+  .navbar-nav .nav-link {
 	color: white !important;
-}
-
-.titleContainer {
+  }
+  
+  .titleContainer {
 	display: flex;
 	align-items: center;
-}
-
-.title {
+  }
+  
+  .title {
 	margin-right: 10px;
 	color: white !important;
-}
-
-.logo {
+  }
+  
+  .logo {
 	max-width: 50px;
 	height: auto;
-}
-
-.links {
+  }
+  
+  .links {
 	display: flex;
-}
-
-.links a {
+  }
+  
+  .links a {
 	color: white;
 	text-decoration: none;
 	margin-right: 10px;
 	transition: text-decoration 0.3s ease-in-out;
-}
-
-.links a:hover {
+  }
+  
+  .links a:hover {
 	text-decoration: underline;
 	color: var(--marrom-medio); /* Alterado para marrom médio */
-}
-
-.customBtn {
+  }
+  
+  .customBtn {
 	color: white !important;
 	background-color: var(--marrom-claro); /* Alterado para marrom médio */
-}
-
-.custom-input:focus {
+  }
+  
+  .custom-input:focus {
 	background-color: var(--marrom-claro);
 	box-shadow: none !important; /* Remove a sombra padrão */
-}
-
-.customBtn:active {
+  }
+  
+  .customBtn:active {
 	background-color: var(--marrom-medio) !important;
 	color: white !important;
-}
-
-/* Personalizações adicionais */
-
-.navbar-brand {
+  }
+  
+  /* Personalizações adicionais */
+  
+  .navbar-brand {
 	font-size: 1.5rem;
-}
-
-.custom-input {
+  }
+  
+  .custom-input {
 	border-radius: 5px;
 	padding: 5px 10px;
-}
-
-.customBtn {
+  }
+  
+  .customBtn {
 	background-color: var(--marrom-claro); /* Alterado para marrom médio */
 	border-color: var(--marrom-escuro);
-}
-
-.customBtn:hover {
+  }
+  
+  .customBtn:hover {
 	background-color: var(--marrom-medio);
-}
+  }
+  

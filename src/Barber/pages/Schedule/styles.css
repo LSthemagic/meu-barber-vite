@@ -1,6 +1,6 @@
 /* Estilo para o container principal */
 .container {
-	margin-top: 10px;
+	margin-top: 1%; /* Utilizando porcentagem para margem superior */
 }
 
 /* Estilo para o calendário */
@@ -34,7 +34,7 @@
 
 /* Estilo para o conteúdo do popover */
 .popoverStyle .popover-body {
-	padding: 10px !important;
+	padding: 1%; /* Utilizando porcentagem para o preenchimento */
 }
 
 /* Estilo para o texto do calendário */

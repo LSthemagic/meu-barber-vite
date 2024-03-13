@@ -12,7 +12,7 @@ import "./styles.css";
 import { useAuth } from "../../../User/context/AuthContext";
 import Toast from "../../../shared/custom/Toast";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import PageUnauthorized from "../../../shared/images/PageUnauthorized.svg";
 import { useAuth as useAuthBarber } from "../../context/BarberContext";
 
@@ -21,7 +21,7 @@ const Calendar = ({ props }) => {
 	const [dataFromDB, setDataFromDB] = useState([]);
 	const [update, setUpdate] = useState(false);
 	const { data } = useAuth();
-	const { tokenBarber } = useAuthBarber();
+	const { tokenBarber, offAuthToken, signOut } = useAuthBarber();
 	const navigate = useNavigate();
 
 	// const { barbershop: { name: nameBarbershop } } = props;
@@ -137,10 +137,33 @@ const Calendar = ({ props }) => {
 			);
 
 			console.log("response data", response.data.clientsScheduled);
-
+			if (response.data.message === "Token invalid or expired.") {
+				Toast.fire({
+					icon: "info",
+					title: "Por segunrança, faça o login novamente."
+				});
+				offAuthToken()
+				signOut()
+				setTimeout(() => {
+					<Link to={"/register"} />
+				}, 3000);
+			}
 			setDataFromDB(response.data.clientsScheduled);
+
 		} catch (err) {
-			console.log("Erro ao buscar horários marcados", err);
+			console.log("Erro ao buscar horários marcados", err.message);
+			if (err.message === "Token invalid or expired.") {
+				Toast.fire({
+					icon: "info",
+					title: "Por segunrança, faça o login novamente."
+				});
+				offAuthToken()
+				signOut()
+				setTimeout(() => {
+					<Link to={"/register"} />
+				}, 3000);
+
+			}
 			Toast.fire({
 				icon: "error",
 				title: "Erro interno ao buscar horários marcados"

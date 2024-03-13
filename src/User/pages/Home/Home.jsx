@@ -9,6 +9,7 @@ import axios from "axios";
 import Calendar from "../../../Barber/pages/Schedule/Calendar";
 import styles from "./Home.module.css";
 import LandingPage from "../../../shared/pages/landingPage";
+import ImagemFormatada from "../../../shared/layout/ImagemFormatted";
 
 const Home = () => {
 	const [barbers, setBarbers] = useState([]);
@@ -55,22 +56,23 @@ const Home = () => {
 	const settings = {
 		dots: true,
 		infinite: true,
-		speed: 500,
+		speed: 2000,
 		slidesToShow: 3,
-		slidesToScroll: 1,
+		slidesToScroll: 3,
 		autoplay: true,
 		autoplaySpeed: 5000,
-		color: "#333"
-
-	};
-
-	const goToNext = () => {
-		sliderRef.current.slickNext();
-	};
-
-	const goToPrev = () => {
-		sliderRef.current.slickPrev();
-	};
+		color: "#333",
+		responsive: [
+		  {
+			breakpoint: 768,
+			settings: {
+			  slidesToShow: 1, // Exibe dois slides por vez em telas menores que 768px
+			  slidesToScroll: 1,
+			  speed: 1500,
+			},
+		  },
+		],
+	  };
 
 	const handleDoubleObjectiveCalendar = (data) => {
 		handleOpenModalCalendar();
@@ -170,53 +172,49 @@ const Home = () => {
 
 	return (
 		<div className={styles.container}>
-
-
-			<div className={styles["slider-wrapper"]}>
-				<Slider {...settings} ref={sliderRef} className={styles.slider}>
-					{barbers.map((barber) => (
-						<div key={barber._id}>
-							<div className={styles.card}>
-								<img src="https://img.freepik.com/fotos-gratis/homem-em-um-salao-de-barbearia-fazendo-o-corte-de-cabelo-e-barba_1303-20953.jpg?w=360&t=st=1709679884~exp=1709680484~hmac=27bd2cccd750b63adca8a10c57f64c6e68786568949fafb668bdff8c7971efdd"></img>
-								<h3>{barber.barbershop.name}</h3>
-								<div className={styles.fa5}>
-									{dbBarberFav && dbBarberFav.IDs && dbBarberFav.IDs.includes(barber._id) ? (
-										<i
-											key={barber._id}
-											onClick={() => handleFavoriteBarbershop(barber._id)}
-											className="fa-solid fa-heart"
-										></i>
-									) : (
-										<i
-											key={barber._id}
-											onClick={() => handleFavoriteBarbershop(barber._id)}
-											className="fa-regular fa-heart"
-										></i>
-									)}
-
-									<i
-										className="far fa-calendar"
-										onClick={() => handleDoubleObjectiveCalendar(barber)}
-									></i>
-									<i
-										className="fa-solid fa-paper-plane"
-										onClick={() => handleWaze(barber)}
-									/>
-								</div>
-								Lorem ipsum, dolor sit amet consectetur adipisicing elit. Corporis dolore architecto asperiores earum consectetur necessitatibus tempore quam cupiditate recusandae voluptate natus pariatur debitis soluta hic, veritatis ad labore sapiente deserunt.
-							</div>	
-						</div>
-					))}
-				</Slider>
-				<br />
-
-				
-			</div>
-			
-			{showModalCalendar && renderModal()}
-			{!email && <LandingPage></LandingPage>}
+		  <div className={styles["slider-wrapper"]}>
+			<Slider {...settings} className={styles.slider}>
+			  {barbers.map((barber) => (
+				<div key={barber._id}>
+				  <div className={styles.card}>
+					<ImagemFormatada src={"https://img.freepik.com/fotos-gratis/homem-em-um-salao-de-barbearia-fazendo-o-corte-de-cabelo-e-barba_1303-20953.jpg?w=360&t=st=1709679884~exp=1709680484~hmac=27bd2cccd750b63adca8a10c57f64c6e68786568949fafb668bdff8c7971efdd"} />
+					<h3>{barber.barbershop.name}</h3>
+					<div className={styles.fa5}>
+					  {dbBarberFav && dbBarberFav.IDs && dbBarberFav.IDs.includes(barber._id) ? (
+						<i
+						  key={barber._id}
+						  onClick={() => handleFavoriteBarbershop(barber._id)}
+						  className="fa-solid fa-heart"
+						></i>
+					  ) : (
+						<i
+						  key={barber._id}
+						  onClick={() => handleFavoriteBarbershop(barber._id)}
+						  className="fa-regular fa-heart"
+						></i>
+					  )}
+	
+					  <i
+						className="far fa-calendar"
+						onClick={() => handleDoubleObjectiveCalendar(barber)}
+					  ></i>
+					  <i
+						className="fa-solid fa-paper-plane"
+						onClick={() => handleWaze(barber)}
+					  />
+					</div>
+					<p>
+					  Lorem ipsum, dolor sit amet consectetur 
+					</p>
+				  </div>
+				</div>
+			  ))}
+			</Slider>
+		  </div>
+		  {showModalCalendar && renderModal()}
+		  {!email && <LandingPage></LandingPage>}
 		</div>
-	);
+	  );
 };
 
 export default Home;

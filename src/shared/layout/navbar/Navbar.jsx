@@ -5,13 +5,18 @@ import { useAuth } from "../../../User/context/AuthContext";
 import { useAuth as useAuthBarber } from "../../../Barber/context/BarberContext";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "bootstrap/dist/js/bootstrap.bundle.min.js";
+import { useState } from "react";
 
 const Navbar = () => {
 	const { logout, offDataAuth } = useAuth();
 	const { offAuthToken, signOut } = useAuthBarber();
 	const { pathname } = useLocation();
-
+	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const isBarberRoutes = pathname.startsWith("/barber");
+	const handleMenuItemClick = () => setIsMenuOpen(false)
+	const handleMenuOpen = () => setIsMenuOpen(!isMenuOpen);
+
+
 	if (isBarberRoutes) {
 		return (
 			<div className={styles.navbar}>
@@ -26,21 +31,22 @@ const Navbar = () => {
 							</div>
 						</Link>
 						<button
-							className="navbar-toggler"
+							className={`navbar-toggler ${isMenuOpen ? "" : "collapsed"}`}
 							type="button"
 							data-bs-toggle="collapse"
 							data-bs-target="#navbarSupportedContent"
 							aria-controls="navbarSupportedContent"
-							aria-expanded="false"
+							aria-expanded={isMenuOpen ? "true" : "false"}
 							aria-label="Toggle navigation"
+							onClick={() => handleMenuOpen()}
 						>
 							<span className="navbar-toggler-icon"></span>
 						</button>
 						<div
-							className={`collapse navbar-collapse `}
+							className={`collapse navbar-collapse ${isMenuOpen ? "show" : ""}`}
 							id="navbarSupportedContent"
 						>
-							<ul className="navbar-nav me-auto mb-2 mb-lg-0">
+							<ul className="navbar-nav me-auto mb-2 mb-lg-0" onClick={() => handleMenuItemClick()}>
 								<li className="nav-item">
 									<Link
 										to="/barber/barber-home"
@@ -142,23 +148,25 @@ const Navbar = () => {
 						</div>
 					</Link>
 					<button
-						className="navbar-toggler"
+						className={`navbar-toggler ${isMenuOpen ? "" : "collapsed"}`}
 						type="button"
 						data-bs-toggle="collapse"
 						data-bs-target="#navbarSupportedContent"
 						aria-controls="navbarSupportedContent"
-						aria-expanded="false"
+						aria-expanded={isMenuOpen ? "true" : "false"}
 						aria-label="Toggle navigation"
+						onClick={() => handleMenuOpen()}
 					>
 						<span className="navbar-toggler-icon"></span>
 					</button>
 					<div
-						className={`collapse navbar-collapse `}
+						className={`collapse navbar-collapse ${isMenuOpen ? "show" : ""}`}
 						id="navbarSupportedContent"
 					>
 						<ul className="navbar-nav me-auto mb-2 mb-lg-0">
 							<li className="nav-item">
 								<Link
+									onClick={() => handleMenuItemClick()}
 									to="/"
 									style={{ color: "white" }}
 									className="nav-link active"
@@ -167,17 +175,10 @@ const Navbar = () => {
 									Home
 								</Link>
 							</li>
-							<li className="nav-item">
-								<Link
-									to="/calendar"
-									style={{ color: "white" }}
-									className="nav-link"
-								>
-									Agenda
-								</Link>
-							</li>
+
 							<li className="nav-item dropdown">
 								<Link
+									// onClick={() => handleMenuOpen()}
 									to="#"
 									style={{ color: "white" }}
 									className="nav-link dropdown-toggle"
@@ -187,7 +188,7 @@ const Navbar = () => {
 								>
 									Ver mais
 								</Link>
-								<ul className="dropdown-menu">
+								<ul className="dropdown-menu" onClick={() => handleMenuItemClick()}>
 									<li>
 										<Link
 											to="/register"

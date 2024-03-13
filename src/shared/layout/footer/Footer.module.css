@@ -38,12 +38,16 @@
 	color: white;
 	font-size: 1.2rem;
 }
+
 .link {
 	color: rgb(182, 170, 170) !important;
 }
+
 .link:hover {
 	color: rgb(255, 255, 255) !important;
 }
+
+/* Responsividade */
 
 @media (max-width: 768px) {
 	.footer .container {
@@ -56,6 +60,6 @@
 	}
 
 	.footer .social-icons {
-		justify-content: flex-start; /* Align icons to left on smaller screens */
+		justify-content: center; /* Align icons to center on smaller screens */
 	}
 }

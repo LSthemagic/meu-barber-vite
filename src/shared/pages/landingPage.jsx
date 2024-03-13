@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Slider from "react-slick";
 import styles from "./landingPage.module.css"; // Removed unused import
-
+import ImagemFormatada from "./../layout/ImagemFormatted"
 // Defining the colors
 const colors = {
   marromClaro: "#e7d7b7",
@@ -49,7 +49,8 @@ const LandingPage = () => {
         <Slider arrows={true} {...settings} className="slider-wrapper">
           {images.map((image, idx) => (
             <div key={idx} className={styles.card}>
-              <img sizes="(max-width: 600px) 100vw, 600px" src={image} alt={`Slide ${idx + 1}`} />
+              <ImagemFormatada src={image}></ImagemFormatada>
+              {/* <img sizes="(max-width: 600px) 100vw, 600px" src={image} alt={`Slide ${idx + 1}`} /> */}
             </div>
           ))}
         </Slider>
