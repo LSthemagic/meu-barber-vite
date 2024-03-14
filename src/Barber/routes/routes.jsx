@@ -3,6 +3,7 @@ import HomeBarber from "../pages/Home/HomeBarber";
 import RegisterBarber from "../pages/registerBarber/RegisterBarber";
 import AuthenticateBarber from "../pages/authenticateBarber/AuthenticateBarber";
 import PageNotFound from "../../shared/pages/PageNotFound";
+import Profile from "../pages/profile/Profile";
 
 const BarberRoutes = () => {
 	return (
@@ -11,7 +12,7 @@ const BarberRoutes = () => {
 				<Route path="/barber-home" element={<HomeBarber />} />
 				<Route path="/registerBarber" element={<RegisterBarber />} />
 				<Route path="/authenticateBarber" element={<AuthenticateBarber />} />
-
+				<Route path="/profileBarber" element={<Profile />} />
 				<Route path="*" element={<PageNotFound />} />
 			</Routes>
 		</>

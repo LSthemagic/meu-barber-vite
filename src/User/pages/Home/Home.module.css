@@ -40,6 +40,9 @@
 	transition: all 0.3s ease-in-out;
 	max-width: 300px; /* Largura máxima dos cards */
 }
+.card:hover{
+	transform:scale(1.07)
+}
 
 /* Responsividade do card */
 @media (max-width: 768px) {

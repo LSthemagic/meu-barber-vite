@@ -1,0 +1,67 @@
+:root{
+    --marrom-claro: #e7d7b7;
+	--marrom-medio: #764217de;
+	--marrom-escuro: #5c4033;
+}
+  
+* {
+	box-sizing: border-box;
+	margin: 0;
+	padding: 0;
+  }
+  
+  .container {
+	display: flex;
+	flex-direction: column;
+	min-height: 100vh; /* Use min-height instead of fixed height for responsiveness */
+	background-color: var(--marrom-claro);
+  }
+
+  .card1{
+    color: whitesmoke;
+    margin-top: 5%;
+    margin-left: auto;
+    margin-right: auto;
+    align-items: center;
+	justify-content: center;
+    flex-direction: column;
+    background-color: var(--marrom-medio);
+    display: flex;
+    align-self: flex-start;
+    width: 80%;
+    padding: 2% ;
+    box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.4);
+    border-radius: 20px;
+  }
+  .card2{
+    margin-top: 1%;
+    margin-left: auto;
+    margin-right: auto;
+    align-items: center;
+	justify-content: center;
+    flex-direction: column;
+    background-color: white;
+    display: flex;
+    align-self: flex-start;
+    width: 80%;
+    padding: 2% ;
+    box-shadow: 0px 10px 10px rgba(0, 0, 0, 0.4);
+    border-radius: 20px;
+  }
+
+.spanCustom{
+    align-self: inherit;
+    display: flex;
+    gap: 1rem;
+  }
+
+  .hrCustom {
+    border: none;
+    border-top: 2px solid white;
+    margin: 20px 0; /* Aumentar a margem superior */
+}
+.imgProfile{
+    max-width: 100px;
+    height: 100px;
+    border-radius: 50%;
+}

@@ -74,7 +74,7 @@ const LandingPage = () => {
 
 const AboutSection = styled.section`
   background-color: ${colors.marromClaro};
-
+  margin-top: 5%;
 `;
 
 export default LandingPage;

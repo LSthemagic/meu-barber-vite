@@ -49,12 +49,12 @@ const Navbar = () => {
 							<ul className="navbar-nav me-auto mb-2 mb-lg-0" onClick={() => handleMenuItemClick()}>
 								<li className="nav-item">
 									<Link
-										to="/barber/barber-home"
+										to="/barber/profileBarber"
 										style={{ color: "white" }}
 										className="nav-link active"
 										aria-current="page"
 									>
-										Home Barber
+										profile Barber
 									</Link>
 								</li>
 								<li className="nav-item">

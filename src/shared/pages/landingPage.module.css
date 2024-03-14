@@ -5,35 +5,13 @@
   background-color: var(--marrom-claro);
 }
 
-.hero {
-  background-image: url("path/to/textured-background.jpg"); /* Add a textured background image */
-  background-size: cover;
-  background-position: center;
-  padding: 50px;
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  text-align: center;
-}
-
-.hero h1 {
-  font-size: 3em;
-  margin-bottom: 20px;
-  color: var(--marrom-escuro);
-}
-
-.hero p {
-  font-size: 1.2em;
-  color: var(--marrom-medio);
-  line-height: 1.5;
-}
 
 .slider-wrapper {
   flex: 1;
-  max-width: 1200px;
+  max-width: 80%;
   margin: 0 auto;
   padding: 20px;
+  margin-top: 2%;
 }
 
 .slider {
@@ -55,6 +33,7 @@
   align-items: center;
   justify-content: center;
   display: flex;
+ 
 }
 
 .slide:hover img {
@@ -72,7 +51,7 @@
 .card {
   justify-content: center;
   background-color: #fff;
-  border-radius: 10px;
+  border-radius: 130px 50px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   padding: 20px;
   text-align: center;
@@ -81,8 +60,8 @@
 }
 
 .card:hover {
-  border-radius: 10px;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+  border-radius: 50px 130px;
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
   transform: scale(1.02); /* Subtle scale on hover */
 }
 

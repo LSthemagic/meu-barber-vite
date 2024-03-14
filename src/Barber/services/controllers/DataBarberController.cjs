@@ -1,10 +1,10 @@
 const express = require("express");
 const router = express.Router();
-const Barber = require("../models/Barber.cjs");
+const BarberModel = require("../models/Barber.cjs");
 
 router.get("/barbers", async (req, res) => {
 	try {
-		const barbers = await Barber.find();
+		const barbers = await BarberModel.find();
 
 		if (!barbers) {
 			return res.status(400).json({
@@ -22,5 +22,18 @@ router.get("/barbers", async (req, res) => {
 		});
 	}
 });
+
+router.get("/profileBarber", async (req, res) => {
+	const { email } = req.headers;
+	const barber = await BarberModel.findOne({ email })
+	
+	if(!barber){
+		return res.status(401).json({
+			error: true,
+			message: 'Usuário não autenticado'
+		})
+	}
+	return res.json(barber);
+})
 
 module.exports = router;

@@ -177,7 +177,7 @@ const Home = () => {
 			  {barbers.map((barber) => (
 				<div key={barber._id}>
 				  <div className={styles.card}>
-					<ImagemFormatada src={"https://img.freepik.com/fotos-gratis/homem-em-um-salao-de-barbearia-fazendo-o-corte-de-cabelo-e-barba_1303-20953.jpg?w=360&t=st=1709679884~exp=1709680484~hmac=27bd2cccd750b63adca8a10c57f64c6e68786568949fafb668bdff8c7971efdd"} />
+					<img src={"https://img.freepik.com/fotos-gratis/homem-em-um-salao-de-barbearia-fazendo-o-corte-de-cabelo-e-barba_1303-20953.jpg?w=360&t=st=1709679884~exp=1709680484~hmac=27bd2cccd750b63adca8a10c57f64c6e68786568949fafb668bdff8c7971efdd"} />
 					<h3>{barber.barbershop.name}</h3>
 					<div className={styles.fa5}>
 					  {dbBarberFav && dbBarberFav.IDs && dbBarberFav.IDs.includes(barber._id) ? (
