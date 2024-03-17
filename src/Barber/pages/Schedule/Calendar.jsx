@@ -14,14 +14,18 @@ import Toast from "../../../shared/custom/Toast";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import PageUnauthorized from "../../../shared/images/PageUnauthorized.svg";
-import { useAuth as useAuthBarber } from "../../context/BarberContext";
+// import { useAuth as useAuthBarber } from "../../context/BarberContext";
+// import { useAuth } from "../../../User/context/AuthContext";
 
 const Calendar = ({ props }) => {
 	const [dataScheduling, setDataScheduling] = useState(null);
 	const [dataFromDB, setDataFromDB] = useState([]);
 	const [update, setUpdate] = useState(false);
-	const { data } = useAuth();
-	const { tokenBarber, offAuthToken, signOut } = useAuthBarber();
+	const { data,token } = useAuth();
+	// const { tokenBarber, offAuthToken, signOut } = useAuthBarber();
+	// const {token} = useAuth()
+
+
 	const navigate = useNavigate();
 
 	// const { barbershop: { name: nameBarbershop } } = props;
@@ -130,7 +134,7 @@ const Calendar = ({ props }) => {
 				"http://localhost:3001/barberAuth/scheduled",
 				{
 					headers: {
-						Authorization: `Bearer ${tokenBarber}`,
+						Authorization: `Bearer ${token}`,
 						Email: emailBarber
 					}
 				}
@@ -142,8 +146,8 @@ const Calendar = ({ props }) => {
 					icon: "info",
 					title: "Por segunrança, faça o login novamente."
 				});
-				offAuthToken()
-				signOut()
+				// offAuthToken()
+				// signOut()
 				setTimeout(() => {
 					<Link to={"/register"} />
 				}, 3000);
@@ -157,8 +161,8 @@ const Calendar = ({ props }) => {
 					icon: "info",
 					title: "Por segunrança, faça o login novamente."
 				});
-				offAuthToken()
-				signOut()
+				// offAuthToken()
+				// signOut()
 				setTimeout(() => {
 					<Link to={"/register"} />
 				}, 3000);

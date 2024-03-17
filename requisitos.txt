@@ -1,0 +1,59 @@
+## Análise de Requisitos Funcionais e Não Funcionais do Projeto "Meu Barber"
+
+**Requisitos Funcionais:**
+
+* **Agendamento de Horários:**
+    * O sistema deve permitir que os clientes visualizem a disponibilidade dos barbeiros e escolham o horário mais adequado.
+    * O sistema deve enviar notificações de agendamento para clientes e barbeiros.
+    * O sistema deve confirmar automaticamente o agendamento para ambas as partes.
+    * O sistema deve permitir que os barbeiros gerenciem sua disponibilidade, incluindo períodos de folga e férias.
+* **Gestão Financeira:**
+    * O sistema deve registrar o fluxo de caixa da barbearia, incluindo receitas e despesas.
+    * O sistema deve permitir pagamentos online através de plataformas como PagSeguro, Mercado Pago ou PayPal.
+    * O sistema deve gerar relatórios financeiros detalhados e gráficos para análise do desempenho.
+    * O sistema deve enviar notificações de pagamento para clientes sobre pagamentos pendentes.
+* **Automação com Python:**
+    * O sistema deve automatizar o envio de e-mails, SMS ou mensagens no WhatsApp para confirmação de agendamentos, lembretes e promoções.
+    * O sistema deve utilizar o Python para analisar dados históricos de agendamentos, identificar horários de pico e tendências, prever a demanda por serviços e otimizar a gestão da barbearia.
+    * O sistema deve realizar backups regulares dos dados automaticamente.
+* **Consumo de API:**
+    * O sistema deve integrar-se com Google Maps ou Bing Maps para auxiliar os clientes a encontrarem a barbearia mais próxima.
+    * O sistema deve integrar-se com plataformas de pagamento online para agilizar o processo de pagamento.
+    * O sistema deve integrar-se com APIs de análise de dados para obter insights sobre o comportamento dos clientes e tendências do mercado.
+* **Outras Ideias:**
+    * O sistema deve criar um perfil para cada cliente com informações como histórico de agendamentos, serviços realizados, produtos utilizados e preferências de corte e estilo.
+    * O sistema deve permitir que os clientes avaliem os serviços prestados e deixem comentários sobre seus barbeiros favoritos.
+    * O sistema deve gerenciar o inventário, estoque, vendas e reposição de produtos, se a barbearia os vender.
+    * O sistema deve oferecer a opção de agendar cortes de cabelo recorrentes para clientes frequentes.
+
+**Requisitos Não Funcionais:**
+
+* **Desempenho:**
+    * O sistema deve ser rápido e responsivo, com tempo de resposta baixo para consultas e operações.
+    * O sistema deve ser capaz de lidar com um grande número de usuários simultâneos sem apresentar problemas de desempenho.
+* **Segurança:**
+    * O sistema deve proteger as informações dos clientes, como dados pessoais e financeiros, contra acesso não autorizado, uso indevido, divulgação ou perda.
+    * O sistema deve utilizar criptografia para garantir a segurança dos dados durante a transmissão e armazenamento.
+* **Usabilidade:**
+    * O sistema deve ser intuitivo e fácil de usar para clientes e barbeiros, com interface amigável e navegação simples.
+    * O sistema deve fornecer instruções claras e precisas para cada funcionalidade.
+* **Manutenabilidade:**
+    * O sistema deve ser fácil de manter e atualizar, com código bem documentado e estruturado.
+    * O sistema deve permitir a fácil correção de bugs e implementação de novas funcionalidades.
+* **Acessibilidade:**
+    * O sistema deve ser acessível a todos os usuários, incluindo pessoas com deficiência, com recursos de acessibilidade como contraste de cores e navegação por teclado.
+
+**Considerações Adicionais:**
+
+* **Escalabilidade:** O sistema deve ser capaz de crescer e se adaptar às necessidades do negócio, suportando um aumento no número de clientes, barbeiros e serviços.
+* **Testes:** O sistema deve ser testado rigorosamente antes de ser lançado em produção, para garantir que atenda a todos os requisitos funcionais e não funcionais.
+* **Documentação:** A documentação completa do sistema deve ser criada e mantida atualizada, incluindo requisitos, arquitetura, código, testes e instruções de uso.
+
+**Conclusão:**
+
+A lista de funcionalidades do sistema "Meu Barber" é abrangente e atende às principais necessidades de uma barbearia. A análise de requisitos funcionais e não funcionais detalhada acima fornece uma base sólida para o desenvolvimento do sistema, garantindo que ele seja eficiente, seguro, fácil de usar e adaptável às necessidades do negócio.
+
+**Recomendações:**
+
+* É importante envolver stakeholders (clientes, barbeiros, gerentes) no processo de definição de requisitos para garantir que o sistema atenda às suas necessidades e expectativas.
+* A análise de requisitos deve ser contínua e revisada periodicamente para garantir que o sistema esteja sempre atualizado com as
