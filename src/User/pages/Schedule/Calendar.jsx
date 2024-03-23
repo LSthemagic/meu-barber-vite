@@ -9,7 +9,7 @@ import "moment/locale/pt-br";
 import * as bootstrap from "bootstrap";
 import "bootstrap/dist/css/bootstrap.min.css";
 import "./styles.css";
-import { useAuth } from "../../../User/context/AuthContext";
+import { useAuth } from "../../context/AuthContext";
 import Toast from "../../../shared/custom/Toast";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";

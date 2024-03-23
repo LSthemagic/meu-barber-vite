@@ -6,7 +6,7 @@ import { Button, Modal } from "react-bootstrap";
 import { useAuth } from "../../context/AuthContext";
 import Toast from "../../../shared/custom/Toast";
 import axios from "axios";
-import Calendar from "../../../Barber/pages/Schedule/Calendar";
+import Calendar from "../../pages/Schedule/Calendar";
 import styles from "./Home.module.css";
 import LandingPage from "../../../shared/pages/landingPage";
 import ImagemFormatada from "../../../shared/layout/ImagemFormatted";

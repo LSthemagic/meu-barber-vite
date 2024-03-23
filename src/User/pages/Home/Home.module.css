@@ -152,7 +152,12 @@
 	/* Define o espaçamento entre os itens com base no tamanho da fonte */
 	gap: 5rem;
   }
-  
+  @media (max-width: 768px){
+	.fa5{
+		gap:  2rem;
+		display: flex;
+	}
+  }
   .modal {
 	display: flex; /* Permite layout horizontal */
 	flex-direction: column; /* Empilha conteúdo verticalmente por padrão */
