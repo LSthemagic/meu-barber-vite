@@ -14,21 +14,17 @@ import Toast from "../../../shared/custom/Toast";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import PageUnauthorized from "../../../shared/images/PageUnauthorized.svg";
-// import { useAuth as useAuthBarber } from "../../context/BarberContext";
-// import { useAuth } from "../../../User/context/AuthContext";
+
 
 const Calendar = ({ props }) => {
 	const [dataScheduling, setDataScheduling] = useState(null);
 	const [dataFromDB, setDataFromDB] = useState([]);
 	const [update, setUpdate] = useState(false);
-	const { data,token } = useAuth();
-	// const { tokenBarber, offAuthToken, signOut } = useAuthBarber();
-	// const {token} = useAuth()
+	const { data, token, offDataAuth, logout } = useAuth();
 
 
 	const navigate = useNavigate();
 
-	// const { barbershop: { name: nameBarbershop } } = props;
 	console.log(props);
 	const { name: nameBarber } = props;
 	const { email: emailBarber } = props;
@@ -59,6 +55,40 @@ const Calendar = ({ props }) => {
 			handleUpdateDB();
 		}
 	}, [dataScheduling]);
+
+	const confirmationSchedule = async () => {
+		try {
+			const response = await fetch("http://localhost:3001/confirmationFromEmail/confirmationSchedule", {
+				method: "POST",
+				headers: {
+					"Content-type": "application/json"
+				},
+				body: JSON.stringify({
+					emailBarber: emailBarber,
+					emailClient: data?.email,
+				})
+			})
+
+			const dataReq = await response.json()
+			if (dataReq.error) {
+				Toast.fire({
+					icon: "error",
+					title: dataReq.message
+				});
+			} else {
+				Toast.fire({
+					icon: "success",
+					title: dataReq.message
+				});
+			}
+
+		} catch (err) {
+			Toast.fire({
+				icon: "error",
+				title: dataReq.message
+			});
+		}
+	}
 
 	const handleUpdateDB = async () => {
 		try {
@@ -93,6 +123,7 @@ const Calendar = ({ props }) => {
 					title: dataReq.message
 				});
 				setUpdate((prevUpdate) => !prevUpdate);
+				confirmationSchedule()
 			}
 		} catch (err) {
 			console.log("ERRO EM ATT_CLIENTES_DB", err);
@@ -117,7 +148,6 @@ const Calendar = ({ props }) => {
 		});
 
 		if (timeSchedule) {
-			// console.log('Horario de agendamento:', timeSchedule);
 			const endTime = moment(timeSchedule).clone().add(40, "minutes");
 			setDataScheduling({
 				start: timeSchedule,
@@ -141,33 +171,30 @@ const Calendar = ({ props }) => {
 			);
 
 			console.log("response data", response.data.clientsScheduled);
+
 			if (response.data.message === "Token invalid or expired.") {
 				Toast.fire({
 					icon: "info",
-					title: "Por segunrança, faça o login novamente."
+					title: "Por segurança, faça o login novamente."
 				});
-				// offAuthToken()
-				// signOut()
+				offDataAuth()
+				logout()
 				setTimeout(() => {
 					<Link to={"/register"} />
 				}, 3000);
 			}
+
+			if (response.data.message === "Nenhum cliente agendado.") {
+				Toast.fire({
+					icon: "info",
+					title: "O barbeiro esta com todos os  horários disponiveis."
+				});
+			}
+
 			setDataFromDB(response.data.clientsScheduled);
 
 		} catch (err) {
-			console.log("Erro ao buscar horários marcados", err.message);
-			if (err.message === "Token invalid or expired.") {
-				Toast.fire({
-					icon: "info",
-					title: "Por segunrança, faça o login novamente."
-				});
-				// offAuthToken()
-				// signOut()
-				setTimeout(() => {
-					<Link to={"/register"} />
-				}, 3000);
-
-			}
+			console.log("Erro ao buscar horários marcados", err);
 			Toast.fire({
 				icon: "error",
 				title: "Erro interno ao buscar horários marcados"

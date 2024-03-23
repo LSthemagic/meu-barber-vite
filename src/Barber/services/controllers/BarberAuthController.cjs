@@ -130,17 +130,12 @@ router.get("/scheduled", async (req, res) => {
 		const clientsScheduled = barbeiro.clientes || [];
 
 		if (clientsScheduled.length === 0) {
-			return res.status(404).json({
+			return res.json({
 				error: true,
-				message: "Nenhum cliente agendado encontrado"
+				message: "Nenhum cliente agendado."
 			});
 		}
-		if (clientsScheduled.length === 0) {
-			return res.status(404).json({
-				error: true,
-				message: "Nenhum cliente agendado encontrado"
-			});
-		}
+		
 
 		return res.json({ clientsScheduled });
 	} catch (err) {

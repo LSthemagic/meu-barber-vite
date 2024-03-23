@@ -27,7 +27,7 @@ module.exports = (req, res, next) => {
 	}
 	return jwt.verify(token, authConfig.secret, (err, decoded) => {
 		if (err) {
-			console.log("ERROR IN VERIFY => \n", err);
+			console.log("Error em verify authenticate middleware user => \n", err);
 			return res.status(401).json({
 				error: true,
 				message: "Token invalid or expired."

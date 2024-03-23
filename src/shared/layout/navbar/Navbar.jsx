@@ -14,7 +14,12 @@ const Navbar = () => {
 	const [isMenuOpen, setIsMenuOpen] = useState(false);
 	const isBarberRoutes = pathname.startsWith("/barber");
 	const handleMenuItemClick = () => setIsMenuOpen(false)
-	const handleMenuOpen = () => setIsMenuOpen(!isMenuOpen);
+	const handleMenuOpen = () => {
+		if (isMenuOpen === true) {
+			setIsMenuOpen(false)
+		}
+		setIsMenuOpen(true)
+	};
 
 
 	if (isBarberRoutes) {
@@ -59,7 +64,7 @@ const Navbar = () => {
 								</li>
 								<li className="nav-item">
 									<Link
-										to="/barber/calendar"
+										to="/barber/calendarBarber"
 										style={{ color: "white" }}
 										className="nav-link"
 									>

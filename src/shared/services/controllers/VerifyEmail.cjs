@@ -80,8 +80,9 @@ const sendEmail = async (email, codingRamdom) => {
       </html>`
 		})
 		.then((resp) => console.log(""))
-		.catch((err) => console.log("erro ", err));
+		.catch((err) => console.log("erro ao enviar email ", err));
 };
+
 router.post("/req-email", async (req, res) => {
 	try {
 		const { email } = req.body;

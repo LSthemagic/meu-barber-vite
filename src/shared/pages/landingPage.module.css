@@ -51,18 +51,19 @@
 .card {
   justify-content: center;
   background-color: #fff;
-  border-radius: 130px 50px;
+  border-radius: 50px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
   padding: 20px;
   text-align: center;
   transition: all 0.3s ease-in-out;
-  cursor: pointer; /* Add a pointer cursor for potential card interaction */
+  cursor: default;
 }
 
-.card:hover {
-  border-radius: 50px 130px;
+.card img:hover {
+  border-radius: 50px;
   box-shadow: 0 0 20px rgba(0, 0, 0, 0.4);
   transform: scale(1.02); /* Subtle scale on hover */
+  cursor: default;
 }
 
 .card h3 {
