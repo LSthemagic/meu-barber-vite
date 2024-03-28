@@ -26,8 +26,8 @@ router.get("/barbers", async (req, res) => {
 router.get("/profileBarber", async (req, res) => {
 	const { email } = req.headers;
 	const barber = await BarberModel.findOne({ email })
-	
-	if(!barber){
+
+	if (!barber) {
 		return res.status(401).json({
 			error: true,
 			message: 'Usuário não autenticado'
@@ -35,5 +35,7 @@ router.get("/profileBarber", async (req, res) => {
 	}
 	return res.json(barber);
 })
+
+
 
 module.exports = router;

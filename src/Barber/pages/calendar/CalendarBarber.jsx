@@ -76,31 +76,33 @@ const Calendar = () => {
     }, [unavailableTime]);
 
     // Função para enviar horários indisponíveis para o servidor
-    const handlePostTimeUnavailable = async () => {
-        const response = await fetch("http://localhost/nseioq/nseioq", {
-            method: "POST",
-            headers: {
-                'Content-type': 'application/json'
-            },
-            body: JSON.stringify({
-                email: dataBarber?.email,
-                timeUnavailable: unavailableTime
-            })
+    // Function to handle posting unavailable times to the server
+const handlePostTimeUnavailable = async () => {
+    const response = await fetch("http://localhost:3001/barberAuth/unavailableTime", {
+        method: "POST",
+        headers: {
+            'Content-type': 'application/json'
+        },
+        body: JSON.stringify({
+            email: dataBarber?.email,
+            date: unavailableTime
+        })
+    });
 
+    const data = await response.json();
+    if (data.error) {
+        Toast.fire({
+            icon: "error",
+            title: data.message
         });
-
-        const data = await response.json();
-        if (data.error) {
-            Toast.fire({
-                icon: "error",
-                title: data.message
-            });
-        }
+    } else {
         Toast.fire({
             icon: "success",
             title: data.message
         });
-    };
+    }
+};
+
 
     // Função para marcar horários como indisponíveis
     const handleUnavailableTime = async (info) => {
@@ -151,13 +153,14 @@ const Calendar = () => {
     };
 
     // Mapeia os eventos de agendamento para o formato exigido pelo FullCalendar
-    const events = dataSchedulingDB?.map((appointment, index) => ({
+    const events = dataSchedulingDB ? dataSchedulingDB.map((appointment, index) => ({
         title: appointment.nome,
         start: moment(appointment.date).toDate(),
         end: moment(appointment.date).add(40, "minutes").toDate(),
         color: "#59b7ff",
         id: index.toString(),
-    }));
+      })) : [];
+      
 
     // Define o evento de horário indisponível
     const unavailableEvent = {

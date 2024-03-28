@@ -135,7 +135,7 @@ router.get("/scheduled", async (req, res) => {
 				message: "Nenhum cliente agendado."
 			});
 		}
-		
+
 
 		return res.json({ clientsScheduled });
 	} catch (err) {
@@ -146,6 +146,46 @@ router.get("/scheduled", async (req, res) => {
 		});
 	}
 });
+
+router.post("/unavailableTime", async (req, res) => {
+    const { email, date } = req.body;
+    try {
+        
+        const barber = await BarberModel.findOne({ email });
+        
+        if (!barber) {
+            console.log(barber);
+            return res.status(404).json({
+                error: true,
+                message: "Email não encontrado."
+            });
+        }
+
+        // Create a new unavailable date object based on the schema
+        const newUnavailableDate = {
+            startDate: date.start,
+            endDate: date.end
+        };
+
+        // Push the new unavailable date object into the array
+        barber.unavailableDate.push(newUnavailableDate);
+
+        // Save the changes to the barber document
+        await barber.save();
+
+        return res.json({
+            error: false,
+            message: "Agenda atualizada."
+        });
+    } catch (err) {
+        console.log(err.message);
+        return res.status(400).json({
+            error: true,
+            message: "Erro interno no servidor."
+        });
+    }
+});
+
 
 module.exports = router;
 

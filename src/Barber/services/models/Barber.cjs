@@ -41,31 +41,42 @@ const EstabilishimentSchema = new mongoose.Schema({
 	}
 });
 
-const BarberSchema = new mongoose.Schema({
-	name: {
-		type: String,
-		required: true
+const UnavailableDateSchema = new mongoose.Schema({
+	startDate: {
+		type: Date
 	},
-	email: {
-		type: String,
-		required: true,
-		unique: true,
-		lowercase: true
-	},
-	password: {
-		type: String,
-		select: false
-	},
-	barbershop: EstabilishimentSchema,
-	clientes: {
-		type: [ClienteSchema],
-		default: [] // Inicializa como um array vazio
-	},
-	createdAt: {
-		type: Date,
-		default: Date.now
+	endDate: {
+		type: Date
 	}
+})
+
+const BarberSchema = new mongoose.Schema({
+    name: {
+        type: String,
+        required: true
+    },
+    email: {
+        type: String,
+        required: true,
+        unique: true,
+        lowercase: true
+    },
+    password: {
+        type: String,
+        select: false
+    },
+    unavailableDate: [UnavailableDateSchema], // Array of dates
+    barbershop: EstabilishimentSchema,
+    clientes: {
+        type: [ClienteSchema],
+        default: [] // Initialize as an empty array
+    },
+    createdAt: {
+        type: Date,
+        default: Date.now
+    }
 });
+
 
 BarberSchema.pre("save", async function (next) {
 	if (this.password) {

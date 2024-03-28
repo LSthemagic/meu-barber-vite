@@ -1,5 +1,9 @@
 /* Footer Styles */
-
+:root {
+  --marrom-claro: #e7d7b7;
+  --marrom-medio: #764217de;
+  --marrom-escuro: #5c4033;
+}
 .footer {
 	background-color: var(--marrom-escuro);
 	color: white;
