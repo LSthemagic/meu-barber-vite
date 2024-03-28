@@ -161,7 +161,7 @@ const Calendar = ({ props }) => {
 	const handleGetHoursScheduled = async () => {
 		try {
 			const response = await axios.get(
-				"http://localhost:3001/barberAuth/scheduled",
+				"http://localhost:3001/dataBarber/scheduled",
 				{
 					headers: {
 						Authorization: `Bearer ${token}`,

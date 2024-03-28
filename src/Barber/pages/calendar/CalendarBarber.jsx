@@ -15,6 +15,7 @@ const Calendar = () => {
     // Estados para armazenar os dados de agendamento e horários indisponíveis
     const [dataSchedulingDB, setDataSchedulingDB] = useState([]);
     const [unavailableTime, setUnavailableTime] = useState(null);
+    const [unavailableBarberDB, setUnavailableBarberDB] = useState([])
 
     // Obtém informações de autenticação do barbeiro do contexto
     const { tokenBarber, dataBarber } = useAuthBarber();
@@ -25,13 +26,23 @@ const Calendar = () => {
     // Efeito para carregar os dados de agendamento ao montar o componente
     useEffect(() => {
         handleDataSchedulingDB();
+        handleGetInvalidHoursDB();
     }, []);
+
+    // Efeito para lidar com a atualização de horários indisponíveis
+    useEffect(() => {
+        if (unavailableTime) {
+            handlePostTimeUnavailable();
+            handleGetInvalidHoursDB();
+        }
+    }, [unavailableTime]);
+
 
     // Função para lidar com a obtenção de dados de agendamento do servidor
     const handleDataSchedulingDB = async () => {
         try {
             const response = await axios.get(
-                "http://localhost:3001/barberAuth/scheduled",
+                "http://localhost:3001/dataBarber/scheduled",
                 {
                     headers: {
                         Authorization: `Bearer ${tokenBarber}`,
@@ -70,38 +81,67 @@ const Calendar = () => {
         }
     };
 
-    // Efeito para lidar com a atualização de horários indisponíveis
-    useEffect(() => {
-        handlePostTimeUnavailable();
-    }, [unavailableTime]);
+    // função para obter dados de horários inválidos
+
+    const handleGetInvalidHoursDB = async () => {
+        try {
+            const response = await axios.get("http://localhost:3001/dataBarber/unavailableTimeBarber", {
+                headers: {
+                    authorization: `Bearer ${tokenBarber}`,
+                    email: dataBarber?.email,
+                }
+            })
+
+            // Se o token for inválido ou expirado, redireciona para o registro do barbeiro
+            if (response.data.message === "Token invalid or expired") {
+                Toast.fire({
+                    icon: "info",
+                    title: "Por segurança, faça o login novamente.",
+                });
+                setTimeout(() => {
+                    window.location.href = "/barber/registerBarber";
+                }, 3000);
+            }
+
+            setUnavailableBarberDB(response.data.unavailableDates);
+        } catch (error) {
+            console.log(error);
+            Toast.fire({
+                icon: "error",
+                title: "Ocorreu um erro interno no servidor. Tente novamente mais tarde."
+
+            })
+        }
+    }
+
 
     // Função para enviar horários indisponíveis para o servidor
     // Function to handle posting unavailable times to the server
-const handlePostTimeUnavailable = async () => {
-    const response = await fetch("http://localhost:3001/barberAuth/unavailableTime", {
-        method: "POST",
-        headers: {
-            'Content-type': 'application/json'
-        },
-        body: JSON.stringify({
-            email: dataBarber?.email,
-            date: unavailableTime
-        })
-    });
+    const handlePostTimeUnavailable = async () => {
+        const response = await fetch("http://localhost:3001/barberAuth/unavailableTime", {
+            method: "POST",
+            headers: {
+                'Content-type': 'application/json'
+            },
+            body: JSON.stringify({
+                email: dataBarber?.email,
+                date: unavailableTime
+            })
+        });
 
-    const data = await response.json();
-    if (data.error) {
-        Toast.fire({
-            icon: "error",
-            title: data.message
-        });
-    } else {
-        Toast.fire({
-            icon: "success",
-            title: data.message
-        });
-    }
-};
+        const data = await response.json();
+        if (data.error) {
+            Toast.fire({
+                icon: "error",
+                title: data.message
+            });
+        } else {
+            Toast.fire({
+                icon: "success",
+                title: data.message
+            });
+        }
+    };
 
 
     // Função para marcar horários como indisponíveis
@@ -159,16 +199,17 @@ const handlePostTimeUnavailable = async () => {
         end: moment(appointment.date).add(40, "minutes").toDate(),
         color: "#59b7ff",
         id: index.toString(),
-      })) : [];
-      
+        
+    })) : [];
 
     // Define o evento de horário indisponível
-    const unavailableEvent = {
-        title: unavailableTime?.title,
-        start: moment(unavailableTime?.start).toDate(),
-        end: moment(unavailableTime?.end).toDate(),
-        color: unavailableTime?.color,
-    };
+    const unavailableEvent = unavailableBarberDB ? unavailableBarberDB.map((item, index) => ({
+        title: "Indisponível", // Defina um título padrão para eventos indisponíveis
+        start: moment(item.startDate).toDate(),
+        end: moment(item.endDate).toDate(),
+        color: "red",
+        id: index.toString()
+    })) : [];
 
     // Função para verificar o título do evento
     const handleVerifyInfoTitle = (info) => {
@@ -178,9 +219,14 @@ const handlePostTimeUnavailable = async () => {
         return `<p>Horário de ${info.event.title} agendado.</p>`;
     };
 
-
+    
     return (
         <div>
+            {unavailableBarberDB ?
+                unavailableBarberDB.map((item) => {
+                    <h1>{item.startDate}</h1>
+                })
+                : null}
             <FullCalendar
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                 initialView="timeGridWeek"
@@ -219,7 +265,8 @@ const handlePostTimeUnavailable = async () => {
                 dayMaxEvents={true}
                 eventColor={"#ff6b45"}
                 dateClick={handleUnavailableTime}
-                events={[...events, unavailableEvent]}
+                events={unavailableEvent.concat(events)}
+                
                 eventDidMount={(info) => {
                     const popover = new bootstrap.Popover(info.el, {
                         title: info.event.title,

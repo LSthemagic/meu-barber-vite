@@ -1,6 +1,7 @@
 const express = require("express");
 const router = express.Router();
 const User = require("../models/User.cjs");
+
 router.get("/users", async (req, res) => {
 	console.log("controller");
 	try {
@@ -21,5 +22,7 @@ router.get("/users", async (req, res) => {
 		});
 	}
 });
+
+
 
 module.exports = router;

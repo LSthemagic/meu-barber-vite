@@ -113,39 +113,6 @@ router.post("/update-clients", async (req, res) => {
 	}
 });
 
-router.get("/scheduled", async (req, res) => {
-	try {
-		const { email: emailBarbeiro } = req.headers;
-		const barbeiro = await BarberModel.findOne({
-			email: emailBarbeiro
-		}).lean();
-
-		if (!barbeiro) {
-			return res.status(404).json({
-				error: true,
-				message: "Barbeiro não encontrado"
-			});
-		}
-
-		const clientsScheduled = barbeiro.clientes || [];
-
-		if (clientsScheduled.length === 0) {
-			return res.json({
-				error: true,
-				message: "Nenhum cliente agendado."
-			});
-		}
-
-
-		return res.json({ clientsScheduled });
-	} catch (err) {
-		console.error("Erro ao buscar horários marcados", err);
-		return res.status(500).json({
-			error: true,
-			message: "ERRO INTERNO NO SERVIDOR"
-		});
-	}
-});
 
 router.post("/unavailableTime", async (req, res) => {
     const { email, date } = req.body;
