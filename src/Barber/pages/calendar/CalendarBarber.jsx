@@ -12,33 +12,59 @@ import * as bootstrap from "bootstrap";
 import Swal from "sweetalert2";
 
 const Calendar = () => {
-    // Estados para armazenar os dados de agendamento e horários indisponíveis
+    // Estados para armazenar dados de agendamento e horários indisponíveis
     const [dataSchedulingDB, setDataSchedulingDB] = useState([]);
     const [unavailableTime, setUnavailableTime] = useState(null);
     const [unavailableBarberDB, setUnavailableBarberDB] = useState([])
+    const [allEvents, setAllEvents] = useState([])
+    const [unavailableEvent, setUnavailableEvent] = useState([]);
 
-    // Obtém informações de autenticação do barbeiro do contexto
+    // Obter informações de autenticação do barbeiro do contexto
     const { tokenBarber, dataBarber } = useAuthBarber();
 
-    // Se não houver token ou dados do barbeiro, redireciona para a página inicial
+    // Redirecionar para a página inicial se não houver token ou dados do barbeiro
     if (!tokenBarber || !dataBarber) return <LandingPage />;
 
-    // Efeito para carregar os dados de agendamento ao montar o componente
+    // Carregar dados de agendamento e horários indisponíveis ao montar o componente
     useEffect(() => {
         handleDataSchedulingDB();
         handleGetInvalidHoursDB();
     }, []);
 
-    // Efeito para lidar com a atualização de horários indisponíveis
     useEffect(() => {
-        if (unavailableTime) {
-            handlePostTimeUnavailable();
-            handleGetInvalidHoursDB();
+        handlePostTimeUnavailable()
+    }, [unavailableTime])
+
+
+    // Atualizar eventos indisponíveis quando os horários indisponíveis mudam
+    useEffect(() => {
+        const unavailableEvents = unavailableBarberDB ? unavailableBarberDB.map((item, index) => ({
+            title: "Indisponível",
+            start: moment(item.startDate).toDate(),
+            end: moment(item.endDate).toDate(),
+            color: "red",
+            id: index.toString()
+        })) : [];
+        setUnavailableEvent(unavailableEvents);
+    }, [unavailableBarberDB, unavailableTime]);
+
+    // Combinar dados de agendamento e eventos indisponíveis quando ambos estiverem disponíveis
+
+    useEffect(() => {
+        if (dataSchedulingDB.length > 0 && unavailableEvent.length > 0) {
+            const events = dataSchedulingDB.map((appointment, index) => ({
+                title: appointment.nome,
+                start: moment(appointment.date).toDate(),
+                end: moment(appointment.date).add(40, "minutes").toDate(),
+                color: "#59b7ff",
+                id: index.toString(),
+            }));
+            setAllEvents([...unavailableEvent, ...events]);
         }
-    }, [unavailableTime]);
+    }, [dataSchedulingDB, unavailableEvent]);
 
 
-    // Função para lidar com a obtenção de dados de agendamento do servidor
+    // Buscar dados de agendamento do servidor
     const handleDataSchedulingDB = async () => {
         try {
             const response = await axios.get(
@@ -51,8 +77,8 @@ const Calendar = () => {
                 }
             );
 
-            // Se o token for inválido ou expirado, redireciona para o registro do barbeiro
-            if (response.data.message === "Token invalid or expired") {
+            // Lidar com expiração do token
+            if (response.data.message === "Token inválido ou expirado") {
                 Toast.fire({
                     icon: "info",
                     title: "Por segurança, faça o login novamente.",
@@ -62,7 +88,7 @@ const Calendar = () => {
                 }, 3000);
             }
 
-            // Se não houver clientes agendados, exibe uma mensagem informativa
+            // Lidar com nenhum cliente agendado
             if (response.data.message === "Nenhum cliente agendado.") {
                 Toast.fire({
                     icon: "info",
@@ -70,10 +96,9 @@ const Calendar = () => {
                 });
             }
 
-            // Define os dados de agendamento no estado
             setDataSchedulingDB(response.data.clientsScheduled);
         } catch (err) {
-            console.log("error ao pegar horários agendados", err);
+            console.log("Erro ao buscar horários agendados", err);
             Toast.fire({
                 icon: "error",
                 title: "Erro interno no servidor.",
@@ -81,8 +106,7 @@ const Calendar = () => {
         }
     };
 
-    // função para obter dados de horários inválidos
-
+    // Buscar horários indisponíveis do servidor
     const handleGetInvalidHoursDB = async () => {
         try {
             const response = await axios.get("http://localhost:3001/dataBarber/unavailableTimeBarber", {
@@ -92,8 +116,8 @@ const Calendar = () => {
                 }
             })
 
-            // Se o token for inválido ou expirado, redireciona para o registro do barbeiro
-            if (response.data.message === "Token invalid or expired") {
+            // Lidar com expiração do token
+            if (response.data.message === "Token inválido ou expirado") {
                 Toast.fire({
                     icon: "info",
                     title: "Por segurança, faça o login novamente.",
@@ -109,15 +133,13 @@ const Calendar = () => {
             Toast.fire({
                 icon: "error",
                 title: "Ocorreu um erro interno no servidor. Tente novamente mais tarde."
-
             })
         }
     }
 
-
-    // Função para enviar horários indisponíveis para o servidor
-    // Function to handle posting unavailable times to the server
+    // Enviar horários indisponíveis para o servidor
     const handlePostTimeUnavailable = async () => {
+        if (!unavailableTime) return
         const response = await fetch("http://localhost:3001/barberAuth/unavailableTime", {
             method: "POST",
             headers: {
@@ -143,8 +165,7 @@ const Calendar = () => {
         }
     };
 
-
-    // Função para marcar horários como indisponíveis
+    // Lidar com marcação de tempos como indisponíveis
     const handleUnavailableTime = async (info) => {
         const formattedDate = moment(info.date).format("YYYY-MM-DD");
         const { value: formValues } = await Swal.fire({
@@ -192,25 +213,6 @@ const Calendar = () => {
         }
     };
 
-    // Mapeia os eventos de agendamento para o formato exigido pelo FullCalendar
-    const events = dataSchedulingDB ? dataSchedulingDB.map((appointment, index) => ({
-        title: appointment.nome,
-        start: moment(appointment.date).toDate(),
-        end: moment(appointment.date).add(40, "minutes").toDate(),
-        color: "#59b7ff",
-        id: index.toString(),
-        
-    })) : [];
-
-    // Define o evento de horário indisponível
-    const unavailableEvent = unavailableBarberDB ? unavailableBarberDB.map((item, index) => ({
-        title: "Indisponível", // Defina um título padrão para eventos indisponíveis
-        start: moment(item.startDate).toDate(),
-        end: moment(item.endDate).toDate(),
-        color: "red",
-        id: index.toString()
-    })) : [];
-
     // Função para verificar o título do evento
     const handleVerifyInfoTitle = (info) => {
         if (info.event.title === "Dia indisponível") {
@@ -219,14 +221,8 @@ const Calendar = () => {
         return `<p>Horário de ${info.event.title} agendado.</p>`;
     };
 
-    
     return (
         <div>
-            {unavailableBarberDB ?
-                unavailableBarberDB.map((item) => {
-                    <h1>{item.startDate}</h1>
-                })
-                : null}
             <FullCalendar
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                 initialView="timeGridWeek"
@@ -265,8 +261,8 @@ const Calendar = () => {
                 dayMaxEvents={true}
                 eventColor={"#ff6b45"}
                 dateClick={handleUnavailableTime}
-                events={unavailableEvent.concat(events)}
-                
+                events={allEvents}
+
                 eventDidMount={(info) => {
                     const popover = new bootstrap.Popover(info.el, {
                         title: info.event.title,
