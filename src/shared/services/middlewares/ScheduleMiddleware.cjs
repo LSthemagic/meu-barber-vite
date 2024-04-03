@@ -30,8 +30,8 @@ module.exports = async (req, res, next) => {
 
         // Verificando se o barbeiro já tem clientes agendados para as datas especificadas
         const unavailableInClients = await barberModel.findOne({
-            'clients.startDate': { $lte: endDate },
-            'clients.endDate': { $gte: startDate }
+            'clientes.startDate': { $lte: endDate },
+            'clientes.endDate': { $gte: startDate }
         });
 
         // Se o barbeiro estiver indisponível em uma das datas, retorna um erro
