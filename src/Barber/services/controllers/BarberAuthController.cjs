@@ -56,8 +56,5 @@ router.post("/registerBarber", async (req, res) => {
 	}
 });
 
-
-
-
 module.exports = router;
 

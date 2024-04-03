@@ -11,7 +11,7 @@ const app = express();
 const ConfirmationSchedule = require("./shared/services/controllers/ConfirmationSchedule.cjs")
 const scheduleMiddleware = require("./shared/services/middlewares/ScheduleMiddleware.cjs")
 const ScheduleController = require("./Barber/services/controllers/ScheduleController.cjs")
-
+const DataController = require("./User/api/controllers/DataController.cjs")
 
 // Configuração do middleware cors
 const corsOptions = {
@@ -27,6 +27,7 @@ app.use(cors(corsOptions)); // Use o middleware cors com as opções configurada
 app.use(express.json());
 app.use("/admin", authenticateMiddleware, AdminController);
 app.use("/auth", AuthController);
+app.use("/dataUser", DataController)
 app.use("/barberAuth", BarberAuthController);
 app.use("/emailAuth", VerifyEmail);
 app.use("/dataBarber", DataBarberController);

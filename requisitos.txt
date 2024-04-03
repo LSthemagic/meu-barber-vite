@@ -2,16 +2,20 @@
 
 **Requisitos Funcionais:**
 
+
 * **Agendamento de Horários:**
     * O sistema deve permitir que os clientes visualizem a disponibilidade dos barbeiros e escolham o horário mais adequado.
     * O sistema deve enviar notificações de agendamento para clientes e barbeiros.
     * O sistema deve confirmar automaticamente o agendamento para ambas as partes.
     * O sistema deve permitir que os barbeiros gerenciem sua disponibilidade, incluindo períodos de folga e férias.
+
+    
 * **Gestão Financeira:**
     * O sistema deve registrar o fluxo de caixa da barbearia, incluindo receitas e despesas.
     * O sistema deve permitir pagamentos online através de plataformas como PagSeguro, Mercado Pago ou PayPal.
     * O sistema deve gerar relatórios financeiros detalhados e gráficos para análise do desempenho.
     * O sistema deve enviar notificações de pagamento para clientes sobre pagamentos pendentes.
+    
 * **Automação com Python:**
     * O sistema deve automatizar o envio de e-mails, SMS ou mensagens no WhatsApp para confirmação de agendamentos, lembretes e promoções.
     * O sistema deve utilizar o Python para analisar dados históricos de agendamentos, identificar horários de pico e tendências, prever a demanda por serviços e otimizar a gestão da barbearia.

@@ -124,7 +124,7 @@ const Home = () => {
 
 	const handleGetFavBarbershop = async () => {
 		try {
-			const response = await axios.get("http://localhost:3001/auth/getFav",
+			const response = await axios.get("http://localhost:3001/dataUser/getFav",
 				{
 					headers: {
 						email: email ? email : null
