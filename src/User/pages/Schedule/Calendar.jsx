@@ -21,6 +21,9 @@ const Calendar = ({ props }) => {
 	const [dataFromDB, setDataFromDB] = useState([]);
 	const [update, setUpdate] = useState(false);
 	const { data, token, offDataAuth, logout } = useAuth();
+	const [unavailableBarberDB, setUnavailableBarberDB] = useState([])
+	const [allEvents, setAllEvents] = useState([])
+	const [unavailableEvent, setUnavailableEvent] = useState([]);
 
 
 	const navigate = useNavigate();
@@ -45,8 +48,37 @@ const Calendar = ({ props }) => {
 		}
 	}, []);
 
+	// Atualizar eventos indisponíveis quando os horários indisponíveis mudam
+	useEffect(() => {
+		const unavailableEvents = unavailableBarberDB ? unavailableBarberDB.map((item, index) => ({
+			title: "Indisponível",
+			start: moment(item.startDate).toDate(),
+			end: moment(item.endDate).toDate(),
+			color: "red",
+			id: index.toString()
+		})) : [];
+		setUnavailableEvent(unavailableEvents);
+	}, [unavailableBarberDB]);
+
+	// Combinar dados de agendamento e eventos indisponíveis quando ambos estiverem disponíveis
+
+	useEffect(() => {
+		const events = dataFromDB?.map((appointment, index) => ({
+			title: appointment.nome,
+			start: moment(appointment.startDate).toDate(),
+			end: moment(appointment.endDate).toDate(),
+			color: "#59b7ff",
+			id: index.toString(),
+		}));
+		setAllEvents([...unavailableEvent, ...events || []]);
+
+	}, [dataFromDB, unavailableEvent]);
+
+
+
 	useEffect(() => {
 		handleGetHoursScheduled();
+		handleGetInvalidHoursDB();
 	}, [update]);
 
 	useEffect(() => {
@@ -93,7 +125,7 @@ const Calendar = ({ props }) => {
 	const handleUpdateDB = async () => {
 		try {
 			const response = await fetch(
-				"http://localhost:3001/barberAuth/update-clients",
+				"http://localhost:3001/calendar/update-clients",
 				{
 					method: "POST",
 					headers: {
@@ -105,12 +137,12 @@ const Calendar = ({ props }) => {
 						clients: {
 							nome: data?.name,
 							email: data?.email,
-							date: new Date(dataScheduling?.start).toISOString()
+							startDate: new Date(dataScheduling?.start).toISOString(),
+							endDate: new Date(dataScheduling?.end).toISOString()
 						}
 					})
 				}
 			);
-
 			const dataReq = await response.json();
 			if (dataReq.error) {
 				Toast.fire({
@@ -170,9 +202,9 @@ const Calendar = ({ props }) => {
 				}
 			);
 
-			console.log("response data", response.data.clientsScheduled);
+			console.log("response data", response.data);
 
-			if (response.data.message === "Token invalid or expired.") {
+			if (await response.data.message === "Token invalid or expired.") {
 				Toast.fire({
 					icon: "info",
 					title: "Por segurança, faça o login novamente."
@@ -184,14 +216,14 @@ const Calendar = ({ props }) => {
 				}, 3000);
 			}
 
-			if (response.data.message === "Nenhum cliente agendado.") {
+			if (await response.data.message === "Nenhum cliente agendado.") {
 				Toast.fire({
 					icon: "info",
-					title: "O barbeiro esta com todos os  horários disponiveis."
+					title: "O barbeiro esta com todos os  horários disponíveis."
 				});
 			}
 
-			setDataFromDB(response.data.clientsScheduled);
+			setDataFromDB(await response.data.clientsScheduled);
 
 		} catch (err) {
 			console.log("Erro ao buscar horários marcados", err);
@@ -202,12 +234,35 @@ const Calendar = ({ props }) => {
 		}
 	};
 
-	const events = dataFromDB?.map((appointment) => ({
-		title: appointment.nome,
-		start: moment(appointment.date).toDate(),
-		end: moment(appointment.date).add(40, "minutes").toDate(),
-		color: "#59b7ff"
-	}));
+	// Buscar horários indisponíveis do servidor
+	const handleGetInvalidHoursDB = async () => {
+		try {
+			const response = await axios.get("http://localhost:3001/dataBarber/unavailableTimeBarber", {
+				headers: {
+					email: emailBarber,
+				}
+			})
+
+			// Lidar com expiração do token
+			if (response.data.message === "Token inválido ou expirado") {
+				Toast.fire({
+					icon: "info",
+					title: "Por segurança, faça o login novamente.",
+				});
+				setTimeout(() => {
+					window.location.href = "/barber/registerBarber";
+				}, 3000);
+			}
+
+			setUnavailableBarberDB(response.data.unavailableDates);
+		} catch (error) {
+			console.log(error);
+			Toast.fire({
+				icon: "error",
+				title: "Ocorreu um erro interno no servidor. Tente novamente mais tarde."
+			})
+		}
+	}
 
 	// console.log("events", events)
 	return (
@@ -251,7 +306,7 @@ const Calendar = ({ props }) => {
 					dayMaxEvents={true}
 					eventColor="red"
 					dateClick={handleDateClick}
-					events={events || []}
+					events={allEvents || []}
 					eventDidMount={(info) => {
 						// Use Bootstrap to create the popover
 						return new bootstrap.Popover(info.el, {
@@ -259,7 +314,7 @@ const Calendar = ({ props }) => {
 							placement: "auto",
 							trigger: "hover",
 							customClass: "popoverStyle",
-							content: `<p>Horário de ${dataFromDB?.map((item) => item.nome)} agendado.</p>`,
+							content: `<p>Encontre um horário disponível para o agendamento..</p>`,
 							html: true
 						});
 					}}

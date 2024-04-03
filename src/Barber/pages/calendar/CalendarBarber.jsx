@@ -33,6 +33,7 @@ const Calendar = () => {
 
     useEffect(() => {
         handlePostTimeUnavailable()
+
     }, [unavailableTime])
 
 
@@ -51,16 +52,15 @@ const Calendar = () => {
     // Combinar dados de agendamento e eventos indisponíveis quando ambos estiverem disponíveis
 
     useEffect(() => {
-        if (dataSchedulingDB.length > 0 && unavailableEvent.length > 0) {
-            const events = dataSchedulingDB.map((appointment, index) => ({
-                title: appointment.nome,
-                start: moment(appointment.date).toDate(),
-                end: moment(appointment.date).add(40, "minutes").toDate(),
-                color: "#59b7ff",
-                id: index.toString(),
-            }));
-            setAllEvents([...unavailableEvent, ...events]);
-        }
+        const events = dataSchedulingDB?.map((appointment, index) => ({
+            title: appointment.nome,
+            start: moment(appointment.startDate).toDate(),
+            end: moment(appointment.endDate).toDate(),
+            color: "#59b7ff",
+            id: index.toString(),
+        }));
+
+        setAllEvents([...unavailableEvent, ...events || []]);
     }, [dataSchedulingDB, unavailableEvent]);
 
 
@@ -140,7 +140,7 @@ const Calendar = () => {
     // Enviar horários indisponíveis para o servidor
     const handlePostTimeUnavailable = async () => {
         if (!unavailableTime) return
-        const response = await fetch("http://localhost:3001/barberAuth/unavailableTime", {
+        const response = await fetch("http://localhost:3001/calendar/unavailableTime", {
             method: "POST",
             headers: {
                 'Content-type': 'application/json'

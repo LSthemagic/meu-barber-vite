@@ -12,13 +12,12 @@ const ClienteSchema = new mongoose.Schema({
 		lowercase: true,
 		unique: true
 	},
-	date: {
-		type: Date,
-		required: true
+	startDate: {
+		type: Date
 	},
-	scr: {
-		type: String
-	}
+	endDate: {
+		type: Date
+	},
 });
 
 const EstabilishimentSchema = new mongoose.Schema({

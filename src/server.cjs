@@ -1,3 +1,4 @@
+
 const express = require("express");
 const cors = require("cors"); // Importe o middleware cors
 const AdminController = require("./User/api/controllers/AdminController.cjs");
@@ -8,6 +9,8 @@ const VerifyEmail = require("./shared/services/controllers/VerifyEmail.cjs");
 const DataBarberController = require("./Barber/services/controllers/DataBarberController.cjs");
 const app = express();
 const ConfirmationSchedule = require("./shared/services/controllers/ConfirmationSchedule.cjs")
+const scheduleMiddleware = require("./shared/services/middlewares/ScheduleMiddleware.cjs")
+const ScheduleController = require("./Barber/services/controllers/ScheduleController.cjs")
 
 
 // Configuração do middleware cors
@@ -28,7 +31,7 @@ app.use("/barberAuth", BarberAuthController);
 app.use("/emailAuth", VerifyEmail);
 app.use("/dataBarber", DataBarberController);
 app.use("/confirmationFromEmail", ConfirmationSchedule)
-
+app.use("/calendar", scheduleMiddleware, ScheduleController);
 
 app.listen(port, () => {
 	console.log("Servidor rodando na porta 3001");

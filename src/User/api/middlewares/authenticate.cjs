@@ -1,6 +1,5 @@
 module.exports = (req, res, next) => {
 	const jwt = require("jsonwebtoken");
-	const authConfig = require("../../config/auth.json");
 	console.log("middleware");
 	const authHeader = req.headers.authorization;
 	if (!authHeader) {
@@ -25,7 +24,7 @@ module.exports = (req, res, next) => {
 			message: "Token malformatted."
 		});
 	}
-	return jwt.verify(token, authConfig.secret, (err, decoded) => {
+	return jwt.verify(token, process.env.REACT_APP_SECRET, (err, decoded) => {
 		if (err) {
 			console.log("Error em verify authenticate middleware user => \n", err);
 			return res.status(401).json({
