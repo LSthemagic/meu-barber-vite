@@ -41,11 +41,23 @@ const EstabilishimentSchema = new mongoose.Schema({
 });
 
 const UnavailableDateSchema = new mongoose.Schema({
+	email: {
+        type: String,
+        required: true,
+        unique: true,
+        lowercase: true
+    },
 	startDate: {
 		type: Date
 	},
 	endDate: {
 		type: Date
+	},
+	type: {
+		type: String
+	},
+	name: {
+		type: String
 	}
 })
 

@@ -13,7 +13,6 @@ import Swal from "sweetalert2";
 
 const Calendar = () => {
     // Estados para armazenar dados de agendamento e horários indisponíveis
-    const [dataSchedulingDB, setDataSchedulingDB] = useState([]);
     const [unavailableTime, setUnavailableTime] = useState(null);
     const [unavailableBarberDB, setUnavailableBarberDB] = useState([])
     const [allEvents, setAllEvents] = useState([])
@@ -27,15 +26,12 @@ const Calendar = () => {
 
     // Carregar dados de agendamento e horários indisponíveis ao montar o componente
     useEffect(() => {
-        handleDataSchedulingDB();
         handleGetInvalidHoursDB();
     }, []);
 
     useEffect(() => {
         handlePostTimeUnavailable()
-
     }, [unavailableTime])
-
 
     // Atualizar eventos indisponíveis quando os horários indisponíveis mudam
     useEffect(() => {
@@ -50,61 +46,18 @@ const Calendar = () => {
     }, [unavailableBarberDB, unavailableTime]);
 
     // Combinar dados de agendamento e eventos indisponíveis quando ambos estiverem disponíveis
-
+    console.log(unavailableBarberDB);
     useEffect(() => {
-        const events = dataSchedulingDB?.map((appointment, index) => ({
-            title: appointment.nome,
+        const events = unavailableBarberDB?.map((appointment, index) => ({
+            title: appointment.name,
             start: moment(appointment.startDate).toDate(),
             end: moment(appointment.endDate).toDate(),
-            color: "#59b7ff",
+            color: (appointment.type === "client") ? "#59b7ff" : "red",
             id: index.toString(),
         }));
 
-        setAllEvents([...unavailableEvent, ...events || []]);
-    }, [dataSchedulingDB, unavailableEvent]);
-
-
-    // Buscar dados de agendamento do servidor
-    const handleDataSchedulingDB = async () => {
-        try {
-            const response = await axios.get(
-                "http://localhost:3001/dataBarber/scheduled",
-                {
-                    headers: {
-                        Authorization: `Bearer ${tokenBarber}`,
-                        email: dataBarber?.email,
-                    },
-                }
-            );
-
-            // Lidar com expiração do token
-            if (response.data.message === "Token inválido ou expirado") {
-                Toast.fire({
-                    icon: "info",
-                    title: "Por segurança, faça o login novamente.",
-                });
-                setTimeout(() => {
-                    window.location.href = "/barber/registerBarber";
-                }, 3000);
-            }
-
-            // Lidar com nenhum cliente agendado
-            if (response.data.message === "Nenhum cliente agendado.") {
-                Toast.fire({
-                    icon: "info",
-                    title: response.data.message,
-                });
-            }
-
-            setDataSchedulingDB(response.data.clientsScheduled);
-        } catch (err) {
-            console.log("Erro ao buscar horários agendados", err);
-            Toast.fire({
-                icon: "error",
-                title: "Erro interno no servidor.",
-            });
-        }
-    };
+        setAllEvents(events);
+    }, [unavailableEvent]);
 
     // Buscar horários indisponíveis do servidor
     const handleGetInvalidHoursDB = async () => {
@@ -147,7 +100,9 @@ const Calendar = () => {
             },
             body: JSON.stringify({
                 email: dataBarber?.email,
-                date: unavailableTime
+                date: unavailableTime,
+                type: "barber",
+                name: unavailableTime.title
             })
         });
 
@@ -162,6 +117,7 @@ const Calendar = () => {
                 icon: "success",
                 title: data.message
             });
+            handleGetInvalidHoursDB()
         }
     };
 

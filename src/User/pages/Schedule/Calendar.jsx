@@ -21,9 +21,8 @@ const Calendar = ({ props }) => {
 	const [dataFromDB, setDataFromDB] = useState([]);
 	const [update, setUpdate] = useState(false);
 	const { data, token, offDataAuth, logout } = useAuth();
-	const [unavailableBarberDB, setUnavailableBarberDB] = useState([])
 	const [allEvents, setAllEvents] = useState([])
-	const [unavailableEvent, setUnavailableEvent] = useState([]);
+
 
 
 	const navigate = useNavigate();
@@ -32,6 +31,7 @@ const Calendar = ({ props }) => {
 	const { name: nameBarber } = props;
 	const { email: emailBarber } = props;
 
+	// verificar se o user esta logado
 	useEffect(() => {
 		if (!data) {
 			Toast.fire({
@@ -48,46 +48,31 @@ const Calendar = ({ props }) => {
 		}
 	}, []);
 
-	// Atualizar eventos indisponíveis quando os horários indisponíveis mudam
-	useEffect(() => {
-		const unavailableEvents = unavailableBarberDB ? unavailableBarberDB.map((item, index) => ({
-			title: "Indisponível",
-			start: moment(item.startDate).toDate(),
-			end: moment(item.endDate).toDate(),
-			color: "red",
-			id: index.toString()
-		})) : [];
-		setUnavailableEvent(unavailableEvents);
-	}, [unavailableBarberDB]);
-
-	// Combinar dados de agendamento e eventos indisponíveis quando ambos estiverem disponíveis
+	// // Combinar dados de agendamento e eventos indisponíveis quando ambos estiverem disponíveis
 
 	useEffect(() => {
 		const events = dataFromDB?.map((appointment, index) => ({
-			title: appointment.nome,
+			title: appointment.name,
 			start: moment(appointment.startDate).toDate(),
 			end: moment(appointment.endDate).toDate(),
-			color: "#59b7ff",
+			color: appointment.type === "client" ? "#59b7ff" : "red",
 			id: index.toString(),
 		}));
-		setAllEvents([...unavailableEvent, ...events || []]);
+		setAllEvents(events);
 
-	}, [dataFromDB, unavailableEvent]);
-
-
+	}, [dataFromDB]);
 
 	useEffect(() => {
 		handleGetHoursScheduled();
-		handleGetInvalidHoursDB();
 	}, [update]);
 
 	useEffect(() => {
 		if (dataScheduling) {
-			// console.log('data ', dataScheduling);
 			handleUpdateDB();
 		}
 	}, [dataScheduling]);
 
+	// enviar email de confirmação de horário agendado para o user e para o barbeiro
 	const confirmationSchedule = async () => {
 		try {
 			const response = await fetch("http://localhost:3001/confirmationFromEmail/confirmationSchedule", {
@@ -122,6 +107,7 @@ const Calendar = ({ props }) => {
 		}
 	}
 
+	// registrar um novo agendamento
 	const handleUpdateDB = async () => {
 		try {
 			const response = await fetch(
@@ -139,7 +125,8 @@ const Calendar = ({ props }) => {
 							email: data?.email,
 							startDate: new Date(dataScheduling?.start).toISOString(),
 							endDate: new Date(dataScheduling?.end).toISOString()
-						}
+						},
+						type: dataScheduling?.type
 					})
 				}
 			);
@@ -162,6 +149,50 @@ const Calendar = ({ props }) => {
 		}
 	};
 
+	// pegar horarios dos clientes agendados
+	const handleGetHoursScheduled = async () => {
+		try {
+			const response = await axios.get(
+				"http://localhost:3001/dataBarber/unavailableTimeBarber",
+				{
+					headers: {
+						Authorization: `Bearer ${token}`,
+						Email: emailBarber
+					}
+				}
+			);
+
+			if (await response.data.message === "Token invalid or expired.") {
+				Toast.fire({
+					icon: "info",
+					title: "Por segurança, faça o login novamente."
+				});
+				offDataAuth()
+				logout()
+				setTimeout(() => {
+					<Link to={"/register"} />
+				}, 3000);
+			}
+
+			if (await response.data.message === "Nenhum cliente agendado.") {
+				Toast.fire({
+					icon: "info",
+					title: "O barbeiro esta com todos os  horários disponíveis."
+				});
+			}
+
+			setDataFromDB(await response.data.unavailableDates);
+
+		} catch (err) {
+			console.log("Erro ao buscar horários marcados", err);
+			Toast.fire({
+				icon: "error",
+				title: "Erro interno ao buscar horários marcados"
+			});
+		}
+	};
+
+	// funcao para aparecer horarios quando o user clica no fullcalendar
 	const handleDateClick = async (info) => {
 		// console.log(info);
 		const formattedDate = moment(info.date).format("YYYY-MM-DDTHH:mm");
@@ -185,84 +216,11 @@ const Calendar = ({ props }) => {
 				start: timeSchedule,
 				end: endTime.format(),
 				title: "Horário agendado",
-				color: "#59b7ff"
+				color: "#59b7ff",
+				type: "client",
 			});
 		}
 	};
-
-	const handleGetHoursScheduled = async () => {
-		try {
-			const response = await axios.get(
-				"http://localhost:3001/dataBarber/scheduled",
-				{
-					headers: {
-						Authorization: `Bearer ${token}`,
-						Email: emailBarber
-					}
-				}
-			);
-
-			console.log("response data", response.data);
-
-			if (await response.data.message === "Token invalid or expired.") {
-				Toast.fire({
-					icon: "info",
-					title: "Por segurança, faça o login novamente."
-				});
-				offDataAuth()
-				logout()
-				setTimeout(() => {
-					<Link to={"/register"} />
-				}, 3000);
-			}
-
-			if (await response.data.message === "Nenhum cliente agendado.") {
-				Toast.fire({
-					icon: "info",
-					title: "O barbeiro esta com todos os  horários disponíveis."
-				});
-			}
-
-			setDataFromDB(await response.data.clientsScheduled);
-
-		} catch (err) {
-			console.log("Erro ao buscar horários marcados", err);
-			Toast.fire({
-				icon: "error",
-				title: "Erro interno ao buscar horários marcados"
-			});
-		}
-	};
-
-	// Buscar horários indisponíveis do servidor
-	const handleGetInvalidHoursDB = async () => {
-		try {
-			const response = await axios.get("http://localhost:3001/dataBarber/unavailableTimeBarber", {
-				headers: {
-					email: emailBarber,
-				}
-			})
-
-			// Lidar com expiração do token
-			if (response.data.message === "Token inválido ou expirado") {
-				Toast.fire({
-					icon: "info",
-					title: "Por segurança, faça o login novamente.",
-				});
-				setTimeout(() => {
-					window.location.href = "/barber/registerBarber";
-				}, 3000);
-			}
-
-			setUnavailableBarberDB(response.data.unavailableDates);
-		} catch (error) {
-			console.log(error);
-			Toast.fire({
-				icon: "error",
-				title: "Ocorreu um erro interno no servidor. Tente novamente mais tarde."
-			})
-		}
-	}
 
 	// console.log("events", events)
 	return (
@@ -301,7 +259,8 @@ const Calendar = ({ props }) => {
 						minute: "2-digit",
 						meridiem: "uppercase"
 					}}
-					editable={true}
+
+					editable={false}
 					selectable={true}
 					dayMaxEvents={true}
 					eventColor="red"

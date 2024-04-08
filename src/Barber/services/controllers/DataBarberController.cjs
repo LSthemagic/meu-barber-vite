@@ -54,7 +54,7 @@ router.get("/scheduled", async (req, res) => {
 
 		if (clientsScheduled.length === 0) {
 			return res.json({
-				error: true,
+				error: false,
 				message: "Nenhum cliente agendado."
 			});
 		}
