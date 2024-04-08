@@ -15,7 +15,6 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import PageUnauthorized from "../../../shared/images/PageUnauthorized.svg";
 
-
 const Calendar = ({ props }) => {
 	const [dataScheduling, setDataScheduling] = useState(null);
 	const [dataFromDB, setDataFromDB] = useState([]);
@@ -189,7 +188,6 @@ const Calendar = ({ props }) => {
 
 	// funcao para aparecer horarios quando o user clica no fullcalendar
 	const handleDateClick = async (info) => {
-		// console.log(info);
 		const formattedDate = moment(info.date).format("YYYY-MM-DDTHH:mm");
 
 		const { value: timeSchedule } = await Swal.fire({
@@ -217,7 +215,6 @@ const Calendar = ({ props }) => {
 		}
 	};
 
-	// console.log("events", events)
 	return (
 		<div className="container">
 			{data ? (

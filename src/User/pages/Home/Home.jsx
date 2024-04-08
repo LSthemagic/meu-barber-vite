@@ -131,7 +131,6 @@ const Home = () => {
 					}
 				}
 			)
-			console.log(response.data);
 			setDbBarberFav(response.data);
 		} catch (error) {
 			console.error("Erro ao obter favoritos da barbearia", error);
