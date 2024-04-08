@@ -1,3 +1,15 @@
 https://youtu.be/zI6TJXNEXy0?t=2513
 ziwutxpksohqrdra
 https://developer.tomtom.com/search-api/documentation/autocomplete-service/autocomplete
+
+// Verificando se o barbeiro está indisponível nas datas especificadas
+        const unavailableInUnavailableDate = await barberModel.findOne({
+            'unavailableDate.startDate': { $lte: endDate },
+            'unavailableDate.endDate': { $gte: startDate }
+        });
+
+        // Verificando se o barbeiro já tem clientes agendados para as datas especificadas
+        const unavailableInClients = await barberModel.findOne({
+            'clientes.startDate': { $lte: endDate },
+            'clientes.endDate': { $gte: startDate }
+        });
