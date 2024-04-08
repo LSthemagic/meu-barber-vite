@@ -22,12 +22,7 @@ const Calendar = ({ props }) => {
 	const [update, setUpdate] = useState(false);
 	const { data, token, offDataAuth, logout } = useAuth();
 	const [allEvents, setAllEvents] = useState([])
-
-
-
 	const navigate = useNavigate();
-
-	console.log(props);
 	const { name: nameBarber } = props;
 	const { email: emailBarber } = props;
 
