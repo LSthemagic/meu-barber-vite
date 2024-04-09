@@ -8,6 +8,7 @@ import Footer from "../../shared/layout/footer/Footer";
 import Calendar from "../../User/pages/Schedule/Calendar";
 import BarberRoutes from "../../Barber/routes/routes";
 import PageNotFound from "../../shared/pages/PageNotFound";
+import { DrawerDemo } from "../../shared/components/drawer/Drawer";
 
 const AppRoutes = () => {
 	return (
@@ -20,6 +21,7 @@ const AppRoutes = () => {
 				<Route path="/register" element={<Register />} />
 				<Route path="/authenticate" element={<Authenticate />} />
 				<Route path="/barber/*" element={<BarberRoutes />} />
+				<Route path="/drawer"  element={<DrawerDemo/>}/>
 				<Route path="*" element={<PageNotFound />} />
 			</Routes>
 			<Footer />

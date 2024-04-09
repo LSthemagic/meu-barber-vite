@@ -67,13 +67,7 @@ const Profile = () => {
             </div>
             <div className={styles.card2}>
                 <h1 className={styles.title}>{barber.barbershop?.name}</h1>
-                <span className={styles.spanCustom}>
-                    <img
-                        className={styles.imgProfile}
-                        src="../../../../public/section_img1.jpg"
-                        alt="Profile"
-                    />
-                </span>
+                
             </div>
         </div>
     );
