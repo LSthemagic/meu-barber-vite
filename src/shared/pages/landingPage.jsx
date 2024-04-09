@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import styled from "styled-components";
 import Slider from "react-slick";
 import styles from "./landingPage.module.css"; // Removed unused import
-import ImagemFormatada from "./../layout/ImagemFormatted"
+import ImagemFormatada from "../layout/imgPatterns/ImagemFormatted"
 // Defining the colors
 const colors = {
   marromClaro: "#e7d7b7",

@@ -9,7 +9,7 @@ import axios from "axios";
 import Calendar from "../../pages/Schedule/Calendar";
 import styles from "./Home.module.css";
 import LandingPage from "../../../shared/pages/landingPage";
-import ImagemFormatada from "../../../shared/layout/ImagemFormatted";
+import ImagemFormatada from "../../../shared/layout/imgPatterns/ImagemFormatted";
 
 const Home = () => {
 	const [barbers, setBarbers] = useState([]);
@@ -176,8 +176,8 @@ const Home = () => {
 			  {barbers.map((barber) => (
 				<div key={barber._id}>
 				  <div className={styles.card}>
-					<img src={"https://img.freepik.com/fotos-gratis/homem-em-um-salao-de-barbearia-fazendo-o-corte-de-cabelo-e-barba_1303-20953.jpg?w=360&t=st=1709679884~exp=1709680484~hmac=27bd2cccd750b63adca8a10c57f64c6e68786568949fafb668bdff8c7971efdd"} />
-					<h3>{barber.barbershop.name}</h3>
+					<ImagemFormatada src={"../../../../public/section_img5.jpg"} />
+					<h3 className={styles.barberNome}>{barber.barbershop.name}</h3>
 					<div className={styles.fa5}>
 					  {dbBarberFav && dbBarberFav.IDs && dbBarberFav.IDs.includes(barber._id) ? (
 						<i
@@ -197,13 +197,21 @@ const Home = () => {
 						className="far fa-calendar"
 						onClick={() => handleDoubleObjectiveCalendar(barber)}
 					  ></i>
+					   <i className="fa fa-user" aria-hidden="true"
+						onClick={() => handleWaze(barber)}
+					  />
 					  <i
 						className="fa-solid fa-paper-plane"
 						onClick={() => handleWaze(barber)}
 					  />
+					  
 					</div>
-					<p>
-					  Lorem ipsum, dolor sit amet consectetur 
+					<p className={styles.descricao}>
+					  Lorem ipsum, dolor sit amet consectetur sasadv
+					  fsdfffffffffffffff
+					  dsf
+					  dsfdfsffsfd
+					  dsfds
 					</p>
 				  </div>
 				</div>

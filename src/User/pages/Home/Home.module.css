@@ -150,12 +150,13 @@
 	display: flex;
   
 	/* Define o espaçamento entre os itens com base no tamanho da fonte */
-	gap: 5rem;
+	gap: 3rem;
   }
   @media (max-width: 768px){
 	.fa5{
 		gap:  2rem;
 		display: flex;
+		margin: 10%;
 	}
   }
   .modal {
@@ -181,29 +182,13 @@
 	}
   }
   
-  /* Define o container dos ícones para ser um flexbox */
-  .sharedIcons {
-	display: flex;
-	justify-content: center;
-	align-items: center;
-  }
-  
-  /* Define estilos para os ícones dentro do container */
-  .sharedIcons i {
-	font-size: 4em; /* Aumenta o tamanho dos ícones para o dobro do padrão */
-	margin: 0 10px; /* Define o espaçamento entre os ícones */
-	color: #000; /* Define a cor inicial como preto */
-	transition: all 0.3s ease-in-out; /* Adiciona transição suave para hover */
-  }
-  
-  /* Define estilos para os ícones quando o mouse passa por cima */
-  .sharedIcons i:hover {
-	color: rgb(7, 52, 116); /* Muda a cor para vermelho no hover */
-	transform: scale(1.1); /* Aumenta o tamanho em 10% no hover */
+  .barberNome{
+	margin-bottom: 10px !important;
   }
   
   /* Estilo do parágrafo */
-  .p {
+  .descricao {
+	margin-top: 10px;
 	font-size: 1rem; /* Tamanho do texto do parágrafo */
 	line-height: 1.5; /* Espaçamento entre linhas do parágrafo */
 	margin-bottom: 10px; /* Espaçamento inferior do parágrafo */
@@ -211,7 +196,7 @@
   
   @media (max-width: 768px) {
 	/* Ajustes para telas menores */
-	.p {
+	.descricao {
 	  font-size: 0.9rem; /* Tamanho do texto reduzido para telas menores */
 	  margin-bottom: 8px; /* Espaçamento inferior reduzido para telas menores */
 	}
