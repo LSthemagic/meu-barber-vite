@@ -63,16 +63,16 @@ const Home = () => {
 		autoplaySpeed: 5000,
 		color: "#333",
 		responsive: [
-		  {
-			breakpoint: 768,
-			settings: {
-			  slidesToShow: 1, // Exibe dois slides por vez em telas menores que 768px
-			  slidesToScroll: 1,
-			  speed: 1500,
+			{
+				breakpoint: 768,
+				settings: {
+					slidesToShow: 1, // Exibe dois slides por vez em telas menores que 768px
+					slidesToScroll: 1,
+					speed: 1500,
+				},
 			},
-		  },
 		],
-	  };
+	};
 
 	const handleDoubleObjectiveCalendar = (data) => {
 		handleOpenModalCalendar();
@@ -171,57 +171,58 @@ const Home = () => {
 
 	return (
 		<div className={styles.container}>
-		  <div className={styles["slider-wrapper"]}>
-			<Slider {...settings} className={styles.slider}>
-			  {barbers.map((barber) => (
-				<div key={barber._id}>
-				  <div className={styles.card}>
-					<ImagemFormatada src={"../../../../public/section_img5.jpg"} />
-					<h3 className={styles.barberNome}>{barber.barbershop.name}</h3>
-					<div className={styles.fa5}>
-					  {dbBarberFav && dbBarberFav.IDs && dbBarberFav.IDs.includes(barber._id) ? (
-						<i
-						  key={barber._id}
-						  onClick={() => handleFavoriteBarbershop(barber._id)}
-						  className="fa-solid fa-heart"
-						></i>
-					  ) : (
-						<i
-						  key={barber._id}
-						  onClick={() => handleFavoriteBarbershop(barber._id)}
-						  className="fa-regular fa-heart"
-						></i>
-					  )}
-	
-					  <i
-						className="far fa-calendar"
-						onClick={() => handleDoubleObjectiveCalendar(barber)}
-					  ></i>
-					   <i className="fa fa-user" aria-hidden="true"
-						onClick={() => handleWaze(barber)}
-					  />
-					  <i
-						className="fa-solid fa-paper-plane"
-						onClick={() => handleWaze(barber)}
-					  />
-					  
-					</div>
-					<p className={styles.descricao}>
-					  Lorem ipsum, dolor sit amet consectetur sasadv
-					  fsdfffffffffffffff
-					  dsf
-					  dsfdfsffsfd
-					  dsfds
-					</p>
-				  </div>
-				</div>
-			  ))}
-			</Slider>
-		  </div>
-		  {showModalCalendar && renderModal()}
-		  {!email && <LandingPage></LandingPage>}
+			<div className={styles["slider-wrapper"]}>
+				<Slider {...settings} className={styles.slider}>
+					{barbers.map((barber) => (
+						<div key={barber._id}>
+							<div className={styles.card}>
+								<ImagemFormatada src={"../../../../public/section_img5.jpg"} />
+								<h3 className={styles.barberNome}>{barber.barbershop.name}</h3>
+								<div className={styles.fa5}>
+									{dbBarberFav && dbBarberFav.IDs && dbBarberFav.IDs.includes(barber._id) ? (
+										<i
+											key={barber._id}
+											onClick={() => handleFavoriteBarbershop(barber._id)}
+											className="fa-solid fa-heart"
+										></i>
+									) : (
+										<i
+											
+											key={barber._id}
+											onClick={() => handleFavoriteBarbershop(barber._id)}
+											className="fa-regular fa-heart"
+										></i>
+									)}
+
+									<i
+										className="far fa-calendar"
+										onClick={() => handleDoubleObjectiveCalendar(barber)}
+									></i>
+									<i className="fa fa-user" aria-hidden="true"
+										onClick={() => handleWaze(barber)}
+									/>
+									<i
+										className="fa-solid fa-paper-plane"
+										onClick={() => handleWaze(barber)}
+									/>
+
+								</div>
+								<p className={styles.descricao}>
+									Lorem ipsum, dolor sit amet consectetur sasadv
+									fsdfffffffffffffff
+									dsf
+									dsfdfsffsfd
+									dsfds
+								</p>
+							</div>
+						</div>
+					))}
+				</Slider>
+			</div>
+			{showModalCalendar && renderModal()}
+			{!email && <LandingPage></LandingPage>}
 		</div>
-	  );
+	);
 };
 
 export default Home;

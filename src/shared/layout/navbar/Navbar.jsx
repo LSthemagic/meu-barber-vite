@@ -1,264 +1,261 @@
-import { Link, useLocation } from "react-router-dom";
-import styles from "./Navbar.module.css";
-import imagemLogo from "../../images/logo.png";
-import { useAuth } from "../../../User/context/AuthContext";
-import { useAuth as useAuthBarber } from "../../../Barber/context/BarberContext";
-import "bootstrap/dist/css/bootstrap.min.css";
-import "bootstrap/dist/js/bootstrap.bundle.min.js";
-import { useState } from "react";
+import * as React from "react"
+import { Link } from "react-router-dom"
+import {
+  Home,
+  LineChart,
+  Package,
+  Package2,
+  PanelLeft,
+  Search,
+  Settings,
+  ShoppingCart,
+  Users2,
+} from "lucide-react"
+
+
+import {
+  Breadcrumb,
+  BreadcrumbItem,
+  BreadcrumbLink,
+  BreadcrumbList,
+  BreadcrumbPage,
+  BreadcrumbSeparator,
+} from "../../../../@/components/ui/breadcrumb"
+import { Button } from "../../../../@/components/ui/button"
+
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuLabel,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "../../../../@/components/ui/dropdown-menu"
+import { Input } from "../../../../@/components/ui/input"
+import { Sheet, SheetContent, SheetTrigger } from "../../../../@/components/ui/sheet"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+  TooltipProvider
+} from "../../../../@/components/ui/tooltip"
+import "../../../../app/globals.css"
+import logo from "../../images/logo.png"
 
 const Navbar = () => {
-	const { logout, offDataAuth } = useAuth();
-	const { offAuthToken, signOut } = useAuthBarber();
-	const { pathname } = useLocation();
-	const [isMenuOpen, setIsMenuOpen] = useState(false);
-	const isBarberRoutes = pathname.startsWith("/barber");
-	const handleMenuItemClick = () => setIsMenuOpen(false)
-	const handleMenuOpen = () => {
-		if (isMenuOpen === true) {
-			setIsMenuOpen(false)
-		}
-		setIsMenuOpen(true)
-	};
+  React.useEffect(() => {
+    document.body.classList.add('dark'); // Adiciona a classe 'dark' ao body quando a página é montada
+    return () => {
+      document.body.classList.remove('dark'); // Remove a classe 'dark' quando a página é desmontada
+    };
+  }, []);
+  return (
+    <div>
+      <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
+        <nav className="flex flex-col items-center gap-4 px-2 sm:py-4">
+          <Link
+            href="#"
+            className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-marrom-claro text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
+          >
+            <Package2 className="h-4 w-4 transition-all group-hover:scale-110" />
+            <span className="sr-only">Acme Inc</span>
+          </Link>
+          <TooltipProvider>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href="#"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                >
+                  <Home className="h-5 w-5" />
+                  <span className="sr-only">Dashboard</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">Dashboard</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href="#"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                >
+                  <ShoppingCart className="h-5 w-5" />
+                  <span className="sr-only">Orders</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">Orders</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href="#"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                >
+                  <Package className="h-5 w-5" />
+                  <span className="sr-only">Products</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">Products</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href="#"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                >
+                  <Users2 className="h-5 w-5" />
+                  <span className="sr-only">Customers</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">Customers</TooltipContent>
+            </Tooltip>
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <Link
+                  href="#"
+                  className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+                >
+                  <LineChart className="h-5 w-5" />
+                  <span className="sr-only">Analytics</span>
+                </Link>
+              </TooltipTrigger>
+              <TooltipContent side="right">Analytics</TooltipContent>
+            </Tooltip>
+          </TooltipProvider>
+        </nav>
+        <nav className="mt-auto flex flex-col items-center gap-4 px-2 sm:py-4">
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <Link
+                href="#"
+                className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
+              >
+                <Settings className="h-5 w-5" />
+                <span className="sr-only">Settings</span>
+              </Link>
+            </TooltipTrigger>
+            <TooltipContent side="right">Settings</TooltipContent>
+          </Tooltip>
+        </nav>
+      </aside>
+
+      <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
+        <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
+          <Sheet>
+            <SheetTrigger asChild>
+              <Button size="icon" variant="outline" className="sm:hidden border-0">
+                <PanelLeft className="h-5 w-5" />
+                <span className="sr-only">Toggle Menu</span>
+              </Button>
+            </SheetTrigger>
+            <SheetContent side="left" className="sm:max-w-xs">
+              <nav className="grid pt-20 gap-6 text-lg font-medium">
+
+                <Link
+                  to={"/dashboard"}
+                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                >
+                  <img src={logo} className="h-5 w-5" />
+                  Dashboard
+                </Link>
+                <Link
+                  href="#"
+                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                >
+                  <Home className="h-5 w-5" />
+                  Dashboard
+                </Link>
+                <Link
+                  href="#"
+                  className="flex items-center gap-4 px-2.5 text-foreground"
+                >
+                  <ShoppingCart className="h-5 w-5" />
+                  Orders
+                </Link>
+                <Link
+                  href="#"
+                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                >
+                  <Package className="h-5 w-5" />
+                  Products
+                </Link>
+                <Link
+                  href="#"
+                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                >
+                  <Users2 className="h-5 w-5" />
+                  Customers
+                </Link>
+                <Link
+                  href="#"
+                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                >
+                  <LineChart className="h-5 w-5" />
+                  Settings
+                </Link>
+              </nav>
+            </SheetContent>
+          </Sheet>
+
+          <Breadcrumb className="hidden md:flex">
+            
+            <BreadcrumbList>
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link href="#">Dashboard</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbLink asChild>
+                  <Link href="#">Orders</Link>
+                </BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>Recent Orders</BreadcrumbPage>
+              </BreadcrumbItem>
+            </BreadcrumbList>
+          </Breadcrumb>
+          <div className="relative ml-auto flex-1 md:grow-0">
+            <Search className="absolute left-2.5 top-3 h-4 w-4 text-muted-foreground" />
+            <Input
+              type="search"
+              placeholder="    Search..."
+              className="w-full rounded-lg bg-background pl-8 md:w-[200px] lg:w-[320px]"
+            />
+          </div>
+          <DropdownMenu>
+            <DropdownMenuTrigger asChild>
+              <Button
+                variant="outline"
+                size="icon"
+                className="overflow-hidden rounded-full"
+              >
+                <img
+                  src="/placeholder-user.jpg"
+                  width={36}
+                  height={36}
+                  alt="Avatar"
+                  className="overflow-hidden rounded-full"
+                />
+              </Button>
+            </DropdownMenuTrigger>
+            <DropdownMenuContent align="end">
+              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Settings</DropdownMenuItem>
+              <DropdownMenuItem>Support</DropdownMenuItem>
+              <DropdownMenuSeparator />
+              <DropdownMenuItem>Logout</DropdownMenuItem>
+            </DropdownMenuContent>
+          </DropdownMenu>
+        </header>
+      </div>
+    </div >
 
 
-	if (isBarberRoutes) {
-		return (
-			<div className={styles.navbar}>
-				<nav
-					className={`navbar navbar-expand-lg bg-body-tertiary ${styles.customNavbar}`}
-				>
-					<div className="container-fluid">
-						<Link className="navbar-brand" to="/barber/barber-home">
-							<div className={styles.titleContainer}>
-								<h1 className={styles.title}>Meu Barber</h1>
-								<img src={imagemLogo} alt="Logo" className={styles.logo} />
-							</div>
-						</Link>
-						<button
-							className={`navbar-toggler ${isMenuOpen ? "" : "collapsed"}`}
-							type="button"
-							data-bs-toggle="collapse"
-							data-bs-target="#navbarSupportedContent"
-							aria-controls="navbarSupportedContent"
-							aria-expanded={isMenuOpen ? "true" : "false"}
-							aria-label="Toggle navigation"
-							onClick={() => handleMenuOpen()}
-						>
-							<span className="navbar-toggler-icon"></span>
-						</button>
-						<div
-							className={`collapse navbar-collapse ${isMenuOpen ? "show" : ""}`}
-							id="navbarSupportedContent"
-						>
-							<ul className="navbar-nav me-auto mb-2 mb-lg-0" onClick={() => handleMenuItemClick()}>
-								<li className="nav-item">
-									<Link
-										to="/barber/profileBarber"
-										style={{ color: "white" }}
-										className="nav-link active"
-										aria-current="page"
-									>
-										profile Barber
-									</Link>
-								</li>
-								<li className="nav-item">
-									<Link
-										to="/barber/calendarBarber"
-										style={{ color: "white" }}
-										className="nav-link"
-									>
-										Agenda Barber
-									</Link>
-								</li>
-								<li className="nav-item dropdown">
-									<Link
-										to="#"
-										style={{ color: "white" }}
-										className="nav-link dropdown-toggle"
-										role="button"
-										data-bs-toggle="dropdown"
-										aria-expanded="false"
-									>
-										Ver mais
-									</Link>
-									<ul className="dropdown-menu">
-										<li>
-											<Link
-												to="/barber/registerBarber"
-												style={{ color: "#333" }}
-												className="dropdown-item"
-											>
-												Cadastrar-se
-											</Link>
-										</li>
-										<li>
-											<Link
-												to="/barber/authenticateBarber"
-												style={{ color: "#333" }}
-												className="dropdown-item"
-											>
-												Entrar
-											</Link>
-										</li>
-										<li>
-											<hr className="dropdown-divider"></hr>
-										</li>
-										<li>
-											<button
-												onClick={() => {
-													window.location.href = "/barber/barber-home";
-													offAuthToken();
-													signOut();
-												}}
-												style={{ color: "#333" }}
-												className="dropdown-item"
-											>
-												Sair
-											</button>
-										</li>
-									</ul>
-								</li>
-							</ul>
-							<form className="d-flex" role="search">
-								<input
-									className={`form-control me-2 ${styles.customInput}`}
-									type="search"
-									placeholder="Search"
-									aria-label="Search"
-								/>
-								<button
-									className={`${styles.customBtn}`}
-									type="submit"
-								>
-									Search
-								</button>
-							</form>
-						</div>
-					</div>
-				</nav>
-			</div>
-		);
-	}
-	return (
-		<div className={styles.navbar}>
-			<nav
-				className={`navbar navbar-expand-lg bg-body-tertiary ${styles.customNavbar}`}
-			>
-				<div className="container-fluid">
-					<Link className="navbar-brand" to="/">
-						<div className={styles.titleContainer}>
-							<h1 className={styles.title}>Meu Barber</h1>
-							<img src={imagemLogo} alt="Logo" className={styles.logo} />
-						</div>
-					</Link>
-					<button
-						className={`navbar-toggler ${isMenuOpen ? "" : "collapsed"}`}
-						type="button"
-						data-bs-toggle="collapse"
-						data-bs-target="#navbarSupportedContent"
-						aria-controls="navbarSupportedContent"
-						aria-expanded={isMenuOpen ? "true" : "false"}
-						aria-label="Toggle navigation"
-						onClick={() => handleMenuOpen()}
-					>
-						<span className="navbar-toggler-icon"></span>
-					</button>
-					<div
-						className={`collapse navbar-collapse ${isMenuOpen ? "show" : ""}`}
-						id="navbarSupportedContent"
-					>
-						<ul className="navbar-nav me-auto mb-2 mb-lg-0">
-							<li className="nav-item">
-								<Link
-									onClick={() => handleMenuItemClick()}
-									to="/"
-									style={{ color: "white" }}
-									className="nav-link active"
-									aria-current="page"
-								>
-									Home
-								</Link>
-							</li>
+  )
+}
 
-							<li className="nav-item dropdown">
-								<Link
-									// onClick={() => handleMenuOpen()}
-									to="#"
-									style={{ color: "white" }}
-									className="nav-link dropdown-toggle"
-									role="button"
-									data-bs-toggle="dropdown"
-									aria-expanded="false"
-								>
-									Ver mais
-								</Link>
-								<ul className="dropdown-menu" onClick={() => handleMenuItemClick()}>
-									<li>
-										<Link
-											to="/register"
-											style={{ color: "#333" }}
-											className="dropdown-item"
-										>
-											Cadastrar-se
-										</Link>
-									</li>
-									<li>
-										<Link
-											to="/authenticate"
-											style={{ color: "#333" }}
-											className="dropdown-item"
-										>
-											Entrar
-										</Link>
-									</li>
-									<li>
-										<Link
-											to="/UserList"
-											style={{ color: "#333" }}
-											className="dropdown-item"
-										>
-											Users
-										</Link>
-									</li>
-									<li>
-										<hr className="dropdown-divider"></hr>
-									</li>
-									<li>
-										<button
-											onClick={() => {
-												window.location.href = "/";
-												logout();
-												offDataAuth();
-											}}
-											style={{ color: "#333" }}
-											className="dropdown-item"
-										>
-											Sair
-										</button>
-									</li>
-								</ul>
-							</li>
-						</ul>
-						<form className="d-flex" role="search">
-							<input
-								className={`form-control me-2 ${styles.customInput}`}
-								type="search"
-								placeholder="Search"
-								aria-label="Search"
-							/>
-							<button
-								className={`btn btn-outline-success ${styles.customBtn}`}
-								type="submit"
-							>
-								Search
-							</button>
-						</form>
-					</div>
-				</div>
-			</nav>
-		</div>
-	);
-};
-
-export default Navbar;
+export default Navbar

@@ -5,7 +5,7 @@
   --marrom-escuro: #5c4033;
 }
 .footer {
-	background-color: var(--marrom-escuro);
+	background-color: #0c0c0c00;
 	color: white;
 	padding: 20px 0;
 	text-align: center;

@@ -64,8 +64,15 @@ export function DrawerDemo() {
     setGoal(Math.max(200, Math.min(400, goal + adjustment)))
   }
 
+  React.useEffect(() => {
+    document.body.classList.add('dark'); // Adiciona a classe 'dark' ao body quando a página é montada
+    return () => {
+      document.body.classList.remove('dark'); // Remove a classe 'dark' quando a página é desmontada
+    };
+  }, []);
+
   return (
-    <Drawer className={"dark"}>
+    <Drawer>
       <DrawerTrigger asChild>
         <Button variant="outline">Open Drawer</Button>
       </DrawerTrigger>
@@ -84,7 +91,7 @@ export function DrawerDemo() {
                 onClick={() => onClick(-10)}
                 disabled={goal <= 200}
               >
-                <MinusIcon className="h-4 w-4" />
+                <MinusIcon className="h-4 w-7" />
                 <span className="sr-only">Decrease</span>
               </Button>
               <div className="flex-1 text-center">
@@ -102,11 +109,11 @@ export function DrawerDemo() {
                 onClick={() => onClick(10)}
                 disabled={goal >= 400}
               >
-                <PlusIcon className="h-4 w-4" />
+                <PlusIcon className="h-4 w-7" />
                 <span className="sr-only">Increase</span>
               </Button>
             </div>
-            <div className="mt-3 h-[120px]">
+            <div className="mt-3 h-[70px]">
               <ResponsiveContainer width="100%" height="100%">
                 <BarChart data={data}>
                   <Bar

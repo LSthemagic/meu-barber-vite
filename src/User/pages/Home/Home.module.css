@@ -140,6 +140,7 @@
   }
   
   .fa5 {
+	color: #333;
 	/* Permite que o cursor se transforme em mão ao passar sobre a div */
 	cursor: pointer;
   
@@ -188,6 +189,7 @@
   
   /* Estilo do parágrafo */
   .descricao {
+	color: #333;
 	margin-top: 10px;
 	font-size: 1rem; /* Tamanho do texto do parágrafo */
 	line-height: 1.5; /* Espaçamento entre linhas do parágrafo */
