@@ -18,6 +18,9 @@ module.exports = {
     },
     extend: {
       colors: {
+        'marrom-medio': '#764217de',
+        'marrom-escuro': '#5c4033',
+        'marrom-claro': '#e7d7b7',
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
         ring: "hsl(var(--ring))",

@@ -1,15 +1,18 @@
 import * as React from "react"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 import {
   Home,
   LineChart,
   Package,
   Package2,
+  CalendarClock,
   PanelLeft,
+  LogOut,
   Search,
   Settings,
   ShoppingCart,
   Users2,
+  User
 } from "lucide-react"
 
 
@@ -43,47 +46,83 @@ import "../../../../app/globals.css"
 import logo from "../../images/logo.png"
 
 const Navbar = () => {
+  const { pathname } = useLocation()
+  const isBarberRoutes = pathname.startsWith("/barber")
+
   React.useEffect(() => {
     document.body.classList.add('dark'); // Adiciona a classe 'dark' ao body quando a página é montada
     return () => {
       document.body.classList.remove('dark'); // Remove a classe 'dark' quando a página é desmontada
     };
   }, []);
+
+  const handlePathGenerate = (path) => {
+    const routes = {
+      home: {
+        barber: "/barber/homeBarber",
+        user: "/"
+      },
+      profile: {
+        barber: "/barber/profileBarber",
+        user: "/profile"
+      },
+      register: {
+        barber: "/barber/registerBarber",
+        user: "/register"
+      },
+      authenticate: {
+        barber: "/authenticate",
+        user: "/barber/authenticateBarber"
+      },
+      calendar: {
+        barber: "/barber/calendarBarber"
+      },
+      logout: {
+
+      }
+    }
+
+    const route = isBarberRoutes ? routes[path].barber : routes[path].user
+
+    return route;
+  }
+
+
   return (
     <div>
       <aside className="fixed inset-y-0 left-0 z-10 hidden w-14 flex-col border-r bg-background sm:flex">
         <nav className="flex flex-col items-center gap-4 px-2 sm:py-4">
           <Link
-            href="#"
-            className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-marrom-claro text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
+            className="group flex h-9 w-9 shrink-0 items-center justify-center gap-2 rounded-full bg-marrom-escuro text-lg font-semibold text-primary-foreground md:h-8 md:w-8 md:text-base"
           >
-            <Package2 className="h-4 w-4 transition-all group-hover:scale-110" />
-            <span className="sr-only">Acme Inc</span>
+            <img src={logo} className="h-6 w-6  transition-all group-hover:scale-110 " />
+
           </Link>
           <TooltipProvider>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="#"
+                  to={handlePathGenerate("home")}
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
                   <Home className="h-5 w-5" />
-                  <span className="sr-only">Dashboard</span>
+                  <span className="sr-only">Página Inicial</span>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">Dashboard</TooltipContent>
+              <TooltipContent className={"bg-marrom-medio"} side="right">Página Inicial</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="#"
+                  to={handlePathGenerate(isBarberRoutes ? "calendar" : "home")}
                   className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
-                  <ShoppingCart className="h-5 w-5" />
-                  <span className="sr-only">Orders</span>
+                  {isBarberRoutes ? <><CalendarClock className="h-5 w-5" /><span className="sr-only">{isBarberRoutes ? "calendar" : "Orders"}</span></> :
+                    <><ShoppingCart className="h-5 w-5" /><span className="sr-only">{isBarberRoutes ? "calendar" : "Orders"}</span></>
+                  }
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">Orders</TooltipContent>
+              <TooltipContent className={"bg-marrom-medio"} side="right">{isBarberRoutes ? "calendar" : "Orders"}</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
@@ -95,31 +134,31 @@ const Navbar = () => {
                   <span className="sr-only">Products</span>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">Products</TooltipContent>
+              <TooltipContent className={"bg-marrom-medio"} side="right">Products</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="#"
+                  to={handlePathGenerate("profile")}
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
-                  <Users2 className="h-5 w-5" />
-                  <span className="sr-only">Customers</span>
+                  <User className="h-5 w-5" />
+                  <span className="sr-only">Meu Perfil</span>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">Customers</TooltipContent>
+              <TooltipContent className={"bg-marrom-medio"} side="right">Meu Perfil</TooltipContent>
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  href="#"
+                  to={handlePathGenerate("logout")}
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
-                  <LineChart className="h-5 w-5" />
-                  <span className="sr-only">Analytics</span>
+                  <LogOut className="h-5 w-5" />
+                  <span className="sr-only">Sair</span>
                 </Link>
               </TooltipTrigger>
-              <TooltipContent side="right">Analytics</TooltipContent>
+              <TooltipContent className={"bg-marrom-medio"} side="right">Sair</TooltipContent>
             </Tooltip>
           </TooltipProvider>
         </nav>
@@ -127,14 +166,14 @@ const Navbar = () => {
           <Tooltip>
             <TooltipTrigger asChild>
               <Link
-                href="#"
+                to={"#"}
                 className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
               >
                 <Settings className="h-5 w-5" />
-                <span className="sr-only">Settings</span>
+                <span className="sr-only">Configurações</span>
               </Link>
             </TooltipTrigger>
-            <TooltipContent side="right">Settings</TooltipContent>
+            <TooltipContent className={"bg-marrom-medio"} side="right">Configurações</TooltipContent>
           </Tooltip>
         </nav>
       </aside>
@@ -152,7 +191,7 @@ const Navbar = () => {
               <nav className="grid pt-20 gap-6 text-lg font-medium">
 
                 <Link
-                  to={"/dashboard"}
+                  to={handlePathGenerate("home")}
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
                   <img src={logo} className="h-5 w-5" />
@@ -198,22 +237,22 @@ const Navbar = () => {
           </Sheet>
 
           <Breadcrumb className="hidden md:flex">
-            
+
             <BreadcrumbList>
               <BreadcrumbItem>
+                <BreadcrumbPage>Além de estilo</BreadcrumbPage>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link href="#">Dashboard</Link>
+                  <Link to={handlePathGenerate("home")}>Página inicial</Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link href="#">Orders</Link>
+                  <Link to={handlePathGenerate("home")}>Perfil</Link>
                 </BreadcrumbLink>
-              </BreadcrumbItem>
-              <BreadcrumbSeparator />
-              <BreadcrumbItem>
-                <BreadcrumbPage>Recent Orders</BreadcrumbPage>
               </BreadcrumbItem>
             </BreadcrumbList>
           </Breadcrumb>
@@ -241,13 +280,13 @@ const Navbar = () => {
                 />
               </Button>
             </DropdownMenuTrigger>
-            <DropdownMenuContent align="end">
-              <DropdownMenuLabel>My Account</DropdownMenuLabel>
+            <DropdownMenuContent className="bg-marrom-escuro" align="end">
+              <DropdownMenuLabel>Minha conta</DropdownMenuLabel>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Settings</DropdownMenuItem>
-              <DropdownMenuItem>Support</DropdownMenuItem>
+              <DropdownMenuItem>Configurações</DropdownMenuItem>
+              <DropdownMenuItem>Suporte</DropdownMenuItem>
               <DropdownMenuSeparator />
-              <DropdownMenuItem>Logout</DropdownMenuItem>
+              <DropdownMenuItem>Sair</DropdownMenuItem>
             </DropdownMenuContent>
           </DropdownMenu>
         </header>

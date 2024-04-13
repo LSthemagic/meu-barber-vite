@@ -219,6 +219,7 @@ const Calendar = ({ props }) => {
 		<div className="container">
 			{data ? (
 				<FullCalendar
+					viewClassNames={"text-center, text-black"}
 					plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
 					initialView="timeGridWeek"
 					headerToolbar={{
@@ -226,6 +227,8 @@ const Calendar = ({ props }) => {
 						center: "",
 						end: "dayGridMonth,timeGridWeek,timeGridDay"
 					}}
+					dayCellClassNames={`text-center`}
+					weekNumberCalculation="ISO"
 					height={"90vh"}
 					locale={"pt-br"}
 					buttonText={{

@@ -5,10 +5,9 @@ import UserList from "../pages/UserList";
 import Register from "../pages/register/Register";
 import Authenticate from "../pages/Authenticate/Authenticate";
 import Footer from "../../shared/layout/footer/Footer";
-import Calendar from "../../User/pages/Schedule/Calendar";
 import BarberRoutes from "../../Barber/routes/routes";
 import PageNotFound from "../../shared/pages/PageNotFound";
-import { DrawerDemo } from "../../shared/components/drawer/Drawer";
+
 
 
 const AppRoutes = () => {
@@ -17,12 +16,10 @@ const AppRoutes = () => {
 			<Navbar />
 			<Routes>
 				<Route path="/" element={<Home />} />
-				<Route path="/calendar" element={<Calendar />} />
 				<Route path="/UserList" element={<UserList />} />
 				<Route path="/register" element={<Register />} />
 				<Route path="/authenticate" element={<Authenticate />} />
 				<Route path="/barber/*" element={<BarberRoutes />} />
-				<Route path="/drawer" element={<DrawerDemo />} />
 				
 				<Route path="*" element={<PageNotFound />} />
 			</Routes>

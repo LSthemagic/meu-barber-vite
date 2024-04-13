@@ -10,7 +10,7 @@ const BarberRoutes = () => {
 	return (
 		<>
 			<Routes>
-				<Route path="/barber-home" element={<HomeBarber />} />
+				<Route path="/homeBarber" element={<HomeBarber />} />
 				<Route path="/registerBarber" element={<RegisterBarber />} />
 				<Route path="/authenticateBarber" element={<AuthenticateBarber />} />
 				<Route path="/profileBarber" element={<Profile />} />

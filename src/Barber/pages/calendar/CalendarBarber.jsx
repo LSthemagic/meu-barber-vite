@@ -2,7 +2,7 @@ import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import { useEffect, useState } from "react";
+import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth as useAuthBarber } from "../../context/BarberContext";
 import LandingPage from "../../../shared/pages/landingPage";
@@ -11,7 +11,9 @@ import moment from "moment";
 import * as bootstrap from "bootstrap";
 import Swal from "sweetalert2";
 
+
 const Calendar = () => {
+
     // Estados para armazenar dados de agendamento e horários indisponíveis
     const [unavailableTime, setUnavailableTime] = useState(null);
     const [unavailableBarberDB, setUnavailableBarberDB] = useState([])
@@ -58,6 +60,7 @@ const Calendar = () => {
 
         setAllEvents(events);
     }, [unavailableEvent]);
+
 
     // Buscar horários indisponíveis do servidor
     const handleGetInvalidHoursDB = async () => {
@@ -178,7 +181,7 @@ const Calendar = () => {
     };
 
     return (
-        <div>
+        <div className="bg-marrom-claro m-">
             <FullCalendar
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                 initialView="timeGridWeek"
@@ -187,6 +190,9 @@ const Calendar = () => {
                     center: "",
                     end: "dayGridMonth,timeGridWeek,timeGridDay",
                 }}
+                viewClassNames={"ml-16"}
+                dayCellClassNames={`text-center `}
+                weekNumberCalculation="ISO"
                 height={"90vh"}
                 locale={"pt-br"}
                 buttonText={{
@@ -202,6 +208,7 @@ const Calendar = () => {
                     prevYear: "Ano anterior",
                 }}
                 allDayText="Dia inteiro"
+                allDaySlot={false}
                 eventTimeFormat={{
                     hour: "numeric",
                     minute: "2-digit",
@@ -211,6 +218,7 @@ const Calendar = () => {
                     hour: "numeric",
                     minute: "2-digit",
                     meridiem: "uppercase",
+
                 }}
                 editable={true}
                 selectable={true}

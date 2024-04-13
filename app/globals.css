@@ -4,9 +4,6 @@
 
 @layer base {
 	:root {
-		--marrom-claro: #e7d7b7;
-		--marrom-medio: #764217de;
-		--marrom-escuro: #5c4033;
 		--background: 0 0% 100%;
 		--foreground: 0 0% 3.9%;
 		--card: 0 0% 100%;
@@ -30,9 +27,6 @@
 	}
 
 	.dark {
-		--marrom-claro: #e7d7b7;
-		--marrom-medio: #764217de;
-		--marrom-escuro: #5c4033;
 		--background: 0 0% 3.9%;
 		--foreground: 0 0% 98%;
 		--card: 0 0% 3.9%;
@@ -63,7 +57,3 @@
 		@apply bg-background text-foreground;
 	}
 }
-.bg-marrom-claro {
-	background-color: hsl(var(--marrom-claro));
-  }
-  

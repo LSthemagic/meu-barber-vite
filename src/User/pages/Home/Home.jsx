@@ -153,7 +153,7 @@ const Home = () => {
 				centered
 			>
 				<Modal.Header closeButton>
-					<Modal.Title>Agendar Horário</Modal.Title>
+					<Modal.Title className="text-black">Agendar Horário</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
 					<Calendar props={barberSelected} />
