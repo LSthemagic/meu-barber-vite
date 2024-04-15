@@ -20,10 +20,10 @@ const ClienteSchema = new mongoose.Schema({
 	},
 });
 
-const EstabilishimentSchema = new mongoose.Schema({
+const EstablishmentSchema = new mongoose.Schema({
 	name: {
 		type: String,
-		required: true
+		required: true,
 	},
 	location: {
 		latitude: {
@@ -41,25 +41,25 @@ const EstabilishimentSchema = new mongoose.Schema({
 });
 
 const UnavailableDateSchema = new mongoose.Schema({
-	email: {
+    email: {
         type: String,
-        required: true,
-        unique: true,
-        lowercase: true
+        lowercase: true,
+		sparse: true
     },
-	startDate: {
-		type: Date
-	},
-	endDate: {
-		type: Date
-	},
-	type: {
-		type: String
-	},
-	name: {
-		type: String
-	}
-})
+    startDate: {
+        type: Date
+    },
+    endDate: {
+        type: Date
+    },
+    type: {
+        type: String
+    },
+    name: {
+        type: String
+    }
+});
+
 
 const BarberSchema = new mongoose.Schema({
     name: {
@@ -76,8 +76,8 @@ const BarberSchema = new mongoose.Schema({
         type: String,
         select: false
     },
-    unavailableDate: [UnavailableDateSchema], // Array of dates
-    barbershop: EstabilishimentSchema,
+    unavailableDate:  [UnavailableDateSchema], // Array of dates
+    barbershop: EstablishmentSchema,
     clientes: {
         type: [ClienteSchema],
         default: [] // Initialize as an empty array

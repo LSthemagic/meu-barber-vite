@@ -38,23 +38,26 @@ router.post("/registerBarber", async (req, res) => {
 	try {
 		const barber = await BarberModel.create({
 			...req.body,
-			clientes: []
+			clientes: [],
 		});
 		barber.password = undefined;
+
 		return res.json({
 			error: false,
 			data: barber,
 			message: "Cadastro bem-sucedido!",
 			token: generateToken(barber)
 		});
+		
 	} catch (err) {
 		console.log("err register barber", err);
 		return res.status(400).json({
 			error: true,
-			message: "Error on registration"
+			message: "Erro ao registrar o cadastro."
 		});
 	}
 });
+
 
 module.exports = router;
 

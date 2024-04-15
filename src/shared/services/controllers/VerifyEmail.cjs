@@ -5,8 +5,8 @@ const router = express.Router();
 require("dotenv").config();
 const nodemailer = require("nodemailer");
 
-let codingRamdom = Math.floor(1000 + Math.random() * 1000);
-
+let codingRandom = () => Math.floor(10000 + Math.random() * 10000);
+var random;
 const sendEmail = async (email, codingRamdom) => {
 	const transport = nodemailer.createTransport({
 		host: "smtp.gmail.com",
@@ -92,7 +92,7 @@ router.post("/req-email", async (req, res) => {
 				message: "Esse email já foi cadastrado."
 			});
 		}
-		sendEmail(email, codingRamdom);
+		sendEmail(email, codingRandom());
 		return res.json({
 			error: false,
 			message: "Solicitação enviada com sucesso!"
@@ -113,7 +113,8 @@ router.post("/req-email-barber", async (req, res) => {
 				message: "Esse email já foi cadastrado."
 			});
 		}
-		sendEmail(email, codingRamdom);
+		random = codingRandom();
+		sendEmail(email, random);
 		return res.json({
 			error: false,
 			message: "Solicitação enviada com sucesso!"
@@ -128,7 +129,7 @@ router.post("/req-email-barber", async (req, res) => {
 router.post("/auth-code", async (req, res) => {
 	try {
 		const { code } = req.body;
-		if (code && code.toString() !== codingRamdom.toString()) {
+		if (code && code.toString() !== random.toString()) {
 			return res.status(400).json({
 				error: true,
 				message: `O código enviado é inválido.`

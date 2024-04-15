@@ -243,6 +243,7 @@ const Calendar = ({ props }) => {
 						prev: "Anterior",
 						prevYear: "Ano anterior"
 					}}
+					allDaySlot={false}
 					allDayText="Dia inteiro"
 					eventTimeFormat={{
 						hour: "numeric",
@@ -254,7 +255,9 @@ const Calendar = ({ props }) => {
 						minute: "2-digit",
 						meridiem: "uppercase"
 					}}
-
+					slotMinTime="08:00" // Horário mínimo (8h)
+					slotMaxTime="18:00" // Horário máximo (18h)
+					hiddenDays={[0]} 
 					editable={false}
 					selectable={true}
 					dayMaxEvents={true}

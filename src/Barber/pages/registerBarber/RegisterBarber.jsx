@@ -168,7 +168,8 @@ const RegisterBarber = () => {
 								latitude: stateEstablishiment.latitude,
 								longitude: stateEstablishiment.longitude
 							}
-						}
+						},
+						unavailableDate: [],
 					})
 				}
 			);
@@ -266,7 +267,8 @@ const RegisterBarber = () => {
 				backgroundSize: "cover",
 				minHeight: "100vh",
 				margin: 0,
-				padding: 0
+				padding: 0,
+				color: 'black'
 			}}
 		>
 			<div style={{ opacity: "93%" }} className={styles.card}>
