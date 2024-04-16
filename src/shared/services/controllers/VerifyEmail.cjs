@@ -1,6 +1,6 @@
 const express = require("express");
-const UserModel = require("../../../User/api/models/User.cjs");
-const BarberModel = require("../../../Barber/services/models/Barber.cjs");
+const UserModel = require("../../../Client/services/models/User.cjs");
+const BarberModel = require("../../../Barbershop/services/models/Barber.cjs");
 const router = express.Router();
 require("dotenv").config();
 const nodemailer = require("nodemailer");

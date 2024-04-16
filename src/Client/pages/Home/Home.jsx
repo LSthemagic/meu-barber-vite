@@ -9,7 +9,7 @@ import axios from "axios";
 import Calendar from "../../pages/Schedule/Calendar";
 import styles from "./Home.module.css";
 import LandingPage from "../../../shared/pages/landingPage";
-import ImagemFormatada from "../../../shared/layout/imgPatterns/ImagemFormatted";
+import ImagemFormatted from "../../../shared/layout/imgPatterns/ImagemFormatted";
 
 const Home = () => {
 	const [barbers, setBarbers] = useState([]);
@@ -176,7 +176,7 @@ const Home = () => {
 					{barbers.map((barber) => (
 						<div key={barber._id}>
 							<div className={styles.card}>
-								<ImagemFormatada src={"../../../../public/section_img5.jpg"} />
+								<ImagemFormatted src={"../../../../public/section_img2.jpg"} />
 								<h3 className={styles.barberNome}>{barber.barbershop.name}</h3>
 								<div className={styles.fa5}>
 									{dbBarberFav && dbBarberFav.IDs && dbBarberFav.IDs.includes(barber._id) ? (

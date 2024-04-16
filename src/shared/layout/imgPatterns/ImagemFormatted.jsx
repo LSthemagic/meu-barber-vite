@@ -1,6 +1,6 @@
 import React from 'react';
 
-function FotoPadrao({ src, alt, className }) {
+function ImagemFormatted({ src, alt, className }) {
   return (
     <div className={`foto-padrao ${className}`}>
       <img
@@ -12,4 +12,4 @@ function FotoPadrao({ src, alt, className }) {
   );
 }
 
-export default FotoPadrao;
+export default ImagemFormatted;

@@ -1,4 +1,4 @@
-const barberModel = require("../../../Barber/services/models/Barber.cjs");
+const barberModel = require("../../../Barbershop/services/models/Barber.cjs");
 
 module.exports = async (req, res, next) => {
   try {

@@ -56,7 +56,7 @@ const Profile = () => {
     return (
         <div className={styles.container}>
             <div className={styles.card1}>
-                <h2 style={{textAlign:"center",marginBottom:"3%"}}>{"Perfil do Barbeiro".toUpperCase()}</h2>
+                <h2 style={{textAlign:"center",marginBottom:"3%", display:"inline"}}>{"Perfil do Barbeiro - ".toUpperCase() + barber.barbershop?.name.toUpperCase()}</h2>
                 
                 <div className={styles.cardContent}>
                     <div className={styles.textWrapper}>
@@ -66,7 +66,6 @@ const Profile = () => {
                 </div>
             </div>
             <div className={styles.card2}>
-                <h1 className={styles.title}>{barber.barbershop?.name}</h1>
                 
             </div>
         </div>

@@ -5,7 +5,7 @@ import UserList from "../pages/UserList";
 import Register from "../pages/register/Register";
 import Authenticate from "../pages/Authenticate/Authenticate";
 import Footer from "../../shared/layout/footer/Footer";
-import BarberRoutes from "../../Barber/routes/routes";
+import BarberRoutes from "../../Barbershop/routes/routes";
 import PageNotFound from "../../shared/pages/PageNotFound";
 
 
