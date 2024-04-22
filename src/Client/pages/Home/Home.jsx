@@ -10,11 +10,12 @@ import Calendar from "../../pages/Schedule/Calendar";
 import styles from "./Home.module.css";
 import LandingPage from "../../../shared/pages/landingPage";
 import ImagemFormatted from "../../../shared/layout/imgPatterns/ImagemFormatted";
+import Swal from "sweetalert2";
 
 const Home = () => {
 	const [barbers, setBarbers] = useState([]);
-	const [showModalCalendar, setShowModalCalenadar] = useState(false);
-	const [barberSelected, setBarberSelected] = useState({});
+	const [showModalCalendar, setShowModalCalendar] = useState(false);
+	const [barbershopSelected, setBarbershopSelected] = useState({});
 	const [barbershopFav, setBarbershopFav] = useState(false);
 	const [dbBarberFav, setDbBarberFav] = useState([]);
 	const sliderRef = useRef(null);
@@ -25,8 +26,8 @@ const Home = () => {
 
 	const onBarbershopFav = () => setBarbershopFav(true);
 
-	const handleOpenModalCalendar = () => setShowModalCalenadar(true);
-	const handleOffModalCalendar = () => setShowModalCalenadar(false);
+	const handleOpenModalCalendar = () => setShowModalCalendar(true);
+	const handleOffModalCalendar = () => setShowModalCalendar(false);
 
 	useEffect(() => {
 		const fetchBarbers = async () => {
@@ -75,8 +76,9 @@ const Home = () => {
 	};
 
 	const handleDoubleObjectiveCalendar = (data) => {
-		handleOpenModalCalendar();
-		setBarberSelected(data);
+		// handleOpenModalCalendar();
+		handleOptionsBarbers()
+		setBarbershopSelected(data);
 	};
 
 	const handleWaze = (data) => {
@@ -137,10 +139,8 @@ const Home = () => {
 		}
 	};
 
-
-
 	const renderModal = () => {
-		if (!barberSelected) return null;
+		if (!barbershopSelected) return null;
 		return (
 			<Modal
 				show={showModalCalendar}
@@ -156,7 +156,7 @@ const Home = () => {
 					<Modal.Title className="text-black">Agendar Horário</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
-					<Calendar props={barberSelected} />
+					<Calendar props={barbershopSelected} />
 				</Modal.Body>
 				<Modal.Footer>
 					<Button variant="secondary" onClick={handleOffModalCalendar}>
@@ -168,6 +168,53 @@ const Home = () => {
 		);
 	};
 
+	const handleOptionsBarbers = async () => {
+		try {
+			const barbers = barbershopSelected?.barbers?.map((item) => ({
+				email: item.email, // Use um identificador único para cada barbeiro, por exemplo, item.id
+				name: `${item.name}`
+			}));
+			
+			if (!barbers) return;
+			
+			const { value: barber } = await Swal.fire({
+				title: "Agendar com Meu Barber",
+				input: "select",
+				inputOptions: barbers.reduce((obj, item) => {
+					obj[item.email] = item.name;
+					return obj;
+				}, {}), // Converta o array de barbeiros em um objeto onde as chaves são os valores e os valores são os rótulos
+				inputPlaceholder: "Selecionar barbeiro",
+				showCancelButton: true,
+				inputValidator: (value) => {
+					return new Promise((resolve) => {
+						if (value) {
+							resolve();
+						} else {
+							resolve("Selecione um barbeiro");
+						}
+					});
+				}
+			});
+			
+			if (barber) {
+				const selectedBarber = barbers.find(barberItem => barberItem.email === barber);
+				console.log(selectedBarber);
+				// Swal.fire(`You selected: ${selectedBarber.label}`);
+				setBarbershopSelected(selectedBarber)
+				Swal.close();
+				handleOpenModalCalendar()
+			}
+			
+			
+		} catch (e) {
+			console.log(`Error from handleOptionsBarbers: ${e}`);
+			Toast.fire({
+				icon: 'error',
+				title: "Erro ao selecionar barbeiro. Tente novamente mais tarde!"
+			})
+		}
+	}
 
 	return (
 		<div className={styles.container}>
@@ -177,7 +224,7 @@ const Home = () => {
 						<div key={barber._id}>
 							<div className={styles.card}>
 								<ImagemFormatted src={"../../../../public/section_img2.jpg"} />
-								<h3 className={styles.barberNome}>{barber.barbershop.name}</h3>
+								<h3 className={styles.barberNome}>{barber?.name}</h3>
 								<div className={styles.fa5}>
 									{dbBarberFav && dbBarberFav.IDs && dbBarberFav.IDs.includes(barber._id) ? (
 										<i
@@ -187,7 +234,7 @@ const Home = () => {
 										></i>
 									) : (
 										<i
-											
+
 											key={barber._id}
 											onClick={() => handleFavoriteBarbershop(barber._id)}
 											className="fa-regular fa-heart"

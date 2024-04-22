@@ -112,10 +112,10 @@ const Calendar = ({ props }) => {
 						"Content-Type": "application/json"
 					},
 					body: JSON.stringify({
-						nome: nameBarber,
+						name: nameBarber,
 						email: emailBarber,
 						clients: {
-							nome: data?.name,
+							name: data?.name,
 							email: data?.email,
 							startDate: new Date(dataScheduling?.start).toISOString(),
 							endDate: new Date(dataScheduling?.end).toISOString()

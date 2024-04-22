@@ -42,7 +42,8 @@ const Register = () => {
 		});
 	};
 
-	const handleConfirmCode = async () => {
+	const handleConfirmCode = async (event) => {
+		event.preventDefault();
 		if (state.code) {
 			try {
 				const response = await fetch(
@@ -99,7 +100,7 @@ const Register = () => {
 				setTextButton("Confirmar");
 				// console.log("email enviado", data);
 				setEmailSubmit(true);
-				handleConfirmCode();
+				
 				Toast.fire({
 					icon: "success",
 					title: data.message
@@ -169,7 +170,7 @@ const Register = () => {
 		>
 			<div style={{ opacity: "93%" }} className={`card ${styles.card}`}>
 				<div className="form-group">
-					<form className={styles.input} onSubmit={handleReqEmail}>
+					<form className={styles.input} onSubmit={ textButton === "Cadastrar-se" ? handleReqEmail : handleConfirmCode}>
 						<h1
 							style={{
 								fontFamily: "cursive",

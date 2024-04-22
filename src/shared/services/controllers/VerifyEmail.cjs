@@ -92,7 +92,8 @@ router.post("/req-email", async (req, res) => {
 				message: "Esse email já foi cadastrado."
 			});
 		}
-		sendEmail(email, codingRandom());
+		random = codingRandom()
+		sendEmail(email, random);
 		return res.json({
 			error: false,
 			message: "Solicitação enviada com sucesso!"

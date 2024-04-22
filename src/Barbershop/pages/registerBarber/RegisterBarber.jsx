@@ -11,21 +11,27 @@ import Toast from "../../../shared/custom/Toast";
 import ImageLogin from "../../../shared/images/ImageLogin.svg";
 import { useAuth } from "../../context/BarberContext";
 
-const initialStateEstablishiment = {
+const initialStateEstablishment = {
 	latitude: null,
 	longitude: null,
-	barbershop: null,
+	name: null,
+	email: null,
+	password: null,
 	file: null
 };
 
-const reducerEstablishiment = (state, action) => {
+const reducerEstablishment = (state, action) => {
 	switch (action.type) {
+		case "SET_NAME":
+			return { ...state, name: action.data };
+		case "SET_EMAIL":
+			return { ...state, email: action.data };
+		case "SET_PASSWORD":
+			return { ...state, password: action.data };
 		case "SET_LATITUDE":
 			return { ...state, latitude: action.data };
 		case "SET_LONGITUDE":
 			return { ...state, longitude: action.data };
-		case "SET_BARBERSHOP":
-			return { ...state, barbershop: action.data };
 		case "SET_FILE":
 			return { ...state, file: action.data };
 		default:
@@ -33,34 +39,12 @@ const reducerEstablishiment = (state, action) => {
 	}
 };
 
-const initialStateBarber = {
-	name: null,
-	email: null,
-	password: null
-};
-
-const reducerBarber = (state, action) => {
-	switch (action.type) {
-		case "SET_NOME":
-			return { ...state, name: action.data };
-		case "SET_EMAIL":
-			return { ...state, email: action.data };
-		case "SET_PASSWORD":
-			return { ...state, password: action.data };
-		default:
-			throw new Error("Unhandled action type: ", action);
-	}
-};
-
 const RegisterBarber = () => {
-	const [stateEstablishiment, dispatchEstablishiment] = useReducer(
-		reducerEstablishiment,
-		initialStateEstablishiment
+	const [stateEstablishment, dispatchEstablishment] = useReducer(
+		reducerEstablishment,
+		initialStateEstablishment
 	);
-	const [stateBarber, dispatchBarber] = useReducer(
-		reducerBarber,
-		initialStateBarber
-	);
+
 	const [valor, setValor] = useState("");
 	const [dataAPI, setDataAPI] = useState([]);
 	const [location, setLocation] = useState(null);
@@ -100,7 +84,7 @@ const RegisterBarber = () => {
 		}
 	};
 
-	const handleEstablishiment = async (event) => {
+	const handleEstablishment = async (event) => {
 		event.preventDefault();
 
 		if (selected) {
@@ -117,11 +101,11 @@ const RegisterBarber = () => {
 					selectedDataAPI.position?.lon
 				]);
 
-				dispatchEstablishiment({
+				dispatchEstablishment({
 					type: "SET_LATITUDE",
 					data: latitude
 				});
-				dispatchEstablishiment({
+				dispatchEstablishment({
 					type: "SET_LONGITUDE",
 					data: longitude
 				});
@@ -129,27 +113,22 @@ const RegisterBarber = () => {
 			setActiveStep(2); // Move to the next step in the stepper
 		}
 	};
-	const handleDispatchBarber = (type, event) => {
-		dispatchBarber({
-			type: type,
-			data: event.target.value
-		});
-	};
-	const handleDispatchEstablishiment = (type, event) => {
-		dispatchEstablishiment({
+
+	const handleDispatchEstablishment = (type, event) => {
+		dispatchEstablishment({
 			type: type,
 			data: event.target.value
 		});
 	};
 	const handleDispatchFile = (type, event) => {
-		dispatchEstablishiment({
+		dispatchEstablishment({
 			type: type,
 			data: event.target.files[0]
 		});
 	};
 	const handleSubmit = async () => {
 		try {
-			console.log(stateEstablishiment.file);
+			console.log(stateEstablishment.file);
 
 			const response = await fetch(
 				"http://localhost:3001/barberAuth/registerBarber",
@@ -159,17 +138,13 @@ const RegisterBarber = () => {
 						"Content-Type": "application/json"
 					},
 					body: JSON.stringify({
-						name: stateBarber.name,
-						email: stateBarber.email,
-						password: stateBarber.password,
-						barbershop: {
-							name: stateEstablishiment.barbershop,
-							location: {
-								latitude: stateEstablishiment.latitude,
-								longitude: stateEstablishiment.longitude
-							}
+						name: stateEstablishment.name,
+						email: stateEstablishment.email,
+						password: stateEstablishment.password,
+						location: {
+							latitude: stateEstablishment.latitude,
+							longitude: stateEstablishment.longitude
 						},
-						unavailableDate: [],
 					})
 				}
 			);
@@ -237,7 +212,7 @@ const RegisterBarber = () => {
 						"Content-Type": "application/json"
 					},
 					body: JSON.stringify({
-						email: stateBarber.email
+						email: stateEstablishment.email
 					})
 				}
 			);
@@ -287,15 +262,6 @@ const RegisterBarber = () => {
 									>
 										Cadastrar-se
 									</h1>
-									<label htmlFor="name">Nome </label>
-									<input
-										required
-										placeholder="Ex: seu barber do corte"
-										type="text"
-										onChange={(event) =>
-											handleDispatchBarber("SET_NOME", event)
-										}
-									/>
 									<label htmlFor="exampleInputEmail1">Endereço de email</label>
 									<input
 										required
@@ -305,7 +271,7 @@ const RegisterBarber = () => {
 										aria-describedby="emailHelp"
 										placeholder="Ex: seuemail@meubarber.com"
 										onChange={(event) =>
-											handleDispatchBarber("SET_EMAIL", event)
+											handleDispatchEstablishment("SET_EMAIL", event)
 										}
 									/>
 									<small id="emailHelp" className="form-text text-muted">
@@ -318,7 +284,7 @@ const RegisterBarber = () => {
 										type="password"
 										placeholder="Use uma senha segura"
 										onChange={(event) =>
-											handleDispatchBarber("SET_PASSWORD", event)
+											handleDispatchEstablishment("SET_PASSWORD", event)
 										}
 									/>
 									<button
@@ -332,7 +298,7 @@ const RegisterBarber = () => {
 							</div>
 						) : activeStep === 1 ? (
 							<div className="form-group">
-								<Form className={styles.input} onSubmit={handleEstablishiment}>
+								<Form className={styles.input} onSubmit={handleEstablishment}>
 									<h3
 										style={{
 											fontFamily: "cursive",
@@ -349,7 +315,7 @@ const RegisterBarber = () => {
 										type="text"
 										placeholder="Ex: Barber no stylus"
 										onChange={(e) =>
-											handleDispatchEstablishiment("SET_BARBERSHOP", e)
+											handleDispatchEstablishment("SET_NAME", e)
 										}
 									/>
 									<label>Pesquisar barbearia</label>

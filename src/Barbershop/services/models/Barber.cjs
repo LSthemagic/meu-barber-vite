@@ -1,9 +1,8 @@
 const mongoose = require("../../../shared/services/database/index.cjs");
 const bcrypt = require("bcryptjs");
-const { ImageSchema } = require("../../../shared/services/models/SharedModel.cjs");
 
 const ClienteSchema = new mongoose.Schema({
-	nome: {
+	name: {
 		type: String,
 		required: true
 	},
@@ -19,24 +18,6 @@ const ClienteSchema = new mongoose.Schema({
 	endDate: {
 		type: Date
 	},
-});
-
-const EstablishmentSchema = new mongoose.Schema({
-	name: {
-		type: String,
-		required: true,
-	},
-	location: {
-		latitude: {
-			type: String,
-			required: true
-		},
-		longitude: {
-			type: String,
-			required: true
-		}
-	},
-	
 });
 
 const UnavailableDateSchema = new mongoose.Schema({
@@ -59,15 +40,6 @@ const UnavailableDateSchema = new mongoose.Schema({
 	}
 });
 
-// Schema para a coleção de funcionários
-const EmployeeSchema = new mongoose.Schema({
-	userId: { type: Number, required: true },
-	barbershopId: { type: Number, required: true },
-	createdAt: { type: Date, default: Date.now },
-	unavailableDateTimeID: { type: Number, ref: 'UnavailableTime' },
-	image: {type: ImageSchema}
-});
-
 const BarberSchema = new mongoose.Schema({
 	name: {
 		type: String,
@@ -79,13 +51,8 @@ const BarberSchema = new mongoose.Schema({
 		unique: true,
 		lowercase: true
 	},
-	password: {
-		type: String,
-		select: false
-	},
 	unavailableDate: [UnavailableDateSchema], // Array of dates
-	barbershop: EstablishmentSchema,
-	clientes: {
+	clients: {
 		type: [ClienteSchema],
 		default: [] // Initialize as an empty array
 	},
@@ -95,8 +62,42 @@ const BarberSchema = new mongoose.Schema({
 	}
 });
 
+const EstablishmentSchema = new mongoose.Schema({
+	name: {
+		type: String,
+		required: true,
+	},
+	email: {
+		type: String,
+		required: true,
+		sparse: true,
+		lowercase: true,
+	},
+	password: {
+		type: String,
+		select: false
+	},
+	barbers: {
+		type: [BarberSchema],
+		default: [],
+	},
+	location: {
+		latitude: {
+			type: String,
+			required: true
+		},
+		longitude: {
+			type: String,
+			required: true
+		}
+	},
+	createdAt: {
+		type: Date,
+		default: Date.now
+	}
+});
 
-BarberSchema.pre("save", async function (next) {
+EstablishmentSchema.pre("save", async function (next) {
 	if (this.password) {
 		const hash = await bcrypt.hash(this.password, 10);
 		this.password = hash;
@@ -104,6 +105,6 @@ BarberSchema.pre("save", async function (next) {
 	next();
 });
 
-const Barber = mongoose.model("Barber", BarberSchema);
+const Barber = mongoose.model("Barbershop", EstablishmentSchema);
 
 module.exports = Barber;

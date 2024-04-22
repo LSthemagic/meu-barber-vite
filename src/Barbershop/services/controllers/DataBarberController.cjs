@@ -38,19 +38,21 @@ router.get("/profileBarber", async (req, res) => {
 
 router.get("/scheduled", async (req, res) => {
 	try {
-		const { email: emailBarbeiro } = req.headers;
-		const barbeiro = await BarberModel.findOne({
-			email: emailBarbeiro
+		const { email: emailBarber } = req.headers;
+		const barber = await BarberModel.findOne({
+			"barbers.email": emailBarber
 		}).lean();
 
-		if (!barbeiro) {
+		if (!barber) {
 			return res.status(404).json({
 				error: true,
 				message: "Barbeiro não encontrado"
 			});
 		}
 
-		const clientsScheduled = barbeiro.clientes || [];
+		const barberIndex = barber.barbers.findIndex((barber)=>(barber.email == emailBarber));
+
+		const clientsScheduled = barber.barbers[barberIndex].clientes || [];
 
 		if (clientsScheduled.length === 0) {
 			return res.json({
@@ -71,38 +73,45 @@ router.get("/scheduled", async (req, res) => {
 });
 
 router.get("/unavailableTimeBarber", async (req, res) => {
-	const { email } = req.headers;
-	const barber = await BarberModel.findOne({ email })
+    const { email } = req.headers;
+    const barber = await BarberModel.findOne({ "barbers.email": email });
 
-	try {
-		if (!barber) {
-			return res.status(400).json({
-				error: true,
-				message: "Ops! email não encontrado."
-			})
-		}
-		let unavailableDates = barber.unavailableDate || [];
-		if (unavailableDates.length == 0) {
-			return res.json({
-				error: false,
-				message: "Todas as datas disponíveis."
-			})
-		}
-		
-		
-		return res.json({ unavailableDates })
+    try {
+        if (!barber) {
+            return res.status(400).json({
+                error: true,
+                message: "Ops! Email não encontrado."
+            });
+        }
 
-		
+        // Find the barber's index in the barbers array
+        const barberIndex = barber.barbers.findIndex(
+            (barber) => barber.email === email
+        );
 
-		
-	} catch (e) {
-		console.log(e.message);
-		return res.status(500).json({
-			error: true,
-			message: "Erro interno no servidor."
-		})
-	}
-})
+        let unavailableDates = [];
+        if (barber.barbers[barberIndex].unavailableDate) {
+            unavailableDates = barber.barbers[barberIndex].unavailableDate;
+        }
+
+        if (unavailableDates.length === 0) {
+            return res.json({
+                error: false,
+                message: "Todas as datas disponíveis."
+            });
+        }
+
+        console.log(unavailableDates);
+        return res.json({ unavailableDates });
+    } catch (e) {
+        console.log(e.message);
+        return res.status(500).json({
+            error: true,
+            message: "Erro interno no servidor."
+        });
+    }
+});
+
 
 
 module.exports = router;

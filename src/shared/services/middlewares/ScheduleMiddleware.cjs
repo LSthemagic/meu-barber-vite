@@ -15,7 +15,7 @@ module.exports = async (req, res, next) => {
     }
 
     const conflictsUnavailableDate = await barberModel.findOne({
-      unavailableDate: {
+      "barbers.unavailableDate": {
         $elemMatch: {
           startDate: { $lte: endDate },
           endDate: { $gte: startDate }
