@@ -8,7 +8,7 @@ router.post("/update-clients", async (req, res) => {
 
         const barber = await BarberModel.findOne({ "barbers.email": email });
 
-        console.log(clients);
+        // console.log(clients);
         // Check if the barber was found
         if (!barber) {
             return res.status(404).json({

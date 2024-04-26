@@ -1,8 +1,8 @@
+import React, { useEffect, useState } from "react";
 import FullCalendar from "@fullcalendar/react";
 import dayGridPlugin from "@fullcalendar/daygrid";
 import timeGridPlugin from "@fullcalendar/timegrid";
 import interactionPlugin from "@fullcalendar/interaction";
-import React, { useEffect, useState } from "react";
 import axios from "axios";
 import { useAuth as useAuthBarber } from "../../context/BarberContext";
 import LandingPage from "../../../shared/pages/landingPage";
@@ -10,7 +10,8 @@ import Toast from "../../../shared/custom/Toast";
 import moment from "moment";
 import * as bootstrap from "bootstrap";
 import Swal from "sweetalert2";
-
+import { Form } from "react-bootstrap";
+import styles from "./Calendar.module.css";
 
 const Calendar = () => {
 
@@ -19,7 +20,8 @@ const Calendar = () => {
     const [unavailableBarberDB, setUnavailableBarberDB] = useState([])
     const [allEvents, setAllEvents] = useState([])
     const [unavailableEvent, setUnavailableEvent] = useState([]);
-
+    const [barbers, setBarbers] = useState(null);
+    const [emailSelected, setEmailSelected] = useState(null);
     // Obter informações de autenticação do barbeiro do contexto
     const { tokenBarber, dataBarber } = useAuthBarber();
 
@@ -27,9 +29,6 @@ const Calendar = () => {
     if (!tokenBarber || !dataBarber) return <LandingPage />;
 
     // Carregar dados de agendamento e horários indisponíveis ao montar o componente
-    useEffect(() => {
-        handleGetInvalidHoursDB();
-    }, []);
 
     useEffect(() => {
         handlePostTimeUnavailable()
@@ -48,7 +47,7 @@ const Calendar = () => {
     }, [unavailableBarberDB, unavailableTime]);
 
     // Combinar dados de agendamento e eventos indisponíveis quando ambos estiverem disponíveis
-    console.log(unavailableBarberDB);
+    // console.log(unavailableBarberDB);
     useEffect(() => {
         const events = unavailableBarberDB?.map((appointment, index) => ({
             title: appointment.name,
@@ -62,13 +61,18 @@ const Calendar = () => {
     }, [unavailableEvent]);
 
 
+    useEffect(() => {
+        handleGetBarbers()
+    }, [])
+
+
     // Buscar horários indisponíveis do servidor
-    const handleGetInvalidHoursDB = async () => {
+    const handleGetInvalidHoursDB = async (emailBarber) => {
         try {
             const response = await axios.get("http://localhost:3001/dataBarber/unavailableTimeBarber", {
                 headers: {
                     authorization: `Bearer ${tokenBarber}`,
-                    email: dataBarber?.email,
+                    email: emailBarber,
                 }
             })
 
@@ -102,7 +106,7 @@ const Calendar = () => {
                 'Content-type': 'application/json'
             },
             body: JSON.stringify({
-                email: dataBarber?.email,
+                email: await emailSelected,
                 date: unavailableTime,
                 type: "barber",
                 name: unavailableTime.title
@@ -120,9 +124,40 @@ const Calendar = () => {
                 icon: "success",
                 title: data.message
             });
-            handleGetInvalidHoursDB()
+            handleGetInvalidHoursDB(await emailSelected)
         }
     };
+
+    // Get barbers per barbershop from the database and set it to state
+    const handleGetBarbers = async () => {
+        try {
+            const response = await axios.get("http://localhost:3001/dataBarber/barbersPerBarbershop",
+                {
+                    headers: {
+                        Authorization: `Bearer ${tokenBarber}`,
+                        id: dataBarber._id
+                    }
+                })
+
+            // Lidar com expiração do token
+            if (response.data.message === "Token inválido ou expirado") {
+                Toast.fire({
+                    icon: "info",
+                    title: "Por segurança, faça o login novamente.",
+                });
+                setTimeout(() => {
+                    window.location.href = "/barber/registerBarber";
+                }, 3000);
+            }
+            setBarbers(response.data.barbers);
+        } catch (e) {
+            console.log(e);
+            Toast.fire({
+                icon: "error",
+                title: "Ocorreu um erro ao processar os dados. Tente novamente mais tarde."
+            })
+        }
+    }
 
     // Lidar com marcação de tempos como indisponíveis
     const handleUnavailableTime = async (info) => {
@@ -180,8 +215,57 @@ const Calendar = () => {
         return `<p>Horário de ${info.event.title} agendado.</p>`;
     };
 
+    // opções de todos os barbeiros cadastrados no sistema
+    const handleOptionsSelectBarbers = () => {
+        if (!barbers?.length > 0) {
+            Toast.fire({
+                icon: 'info',
+                title: 'Nenhum barbeiro disponível'
+            });
+            return null; // Retorna null se não houver barbeiros disponíveis
+        }
+    
+        return barbers.map((item) => (
+            <option key={item._id} value={item.email}>{item.name}</option>
+        ));
+    };
+    
+
+    const handleBarberSelected = (event) => {
+        event.preventDefault()
+        try {
+            if (!event.target.value) {
+                return Toast.fire({
+                    icon: "error",
+                    title: "Selecione um barbeiro!"
+                })
+            }
+            setEmailSelected(event.target.value);
+            handleGetInvalidHoursDB(event.target.value)
+            .then(()=> Toast.fire({
+                icon: "success",
+                title: "Agenda atualizada."
+            }) )
+
+        } catch (e) {
+            console.log(e);
+            Toast.fire({
+                icon: "error",
+                title: "Erro ao selecionar barbeiro!"
+            })
+        }
+    }
+
     return (
         <div className="bg-marrom-claro m-">
+            <div className={`${styles.select}`}>
+                <Form.Select
+                    onChange={handleBarberSelected}
+                    placeholder='Selecionar barbeiro'
+                >
+                    {barbers && handleOptionsSelectBarbers()}
+                </Form.Select>
+            </div>
             <FullCalendar
                 plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                 initialView="timeGridWeek"

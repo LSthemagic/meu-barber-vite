@@ -1,0 +1,82 @@
+/* Estilos para o container do select */
+.select {
+    position: relative; /* Posicionamento relativo para posicionar a seta customizada */
+    width: 100%; /* Largura total do container */
+    margin: 1rem 0; /* Espaçamento em torno do select */
+    
+}
+
+@media screen and (min-width: 768px) {
+    .select{
+        width:  80%; 
+        display: inline-block; 
+        vertical-align: middle;
+        font-size: 1em;
+        margin-left: 10%;
+        margin-right: 5%;
+    }
+}
+
+.select select {
+    appearance: none; /* Ocultar o visual padrão do select */
+    background: transparent; /* Remover o fundo padrão */
+    border: 1px solid #764217de; /* Borda fina marrom claro */
+    padding: 0.8rem 1.2rem; /* Espaçamento interno */
+    width: calc(100% - 30px); /* Largura total do select com ajuste para a seta */
+    font-size: 1rem; /* Tamanho da fonte */
+    cursor: pointer; /* Indicar que o elemento é clicável */
+    border-radius: 4px; /* Arredondar os cantos */
+    transition: border-color 0.2s ease; /* Transição suave para a cor da borda */
+}
+
+/* Estilos para o placeholder */
+.select select::-webkit-placeholder {
+    color: #5c4033; /* Cor do placeholder */
+}
+
+/* Estilos para o focus */
+.select select:focus {
+    border-color: #764217de; /* Cor da borda em foco */
+}
+
+/* Estilos para a seta customizada (triângulo para baixo) */
+.select::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 10px;
+    transform: translateY(-50%);
+    width: 0;
+    height: 0;
+    border-left: 5px solid transparent;
+    border-right: 5px solid transparent;
+    border-bottom: 8px solid #5c4033; /* Cor da seta */
+    transition: transform 0.2s ease; /* Transição suave para a posição da seta */
+}
+
+/* Estilos para a seta customizada quando o select está em foco */
+.select select:focus::after {
+    transform: translateY(-50%) rotate(90deg); /* Girar a seta para cima quando em foco */
+}
+
+/* Estilos para o calendário */
+.fc-header-toolbar {
+    display: flex;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.fc-header-toolbar .fc-center, .fc-header-toolbar .fc-left, .fc-header-toolbar .fc-right {
+    flex: 1 1 auto;
+}
+
+.fc-header-toolbar button {
+    flex: 1 1 auto;
+    margin: 0.2rem;
+}
+
+.fc-header-toolbar select {
+    flex: 1 1 auto;
+    margin: 0.2rem;
+    width: auto;
+}

@@ -77,16 +77,12 @@ const Home = () => {
 
 	const handleDoubleObjectiveCalendar = (data) => {
 		// handleOpenModalCalendar();
-		handleOptionsBarbers()
+		handleOptionsBarbers(data)
 		setBarbershopSelected(data);
 	};
 
 	const handleWaze = (data) => {
-		const {
-			barbershop: {
-				location: { latitude, longitude }
-			}
-		} = data;
+		const { location: { latitude, longitude } } = data;
 
 		window.open(`https://www.waze.com/location?ll=${latitude},${longitude}`);
 	};
@@ -168,22 +164,30 @@ const Home = () => {
 		);
 	};
 
-	const handleOptionsBarbers = async () => {
+	const handleOptionsBarbers = async (data) => {
+		// Verifica se há barbeiros disponíveis
+		const barbers = data?.barbers?.map((item) => ({
+			email: item.email,
+			name: `${item.name}`
+		}));
+
+		if (!barbers || barbers.length === 0) {
+			// Exibir mensagem ou lidar com o caso em que não há barbeiros disponíveis
+			Toast.fire({
+				icon: 'info',
+				title: `${data?.name} não há barbeiros disponíveis no momento.`
+			});
+			return;
+		}
+
 		try {
-			const barbers = barbershopSelected?.barbers?.map((item) => ({
-				email: item.email, // Use um identificador único para cada barbeiro, por exemplo, item.id
-				name: `${item.name}`
-			}));
-			
-			if (!barbers) return;
-			
 			const { value: barber } = await Swal.fire({
 				title: "Agendar com Meu Barber",
 				input: "select",
 				inputOptions: barbers.reduce((obj, item) => {
 					obj[item.email] = item.name;
 					return obj;
-				}, {}), // Converta o array de barbeiros em um objeto onde as chaves são os valores e os valores são os rótulos
+				}, {}),
 				inputPlaceholder: "Selecionar barbeiro",
 				showCancelButton: true,
 				inputValidator: (value) => {
@@ -196,7 +200,7 @@ const Home = () => {
 					});
 				}
 			});
-			
+
 			if (barber) {
 				const selectedBarber = barbers.find(barberItem => barberItem.email === barber);
 				console.log(selectedBarber);
@@ -205,8 +209,6 @@ const Home = () => {
 				Swal.close();
 				handleOpenModalCalendar()
 			}
-			
-			
 		} catch (e) {
 			console.log(`Error from handleOptionsBarbers: ${e}`);
 			Toast.fire({

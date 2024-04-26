@@ -9,7 +9,7 @@ router.get("/barbers", async (req, res) => {
 		if (!barbers) {
 			return res.status(400).json({
 				error: true,
-				message: "No hay barberos registrados"
+				message: "Não há barbeiros registrados"
 			});
 		}
 		return res.json(barbers);
@@ -18,7 +18,7 @@ router.get("/barbers", async (req, res) => {
 
 		return res.status(400).json({
 			error: true,
-			message: "Error on loading barbers"
+			message: "Error ao carregar barbeiros"
 		});
 	}
 });
@@ -50,9 +50,9 @@ router.get("/scheduled", async (req, res) => {
 			});
 		}
 
-		const barberIndex = barber.barbers.findIndex((barber)=>(barber.email == emailBarber));
+		const barberIndex = barber.barbers.findIndex((barber) => (barber.email == emailBarber));
 
-		const clientsScheduled = barber.barbers[barberIndex].clientes || [];
+		const clientsScheduled = barber.barbers[barberIndex].clients || [];
 
 		if (clientsScheduled.length === 0) {
 			return res.json({
@@ -73,45 +73,71 @@ router.get("/scheduled", async (req, res) => {
 });
 
 router.get("/unavailableTimeBarber", async (req, res) => {
-    const { email } = req.headers;
-    const barber = await BarberModel.findOne({ "barbers.email": email });
+	const { email } = req.headers;
+	const barber = await BarberModel.findOne({ "barbers.email": email });
 
-    try {
-        if (!barber) {
-            return res.status(400).json({
-                error: true,
-                message: "Ops! Email não encontrado."
-            });
-        }
+	try {
+		if (!barber) {
+			return res.status(400).json({
+				error: true,
+				message: "Ops! Email não encontrado."
+			});
+		}
 
-        // Find the barber's index in the barbers array
-        const barberIndex = barber.barbers.findIndex(
-            (barber) => barber.email === email
-        );
+		// Find the barber's index in the barbers array
+		const barberIndex = barber.barbers.findIndex(
+			(barber) => barber.email === email
+		);
 
-        let unavailableDates = [];
-        if (barber.barbers[barberIndex].unavailableDate) {
-            unavailableDates = barber.barbers[barberIndex].unavailableDate;
-        }
+		let unavailableDates = [];
+		if (barber.barbers[barberIndex].unavailableDate) {
+			unavailableDates = barber.barbers[barberIndex].unavailableDate;
+		}
 
-        if (unavailableDates.length === 0) {
-            return res.json({
-                error: false,
-                message: "Todas as datas disponíveis."
-            });
-        }
+		if (unavailableDates.length === 0) {
+			return res.json({
+				error: false,
+				message: "Todas as datas disponíveis."
+			});
+		}
 
-        console.log(unavailableDates);
-        return res.json({ unavailableDates });
-    } catch (e) {
-        console.log(e.message);
-        return res.status(500).json({
-            error: true,
-            message: "Erro interno no servidor."
-        });
-    }
+		console.log(unavailableDates);
+		return res.json({ unavailableDates });
+	} catch (e) {
+		console.log(e.message);
+		return res.status(500).json({
+			error: true,
+			message: "Erro interno no servidor."
+		});
+	}
 });
 
+router.get("/barbersPerBarbershop", async (req, res) => {
+	try {
+		const { id } = req.headers;
+		if (!id) {
+			throw new Error("Token inválido.");
+		}
 
+		const barbershop = await BarberModel.findById(id);
+
+		if (!barbershop) {
+			return res.status(401).json({
+				error: true,
+				message: "Barbearia não foi encontrada. Faça login novamente."
+			})
+		}
+
+		const barbers = barbershop.barbers;
+
+		return res.json({ barbers });
+	} catch (e) {
+		console.log(`Error from barbersPerBarbershop ${e}`)
+		return res.status(500).json({
+			error: true,
+			message: "Erro interno no servidor. Tente novamente mais tarde!"
+		})
+	}
+});
 
 module.exports = router;
