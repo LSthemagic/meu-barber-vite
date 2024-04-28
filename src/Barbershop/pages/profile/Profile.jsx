@@ -125,7 +125,7 @@ const Profile = () => {
                         </div>
                     </Form>
                 </Modal.Body>
-                {/* Remova o comentário da seção Modal.Footer se desejar adicionar algum conteúdo ao rodapé */}
+               
                 {/* <Modal.Footer> */}
                 {/* </Modal.Footer> */}
             </Modal>

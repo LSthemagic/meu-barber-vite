@@ -1,6 +1,6 @@
 const express = require("express");
 const BarberModel = require("../models/Barber.cjs");
-// const bcrypt = require('bcryptjs')
+const bcrypt = require('bcryptjs')
 const jwt = require("jsonwebtoken");
 require("dotenv").config();
 const upload = require("../middlewares/Storage.cjs");
@@ -61,9 +61,47 @@ router.post("/registerBarber", async (req, res) => {
 	}
 });
 
+router.post("/authenticateBarber", async (req, res) => {
+	const { email, password } = req.body;
+	try {
+		const barbershop = await BarberModel.findOne({ email }).select("+password");
+
+		if (!barbershop) {
+			return res.status(401).json({
+				error: true,
+				message: "Esse cadastro não existe."
+			})
+		}
+
+		if (!(await bcrypt.compare(password, barbershop.password))) {
+			return res.status(400).json({
+				error: true,
+				message: "Senha incorreta!"
+			})
+		}
+
+		barbershop.password = undefined;
+		barbershop.barbers = undefined;
+		barbershop.createdAt = undefined;
+		barbershop.location = undefined;
+		return res.json({
+			error: false,
+			message: "Bem Vindo!",
+			barbershop,
+			token: generateToken(barbershop)
+		});
+	} catch (e) {
+		console.log(e.message)
+		return res.status(400).json({
+			error: true,
+			message: "Dados de acesso inválidos!"
+		})
+	}
+})
+
 router.post("/addBarber", async (req, res) => {
 	try {
-		const { name, email, id } = req.body; // Destructure directly from req.body
+		const { name, email, id } = req.body;
 
 		const barbershop = await BarberModel.findById(id);
 

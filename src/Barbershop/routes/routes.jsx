@@ -5,16 +5,18 @@ import AuthenticateBarber from "../pages/authenticateBarber/AuthenticateBarber";
 import PageNotFound from "../../shared/pages/PageNotFound";
 import Profile from "../pages/profile/Profile";
 import CalendarBarber from "../pages/calendar/CalendarBarber"
+import { PrivateRoutes } from "./privateRoutes";
+
 
 const BarberRoutes = () => {
 	return (
 		<>
 			<Routes>
-				<Route path="/homeBarber" element={<HomeBarber />} />
 				<Route path="/registerBarber" element={<RegisterBarber />} />
 				<Route path="/authenticateBarber" element={<AuthenticateBarber />} />
-				<Route path="/profileBarber" element={<Profile />} />
-				<Route path="/calendarBarber" element={<CalendarBarber />} />
+				<Route path="/homeBarber" element={<HomeBarber />} />
+				<Route path="/profileBarber" element={<PrivateRoutes><Profile /></PrivateRoutes>} />
+				<Route path="/calendarBarber" element={<PrivateRoutes><CalendarBarber /></PrivateRoutes>} />
 				<Route path="*" element={<PageNotFound />} />
 			</Routes>
 		</>

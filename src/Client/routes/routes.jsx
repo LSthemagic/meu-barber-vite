@@ -7,20 +7,34 @@ import Authenticate from "../pages/Authenticate/Authenticate";
 import Footer from "../../shared/layout/footer/Footer";
 import BarberRoutes from "../../Barbershop/routes/routes";
 import PageNotFound from "../../shared/pages/PageNotFound";
-
+import { PrivateRoutes } from "./privateRoutes";
 
 
 const AppRoutes = () => {
+
 	return (
 		<BrowserRouter>
 			<Navbar />
 			<Routes>
-				<Route path="/" element={<Home />} />
-				<Route path="/UserList" element={<UserList />} />
+
 				<Route path="/register" element={<Register />} />
 				<Route path="/authenticate" element={<Authenticate />} />
+
+
+				<Route path="/" element={
+					<PrivateRoutes>
+						<Home />
+					</PrivateRoutes>}
+				/>
+
+
+				<Route path="/UserList" element={
+					<UserList /> }
+				/>
+
+
 				<Route path="/barber/*" element={<BarberRoutes />} />
-				
+
 				<Route path="*" element={<PageNotFound />} />
 			</Routes>
 			<Footer />

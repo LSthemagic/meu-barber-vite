@@ -12,24 +12,43 @@ export const BarberProvider = ({ children }) => {
 			: null
 	);
 
+
+	const [isLogged, setIsLogged] = useState(
+		() => localStorage.getItem("isLoggedInBarber") || false
+	)
+
+	const handleLogged = () => {
+		setIsLogged(true);
+		localStorage.setItem("isLoggedInBarber", true);
+	}
+
+	const handleNotLogged = () => {
+		setIsLogged(false);
+		localStorage.removeItem("isLoggedInBarber");
+	}
+
 	const signIn = (data) => {
 		setDataBarber(data);
 		localStorage.setItem("dataBarber", JSON.stringify(data));
+		handleLogged();
 	};
 
 	const signOut = () => {
 		setDataBarber(null);
 		localStorage.removeItem("dataBarber");
+		handleNotLogged();
 	};
 
 	const authToken = (newToken) => {
 		setTokenBarber(newToken);
 		localStorage.setItem("tokenBarber", newToken);
+		handleLogged()
 	};
 
 	const offAuthToken = () => {
 		setTokenBarber(null);
 		localStorage.removeItem("tokenBarber");
+		handleNotLogged()
 	};
 
 	return (
@@ -40,7 +59,8 @@ export const BarberProvider = ({ children }) => {
 				offAuthToken,
 				signIn,
 				signOut,
-				dataBarber
+				dataBarber,
+				isLogged
 			}}
 		>
 			{children}

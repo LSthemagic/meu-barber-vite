@@ -26,14 +26,22 @@ router.get("/barbers", async (req, res) => {
 router.get("/profileBarber", async (req, res) => {
 	const { email } = req.headers;
 	const barber = await BarberModel.findOne({ email })
+	try {
 
-	if (!barber) {
+		if (!barber) {
+			return res.status(401).json({
+				error: true,
+				message: 'Usuário não autenticado'
+			})
+		}
+		return res.json(barber);
+	}catch(e){
+		console.log(e.message);
 		return res.status(401).json({
 			error: true,
-			message: 'Usuário não autenticado'
+			message: 'Erro ao processar dados. Faça login novamente!'
 		})
 	}
-	return res.json(barber);
 })
 
 router.get("/scheduled", async (req, res) => {
@@ -101,7 +109,7 @@ router.get("/unavailableTimeBarber", async (req, res) => {
 			});
 		}
 
-		
+
 		return res.json({ unavailableDates });
 	} catch (e) {
 		console.log(e.message);
