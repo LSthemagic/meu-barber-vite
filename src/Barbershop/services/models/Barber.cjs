@@ -48,7 +48,6 @@ const BarberSchema = new mongoose.Schema({
 	email: {
 		type: String,
 		required: true,
-		unique: true,
 		lowercase: true
 	},
 	unavailableDate: [UnavailableDateSchema], // Array of dates
@@ -70,7 +69,6 @@ const EstablishmentSchema = new mongoose.Schema({
 	email: {
 		type: String,
 		required: true,
-		sparse: true,
 		lowercase: true,
 	},
 	password: {

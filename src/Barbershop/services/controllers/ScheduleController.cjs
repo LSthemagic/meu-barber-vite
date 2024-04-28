@@ -4,12 +4,10 @@ const router = express.Router();
 
 router.post("/update-clients", async (req, res) => {
     try {
-        const { email, clients, type } = req.body;
+        const { email, clients: clientsFront, type } = req.body;
 
         const barber = await BarberModel.findOne({ "barbers.email": email });
 
-        // console.log(clients);
-        // Check if the barber was found
         if (!barber) {
             return res.status(404).json({
                 error: true,
@@ -17,54 +15,84 @@ router.post("/update-clients", async (req, res) => {
             });
         }
 
-        // Find the barber's index in the barbers array
+
         const barberIndex = barber.barbers.findIndex(
             (barber) => barber.email === email
         );
 
-        // Check if the barber's clients and unavailableDate arrays are defined, initialize them if not
         barber.barbers[barberIndex].clients = barber.barbers[barberIndex].clients || [];
         barber.barbers[barberIndex].unavailableDate = barber.barbers[barberIndex].unavailableDate || [];
 
-        // Find existing client by email
         const existingClientIndex = barber.barbers[barberIndex].clients.findIndex(
-            (client) => client.email === clients.email
+            (client) => client.email === clientsFront.email
         );
 
-        // Find existing unavailable date by email
         const existingUnavailableIndex = barber.barbers[barberIndex].unavailableDate.findIndex(
-            (client) => client.email === clients.email
+            (unavailable) => unavailable.email === clientsFront.email
         );
 
         if (existingUnavailableIndex !== -1) {
             // Update existing unavailable date
             barber.barbers[barberIndex].unavailableDate[existingUnavailableIndex] = {
-                email: clients.email,
-                startDate: clients.startDate,
-                endDate: clients.endDate,
+                email: clientsFront.email,
+                startDate: clientsFront.startDate,
+                endDate: clientsFront.endDate,
                 type: type,
-                name: clients.name
+                name: clientsFront.name
             };
         } else {
             // Add new unavailable date
             barber.barbers[barberIndex].unavailableDate.push({
-                email: clients.email,
-                startDate: clients.startDate,
-                endDate: clients.endDate,
+                email: clientsFront.email,
+                startDate: clientsFront.startDate,
+                endDate: clientsFront.endDate,
                 type: type,
-                name: clients.name
+                name: clientsFront.name
             });
         }
 
         if (existingClientIndex !== -1) {
             // Update existing client
-            barber.barbers[barberIndex].clients[existingClientIndex] = clients;
+            barber.barbers[barberIndex].clients[existingClientIndex] = clientsFront;
         } else {
-            // Add new client
-            barber.barbers[barberIndex].clients.push(clients);
-        }
+            const allBarbershops = await BarberModel.findOne({ "barbers.clients.email": clientsFront.email })
+                .select('barbers')
+                .exec();
 
-        // Save the changes
+            console.log(allBarbershops);
+            if (allBarbershops) {
+                // Remover o cliente do array barbers
+                const index = allBarbershops.barbers.findIndex(barber => barber.clients.some((e) => e.email === clientsFront.email));
+                console.log("\n\n\n\n");
+                console.log(index);
+
+                if (index !== -1) {
+                    const barberRemove = allBarbershops.barbers[index];
+
+                    const clientIndex = barberRemove.clients.findIndex(client => client.email === clientsFront.email);
+
+                    const unavailableIndex = barberRemove.unavailableDate.findIndex(client => client.email === clientsFront.email);
+
+                    if (clientIndex !== -1) {
+                        barberRemove.clients.splice(clientIndex, 1);
+                        barberRemove.unavailableDate.splice(unavailableIndex, 1)
+
+                        // salvar no novo barbeiro
+                        barber.barbers[barberIndex].clients.push(clientsFront);
+
+                        // Salvar as mudanças no banco de dados
+                        await allBarbershops.save();
+                    } else {
+                        console.log("Cliente não encontrado no array de clientes do barbeiro.");
+                    }
+                } else {
+                    console.log("Barbeiro no encontrado.");
+                }
+            }
+
+
+        };
+
         await barber.save();
 
         return res.json({
@@ -80,14 +108,16 @@ router.post("/update-clients", async (req, res) => {
     }
 });
 
+
+
 router.post("/unavailableTime", async (req, res) => {
     const { email, date, type, name } = req.body;
     try {
-        console.log(type);
+
         const barber = await BarberModel.findOne({ "barbers.email": email });
 
         if (!barber) {
-            console.log(barber);
+
             return res.status(404).json({
                 error: true,
                 message: "Email não encontrado."

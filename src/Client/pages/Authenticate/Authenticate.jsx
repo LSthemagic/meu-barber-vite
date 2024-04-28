@@ -75,9 +75,7 @@ const Authenticate = () => {
 					icon: "success",
 					title: data.message
 				});
-				setTimeout(() => {
-					navigate("/");
-				}, 3000);
+				navigate("/");
 			} else {
 				Toast.fire({
 					icon: "error",

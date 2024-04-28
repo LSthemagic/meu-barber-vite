@@ -101,7 +101,7 @@ router.get("/unavailableTimeBarber", async (req, res) => {
 			});
 		}
 
-		console.log(unavailableDates);
+		
 		return res.json({ unavailableDates });
 	} catch (e) {
 		console.log(e.message);

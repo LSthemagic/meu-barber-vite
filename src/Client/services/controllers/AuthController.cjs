@@ -22,6 +22,8 @@ router.post("/register", async (req, res) => {
 	try {
 		const user = await UserModel.create(req.body);
 		user.password = undefined;
+		user.createAt = undefined;
+		user.babershopFavorites = undefined;
 		return res.json({
 			error: false,
 			message: "Cadastro bem-sucedido!",
@@ -55,6 +57,8 @@ router.post("/authenticate", async (req, res) => {
 	}
 
 	user.password = undefined;
+	user.createAt = undefined;
+	user.babershopFavorites = undefined;
 	return res.json({
 		error: false,
 		message: "Bem Vindo!",

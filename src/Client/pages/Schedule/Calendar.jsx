@@ -143,7 +143,7 @@ const Calendar = ({ props }) => {
 		}
 	};
 
-	// pegar horarios dos clientes agendados
+	// pegar horários dos clientes agendados
 	const handleGetHoursScheduled = async () => {
 		try {
 			const response = await axios.get(
@@ -186,7 +186,7 @@ const Calendar = ({ props }) => {
 		}
 	};
 
-	// funcao para aparecer horarios quando o user clica no fullcalendar
+	// função para aparecer horários quando o user clica no fullcalendar
 	const handleDateClick = async (info) => {
 		const formattedDate = moment(info.date).format("YYYY-MM-DDTHH:mm");
 
@@ -227,6 +227,23 @@ const Calendar = ({ props }) => {
 						center: "",
 						end: "dayGridMonth,timeGridWeek,timeGridDay"
 					}}
+					// validRange={(now) => ({ // Permite a partir de agora
+					// 	start: now,
+					//   })}
+					//   selectConstraint="businessHours" // Restringe às horas de funcionamento
+					// />
+					validRange={(now) => ({
+						start: now, //permite a partir do horário atual
+					})}
+					// selectConstraint={"businessHours"} //Restringe as horas de trabalho
+					// businessHours={
+					// 	{
+					// 		daysOfWeek: [1, 2, 3, 4, 5], // Sexta e Sábado
+					// 		// startTime: data.open_at,
+					// 		// endTime: data.close_at,
+					// 	}
+
+					// }
 					dayCellClassNames={`text-center`}
 					weekNumberCalculation="ISO"
 					height={"90vh"}
@@ -257,7 +274,7 @@ const Calendar = ({ props }) => {
 					}}
 					slotMinTime="08:00" // Horário mínimo (8h)
 					slotMaxTime="18:00" // Horário máximo (18h)
-					hiddenDays={[0]} 
+					hiddenDays={[0]}
 					editable={false}
 					selectable={true}
 					dayMaxEvents={true}

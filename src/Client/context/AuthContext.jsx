@@ -13,29 +13,61 @@ export const AuthProvider = ({ children }) => {
 			: null
 	);
 
+	const [isLogged, setIsLogged] = useState(
+		() => localStorage.getItem("isLoggedIn") || false
+	)
+
+	const [showBarbershopFavorites, setShowBarbershopFavorites] = useState(
+		() => localStorage.getItem("barbershopsFavShown") || false
+	)
+
+	const handleShowFavorites = () => {
+		setShowBarbershopFavorites(true);
+	  };
+	  
+	  const handleCloseShowFavorites = () => {
+		setShowBarbershopFavorites(false);
+		localStorage.removeItem("barbershopsFavShown");
+	  };
+
+	const handleLogged = () => {
+		setIsLogged(true);
+		localStorage.setItem("isLoggedIn", true);
+	}
+
+	const handleNotLogged = () => {
+		setIsLogged(false);
+		localStorage.removeItem("isLoggedIn")
+	}
+
+
 	const login = (newToken) => {
 		setToken(newToken);
 		localStorage.setItem("token", newToken);
+		handleLogged()
 	};
 
 	const logout = () => {
 		setToken(null);
 		localStorage.removeItem("token");
+		handleNotLogged()
 	};
 
 	const dataAuth = (newData) => {
 		setData(newData);
 		localStorage.setItem("user_info", JSON.stringify(newData));
+		handleLogged()
 	};
 
 	const offDataAuth = () => {
 		setData(null);
 		localStorage.removeItem("user_info");
+		handleNotLogged()
 	};
 
 	return (
 		<AuthContext.Provider
-			value={{ token, login, logout, data, dataAuth, offDataAuth }}
+			value={{ token, login, logout, data, dataAuth, offDataAuth, isLogged, handleShowFavorites, handleCloseShowFavorites, showBarbershopFavorites }}
 		>
 			{children}
 		</AuthContext.Provider>

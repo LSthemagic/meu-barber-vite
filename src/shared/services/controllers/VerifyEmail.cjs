@@ -7,7 +7,7 @@ const nodemailer = require("nodemailer");
 
 let codingRandom = () => Math.floor(10000 + Math.random() * 10000);
 var random;
-const sendEmail = async (email, codingRamdom) => {
+const sendEmail = async (email, codingRandom) => {
 	const transport = nodemailer.createTransport({
 		host: "smtp.gmail.com",
 		port: 587,
@@ -74,7 +74,7 @@ const sendEmail = async (email, codingRamdom) => {
             <img src="https://cdn.leonardo.ai/users/4faac9a5-cda4-49fa-923b-a6a4c5d22b79/generations/2dcf1b63-30fe-43cf-b69b-2dd5e99f9c7e/variations/alchemyrefiner_alchemymagic_1_2dcf1b63-30fe-43cf-b69b-2dd5e99f9c7e_0.jpg" alt="MEU BARBER" class="barber-image">
             <h1>Bem-vindo à MEU BARBER</h1>
             <p>Estamos animados em tê-lo como parte da nossa comunidade! Utilize o código de verificação abaixo para concluir seu cadastro.</p>
-            <p class="verification-code">${codingRamdom}</p>
+            <p class="verification-code">${codingRandom}</p>
           </div>
         </body>
       </html>`

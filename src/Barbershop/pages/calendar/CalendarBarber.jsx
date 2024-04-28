@@ -47,7 +47,7 @@ const Calendar = () => {
     }, [unavailableBarberDB, unavailableTime]);
 
     // Combinar dados de agendamento e eventos indisponíveis quando ambos estiverem disponíveis
-    // console.log(unavailableBarberDB);
+
     useEffect(() => {
         const events = unavailableBarberDB?.map((appointment, index) => ({
             title: appointment.name,
@@ -224,12 +224,11 @@ const Calendar = () => {
             });
             return null; // Retorna null se não houver barbeiros disponíveis
         }
-    
+
         return barbers.map((item) => (
             <option key={item._id} value={item.email}>{item.name}</option>
         ));
     };
-    
 
     const handleBarberSelected = (event) => {
         event.preventDefault()
@@ -242,10 +241,10 @@ const Calendar = () => {
             }
             setEmailSelected(event.target.value);
             handleGetInvalidHoursDB(event.target.value)
-            .then(()=> Toast.fire({
-                icon: "success",
-                title: "Agenda atualizada."
-            }) )
+                .then(() => Toast.fire({
+                    icon: "success",
+                    title: "Agenda atualizada."
+                }))
 
         } catch (e) {
             console.log(e);
@@ -263,7 +262,10 @@ const Calendar = () => {
                     onChange={handleBarberSelected}
                     placeholder='Selecionar barbeiro'
                 >
+
+                    <option aria-pressed="false" value="">Selecione um barbeiro</option>
                     {barbers && handleOptionsSelectBarbers()}
+
                 </Form.Select>
             </div>
             <FullCalendar
@@ -274,6 +276,7 @@ const Calendar = () => {
                     center: "",
                     end: "dayGridMonth,timeGridWeek,timeGridDay",
                 }}
+
                 viewClassNames={"ml-16"}
                 dayCellClassNames={`text-center `}
                 weekNumberCalculation="ISO"
@@ -310,7 +313,6 @@ const Calendar = () => {
                 eventColor={"#ff6b45"}
                 dateClick={handleUnavailableTime}
                 events={allEvents}
-
                 eventDidMount={(info) => {
                     const popover = new bootstrap.Popover(info.el, {
                         title: info.event.title,

@@ -42,7 +42,9 @@ router.post("/registerBarber", async (req, res) => {
 			barbers: [],
 		});
 		barber.password = undefined;
-
+		barber.barbers = undefined;
+		barber.createdAt = undefined;
+		barber.location = undefined;
 		return res.json({
 			error: false,
 			data: barber,

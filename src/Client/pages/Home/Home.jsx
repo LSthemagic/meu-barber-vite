@@ -20,9 +20,12 @@ const Home = () => {
 	const [dbBarberFav, setDbBarberFav] = useState([]);
 	const sliderRef = useRef(null);
 	const auth = useAuth();
-	if (!auth || !auth.data || !auth.data.email) return <LandingPage />;
 
-	const { data: { email } } = auth;
+	if (!auth.isLogged) {
+		return <LandingPage />;
+	}
+
+	const { data: { email }, showBarbershopFavorites } = auth;
 
 	const onBarbershopFav = () => setBarbershopFav(true);
 
@@ -175,7 +178,7 @@ const Home = () => {
 			// Exibir mensagem ou lidar com o caso em que não há barbeiros disponíveis
 			Toast.fire({
 				icon: 'info',
-				title: `${data?.name} não há barbeiros disponíveis no momento.`
+				title: `${data?.name} não tem barbeiros disponíveis no momento.`
 			});
 			return;
 		}
@@ -184,7 +187,7 @@ const Home = () => {
 			const { value: barber } = await Swal.fire({
 				title: "Agendar com Meu Barber",
 				input: "select",
-				inputOptions: barbers.reduce((obj, item) => {
+				inputOptions: barbers?.reduce((obj, item) => {
 					obj[item.email] = item.name;
 					return obj;
 				}, {}),
@@ -202,7 +205,7 @@ const Home = () => {
 			});
 
 			if (barber) {
-				const selectedBarber = barbers.find(barberItem => barberItem.email === barber);
+				const selectedBarber = barbers?.find(barberItem => barberItem.email === barber);
 				console.log(selectedBarber);
 				// Swal.fire(`You selected: ${selectedBarber.label}`);
 				setBarbershopSelected(selectedBarber)
@@ -218,11 +221,18 @@ const Home = () => {
 		}
 	}
 
+	// const filteredBarbers = showFavorites
+    // ? barbers.filter((barber) => dbBarberFav.IDs.includes(barber._id))
+    // : barbers;
+	console.log(showBarbershopFavorites)
+	const filteredBarbers = showBarbershopFavorites ? barbers.filter((barber) => dbBarberFav.IDs.includes(barber._id)) : barbers;
+
+
 	return (
 		<div className={styles.container}>
 			<div className={styles["slider-wrapper"]}>
 				<Slider {...settings} className={styles.slider}>
-					{barbers.map((barber) => (
+					{filteredBarbers?.map((barber) => (
 						<div key={barber._id}>
 							<div className={styles.card}>
 								<ImagemFormatted src={"../../../../public/section_img2.jpg"} />

@@ -1,5 +1,5 @@
 import * as React from "react"
-import { Link, useLocation } from "react-router-dom"
+import { Link, Navigate, useLocation } from "react-router-dom"
 import {
   Home,
   LineChart,
@@ -11,9 +11,9 @@ import {
   Settings,
   ShoppingCart,
   Users2,
-  User
+  User,
+  CalendarHeart
 } from "lucide-react"
-
 
 import {
   Breadcrumb,
@@ -46,13 +46,17 @@ import {
   TooltipProvider
 } from "../../../../@/components/ui/tooltip"
 
-
 import "../../../../app/globals.css"
 import logo from "../../images/logo.png"
+import { useAuth as useAuthClient } from "../../../Client/context/AuthContext"
+import { useAuth as useAuthBarbershop } from "../../../Barbershop/context/BarberContext"
+
 
 const Navbar = () => {
   const { pathname } = useLocation()
   const isBarberRoutes = pathname.startsWith("/barber")
+  const { signOut, offAuthToken } = useAuthBarbershop()
+  const { logout, offDataAuth, isLogged, handleShowFavorites, handleCloseShowFavorites, showBarbershopFavorites } = useAuthClient()
 
   React.useEffect(() => {
     document.body.classList.add('dark'); // Adiciona a classe 'dark' ao body quando a página é montada
@@ -62,6 +66,8 @@ const Navbar = () => {
   }, []);
 
   const handlePathGenerate = (path) => {
+    
+
     const routes = {
       home: {
         barber: "/barber/homeBarber",
@@ -76,15 +82,13 @@ const Navbar = () => {
         user: "/register"
       },
       authenticate: {
-        barber: "/authenticate",
-        user: "/barber/authenticateBarber"
+        barber: "/barber/authenticateBarber",
+        user: "/authenticate"
       },
       calendar: {
         barber: "/barber/calendarBarber"
       },
-      logout: {
 
-      }
     }
 
     const route = isBarberRoutes ? routes[path].barber : routes[path].user
@@ -92,6 +96,26 @@ const Navbar = () => {
     return route;
   }
 
+  const handleOffPage = () => {
+
+    if (isBarberRoutes) {
+      signOut();
+      offAuthToken();
+    } else {
+      logout();
+      offDataAuth();
+    }
+
+    window.location.reload()
+  };
+
+  const selectedFavorites = () => {
+    if (showBarbershopFavorites) {
+      handleCloseShowFavorites();
+    } else {
+      handleShowFavorites();
+    }
+  };
 
   return (
     <div>
@@ -119,17 +143,24 @@ const Navbar = () => {
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
-                  to={handlePathGenerate(isBarberRoutes ? "calendar" : "home")}
+                  to={handlePathGenerate("calendar")}
                   className="flex h-9 w-9 items-center justify-center rounded-lg bg-accent text-accent-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
-                  {isBarberRoutes ? <><CalendarClock className="h-5 w-5" /><span className="sr-only">{isBarberRoutes ? "calendar" : "Orders"}</span></> :
-                    <><ShoppingCart className="h-5 w-5" /><span className="sr-only">{isBarberRoutes ? "calendar" : "Orders"}</span></>
+                  {isBarberRoutes ?
+                    <>
+                      <CalendarClock className="h-5 w-5" />
+                      <span className="sr-only">{"calendar"}</span>
+                    </> :
+                    <>
+                      <CalendarHeart onClick={selectedFavorites} className="h-5 w-5" />
+                      <span className="sr-only">{"Orders"}</span>
+                    </>
                   }
                 </Link>
               </TooltipTrigger>
-              <TooltipContent className={"bg-marrom-medio"} side="right">{isBarberRoutes ? "calendar" : "Orders"}</TooltipContent>
+              <TooltipContent className={"bg-marrom-medio"} side="right">{isBarberRoutes ? "calendar" : "Barbearia favorita"}</TooltipContent>
             </Tooltip>
-            <Tooltip>
+            {/* <Tooltip>
               <TooltipTrigger asChild>
                 <Link
                   href="#"
@@ -140,7 +171,7 @@ const Navbar = () => {
                 </Link>
               </TooltipTrigger>
               <TooltipContent className={"bg-marrom-medio"} side="right">Products</TooltipContent>
-            </Tooltip>
+            </Tooltip> */}
             <Tooltip>
               <TooltipTrigger asChild>
                 <Link
@@ -155,13 +186,13 @@ const Navbar = () => {
             </Tooltip>
             <Tooltip>
               <TooltipTrigger asChild>
-                <Link
-                  to={handlePathGenerate("logout")}
+                <button
+                  onClick={handleOffPage}
                   className="flex h-9 w-9 items-center justify-center rounded-lg text-muted-foreground transition-colors hover:text-foreground md:h-8 md:w-8"
                 >
                   <LogOut className="h-5 w-5" />
                   <span className="sr-only">Sair</span>
-                </Link>
+                </button>
               </TooltipTrigger>
               <TooltipContent className={"bg-marrom-medio"} side="right">Sair</TooltipContent>
             </Tooltip>
@@ -256,7 +287,9 @@ const Navbar = () => {
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to={handlePathGenerate("home")}>Perfil</Link>
+                  <Link to={handlePathGenerate(isLogged ? "profile" : "authenticate")}>
+                    {isLogged ? "Perfil" : "Entrar"}
+                  </Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>
             </BreadcrumbList>
