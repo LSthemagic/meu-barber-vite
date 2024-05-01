@@ -83,50 +83,37 @@ const sendEmail = async (email, codingRandom) => {
 		.catch((err) => console.log("erro ao enviar email ", err));
 };
 
+const sendEmailRequest = async (req, res, Model) => {
+	try {
+		const { email } = req.body;
+		if (await Model.findOne({ email })) {
+			return res.status(400).json({
+				error: true,
+				message: "Esse email já foi cadastrado."
+			});
+		}
+		const random = codingRandom();
+		sendEmail(email, random);
+		return res.json({
+			error: false,
+			message: "Solicitação enviada com sucesso!"
+		});
+	} catch (error) {
+		return res.status(400).json({
+			error: true,
+			message: "Erro ao enviar email."
+		});
+	}
+};
+
 router.post("/req-email", async (req, res) => {
-	try {
-		const { email } = req.body;
-		if (await UserModel.findOne({ email })) {
-			return res.status(400).json({
-				error: true,
-				message: "Esse email já foi cadastrado."
-			});
-		}
-		random = codingRandom()
-		sendEmail(email, random);
-		return res.json({
-			error: false,
-			message: "Solicitação enviada com sucesso!"
-		});
-	} catch (error) {
-		return res.status(400).json({
-			error: true,
-			message: "Error ao enviar email."
-		});
-	}
+	await sendEmailRequest(req, res, UserModel);
 });
+
 router.post("/req-email-barber", async (req, res) => {
-	try {
-		const { email } = req.body;
-		if (await BarberModel.findOne({ email })) {
-			return res.status(400).json({
-				error: true,
-				message: "Esse email já foi cadastrado."
-			});
-		}
-		random = codingRandom();
-		sendEmail(email, random);
-		return res.json({
-			error: false,
-			message: "Solicitação enviada com sucesso!"
-		});
-	} catch (error) {
-		return res.status(400).json({
-			error: true,
-			message: "Error ao enviar email."
-		});
-	}
+	await sendEmailRequest(req, res, BarberModel);
 });
+
 router.post("/auth-code", async (req, res) => {
 	try {
 		const { code } = req.body;

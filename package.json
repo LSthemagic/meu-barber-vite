@@ -3,11 +3,13 @@
 	"private": true,
 	"version": "0.0.0",
 	"type": "module",
+	"author": "Railan Santana",
 	"scripts": {
 		"dev": "vite --port 3000",
 		"build": "vite build",
 		"lint": "eslint . --ext js,jsx --report-unused-disable-directives --max-warnings 0",
-		"preview": "vite preview"
+		"preview": "vite preview",
+		"start": "nodemon src/server.cjs"
 	},
 	"dependencies": {
 		"@emotion/react": "^11.11.3",
@@ -50,6 +52,7 @@
 		"react": "^18.2.0",
 		"react-bootstrap": "^2.10.0",
 		"react-dom": "^18.2.0",
+		"react-imask": "^7.6.0",
 		"react-router-dom": "^6.21.2",
 		"react-scripts": "5.0.1",
 		"react-slick": "^0.30.2",
@@ -78,6 +81,7 @@
 		"eslint-plugin-react-hooks": "^4.6.0",
 		"eslint-plugin-react-refresh": "^0.4.5",
 		"lint-staged": "^15.2.2",
+		"nodemon": "^3.1.0",
 		"postcss": "^8.4.38",
 		"prettier": "^3.2.5",
 		"tailwindcss": "^3.4.3",

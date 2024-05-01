@@ -48,7 +48,6 @@
 }
 
 .cardContent {
-  display: flex;
   align-items: center;
 }
 
@@ -62,9 +61,23 @@
   border-radius: 50%;
 }
 
+.editProfile {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  font-size: 15px;
+  flex-wrap: wrap;
+  direction: ltr;
+  gap: 1;
+}
+
 .textWrapper {
   display: flex;
-  flex-direction: column;
+  flex-direction: row;
+  justify-content: space-around;
+  font-size: 15px;
+  flex-wrap: wrap;
+  direction: ltr;
 }
 
 .spanCustom {
