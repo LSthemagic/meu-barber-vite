@@ -15,7 +15,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import PageUnauthorized from "../../../shared/images/PageUnauthorized.svg";
 
-const Calendar = ({ props }) => {
+const Calendar = ({ props, children }) => {
 	const [dataScheduling, setDataScheduling] = useState(null);
 	const [dataFromDB, setDataFromDB] = useState([]);
 	const [update, setUpdate] = useState(false);
@@ -24,6 +24,9 @@ const Calendar = ({ props }) => {
 	const navigate = useNavigate();
 	const { name: nameBarber } = props;
 	const { email: emailBarber } = props;
+	const { name: nameService } = children;
+	const { price: priceService } = children;
+	const { duration: durationService } = children;
 
 	// verificar se o user esta logado
 	useEffect(() => {
@@ -204,7 +207,7 @@ const Calendar = ({ props }) => {
 		});
 
 		if (timeSchedule) {
-			const endTime = moment(timeSchedule).clone().add(40, "minutes");
+			const endTime = moment(timeSchedule).clone().add(durationService, "minutes");
 			setDataScheduling({
 				start: timeSchedule,
 				end: endTime.format(),

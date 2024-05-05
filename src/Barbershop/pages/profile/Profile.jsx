@@ -29,7 +29,7 @@ const reducerAddBarber = (state, action) => {
 }
 
 const initialStateServices = {
-    service: null,
+    nameService: null,
     price: null,
     duration: null,
 }
@@ -37,7 +37,7 @@ const initialStateServices = {
 const reducerServices = (state, action) => {
     switch (action.type) {
         case "SET_SERVICE":
-            return { ...state, service: action.data };
+            return { ...state, nameService: action.data };
         case "SET_PRICE":
             return { ...state, price: action.data };
         case "SET_DURATION":
@@ -87,7 +87,6 @@ const Profile = () => {
     }, []);
 
     //  Pegar barbeiros via API
-
     const handleDataBarber = async () => {
         try {
             const response = await axios.get(
@@ -106,6 +105,7 @@ const Profile = () => {
                 });
             }
             setBarbershop(response.data);
+            // console.log(response.data)
         } catch (err) {
             console.log(err);
             Toast.fire({
@@ -191,11 +191,9 @@ const Profile = () => {
                         "Content-Type": "application/json"
                     },
                     body: JSON.stringify({
-
                         name: stateAddBarber?.name,
                         email: stateAddBarber?.email,
                         id: barbershop?._id,
-
                     })
                 }
             )
@@ -230,9 +228,9 @@ const Profile = () => {
             .padStart(3, '0');
         const digitsFloat = onlyDigits.slice(0, -2) + '.' + onlyDigits.slice(-2);
         event.target.value = maskCurrency(digitsFloat);
-        console.log(`target value: ${event.target.value}`)
-        console.log(`only: ${onlyDigits}`)
-        handleDispatchService("SET_PRICE",event)
+        // console.log(`target value: ${event.target.value}`)
+        // console.log(`only: ${onlyDigits}`)
+        handleDispatchService("SET_PRICE", event)
     }
 
     function maskCurrency(valor, locale = 'pt-BR', currency = 'BRL') {
@@ -240,6 +238,40 @@ const Profile = () => {
             style: 'currency',
             currency,
         }).format(valor);
+    }
+    // salvar serviço via API
+    const handleSaveService = async (e) => {
+        e.preventDefault();
+        try {
+            const response = await fetch("http://localhost:3001/barberAuth/saveService",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+                    body: JSON.stringify({
+                        id: barbershop?._id,
+                        nameService: stateService?.nameService,
+                        price: stateService?.price,
+                        duration: stateService?.duration
+                    })
+                }
+            )
+            const data = await response.json()
+            const icon = data.error ? "error" : "success"
+            handleDataBarber()
+            Toast.fire({
+                icon: `${icon}`,
+                title: `${data.message}`
+            })
+
+        } catch (e) {
+            console.log(`Error from saveService ${e}`)
+            Toast.fire({
+                icon: "error",
+                title: "Erro ao carregar requisição."
+            })
+        }
     }
 
     // modal de serviços oferecidos
@@ -259,12 +291,12 @@ const Profile = () => {
                     <Modal.Title className="text-black">Adicionar Barbeiro</Modal.Title>
                 </Modal.Header>
                 <Modal.Body>
-                    <Form>
+                    <Form className={styles.input} onSubmit={handleSaveService}>
                         <Form.Control
                             required
                             type="text"
                             placeholder="Serviço oferecido"
-                            onChange={ (e)=> handleDispatchService("SET_SERVICE",e) }
+                            onChange={(e) => handleDispatchService("SET_SERVICE", e)}
                         />
                         <br />
                         <Form.Control
@@ -273,12 +305,17 @@ const Profile = () => {
                             placeholder="Valor (apenas números)"
                             onChange={(e) => mascaraMoeda(e)} maxLength={15}
                         />
+                        <br />
+                        <Form.Control
+                            required
+                            type="time"
+                            placeholder="Duração do serviço"
+                            onChange={(e) => handleDispatchService("SET_DURATION", e)}
+                        />
                         <Modal.Footer>
                             <Button onClick={handleCloseModalServices} variant="secondary" >Cancelar</Button>
-                            <Button variant="primary" >Clica ai</Button>
+                            <Button type="submit" variant="primary" >Clica ai</Button>
                         </Modal.Footer>
-
-
 
                     </Form>
 
@@ -322,7 +359,7 @@ const Profile = () => {
                         </div>
 
                     ) : (
-                        <div className={styles.tableContent}>
+                        <div className={styles.textWrapper}>
                             {
                                 barbershop.barbers?.map((item, index) => (
                                     <div className={styles.listBarbers} key={index}>
@@ -346,8 +383,19 @@ const Profile = () => {
                 </h2>
 
                 <div className={styles.cardContent}>
-                    <div className={styles.tableContent}>
-                        <h5>{"nenhum hahahaha"}</h5>
+                    <div className={styles.textWrapper}>
+                        {barbershop?.services ?
+                            barbershop.services?.map((item, index) => (
+                                <button style={{
+                                    textAlign:"left"
+                                }} className={styles.button} disabled key={index}>
+                                    Serviço: {item.nameService} <br />
+                                    Valor: {item.price} <br />
+                                    Duração: {item.duration}
+                                </button>
+
+                            ))
+                            : "Ainda não há serviços cadastrados."}
                     </div>
                 </div>
             </div>

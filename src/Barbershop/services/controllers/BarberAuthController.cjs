@@ -140,6 +140,42 @@ router.post("/addBarber", async (req, res) => {
 	}
 });
 
+router.post("/saveService", async (req, res) => {
+	try {
+		const { id, nameService, price, duration } = req.body;
+		const barbershop = await BarberModel.findById(id)
+
+		if (!barbershop) {
+			return res.status(400).json({
+				error: true,
+				message: "A barbearia informada não existe"
+			})
+		}
+
+		const serviceAlreadyExists = barbershop.services.find((service) => service.nameService == nameService);
+
+		if (serviceAlreadyExists) {
+			return res.status(400).json({
+				error: true,
+				message: "Este serviço já está cadastrado nessa barbearia."
+			})
+		}
+
+		barbershop.services.push({nameService, price, duration})
+		await barbershop.save()
+		return res.json({
+			error: false,
+			data: barbershop.services,
+			message: "Serviço adicionado."
+		})
+	} catch (e) {
+		console.log(`Error from saveService API: ${e}`)
+		return res.status(500).json({
+			error: true,
+			message: "Erro no servidor ao salvar serviço. Tente novamente mais tarde!"
+		})
+	}
+})
 
 module.exports = router;
 

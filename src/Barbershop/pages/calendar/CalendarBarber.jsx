@@ -87,6 +87,7 @@ const Calendar = () => {
                 }, 3000);
             }
 
+            console.log(response.data.unavailableDates)
             setUnavailableBarberDB(response.data.unavailableDates);
         } catch (error) {
             console.log(error);

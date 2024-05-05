@@ -192,3 +192,34 @@
 	gap: 1rem;
 	font-size: medium;
 }
+/* Regras de mídia para tornar o layout responsivo */
+@media (max-width: 768px) {
+    .card1,
+    .card2 {
+        width: 90%; /* Reduzindo a largura dos cards para telas menores */
+        margin: 5%; /* Ajustando o espaçamento superior */
+		padding-bottom: 8%;
+    }
+
+    .editProfile,
+    .textWrapper {
+        flex-direction: column; /* Alterando a direção do flex para coluna em telas menores */
+        align-items: center; /* Centralizando itens em telas menores */
+        gap: 1rem; /* Adicionando um espaçamento entre os itens */
+
+    }
+
+    .imageWrapper {
+        margin-right: 0; /* Removendo a margem direita para centralizar a imagem */
+    }
+
+    .button,
+    .button2 {
+        width: 100%; /* Definindo a largura dos botões para 100% em telas menores */
+        margin-top: 1rem; /* Ajustando o espaçamento superior */
+    }
+
+    .headerCard2 {
+        gap: 5px; /* Ajustando o espaçamento entre os itens */
+    }
+}

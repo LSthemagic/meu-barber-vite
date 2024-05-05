@@ -61,6 +61,20 @@ const BarberSchema = new mongoose.Schema({
 	}
 });
 
+const ServicesSchema = new mongoose.Schema({
+	nameService: {
+		type: String,
+		required: true
+	},
+	price: {
+		type: String,
+		required: true
+	},
+	duration: {
+		type: String
+	}
+})
+
 const EstablishmentSchema = new mongoose.Schema({
 	name: {
 		type: String,
@@ -77,6 +91,10 @@ const EstablishmentSchema = new mongoose.Schema({
 	},
 	barbers: {
 		type: [BarberSchema],
+		default: [],
+	},
+	services: {
+		type: [ServicesSchema],
 		default: [],
 	},
 	location: {

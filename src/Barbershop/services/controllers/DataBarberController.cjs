@@ -35,7 +35,7 @@ router.get("/profileBarber", async (req, res) => {
 			})
 		}
 		return res.json(barber);
-	}catch(e){
+	} catch (e) {
 		console.log(e.message);
 		return res.status(401).json({
 			error: true,
@@ -147,5 +147,6 @@ router.get("/barbersPerBarbershop", async (req, res) => {
 		})
 	}
 });
+
 
 module.exports = router;

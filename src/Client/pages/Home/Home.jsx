@@ -16,6 +16,7 @@ const Home = () => {
 	const [barbers, setBarbers] = useState([]);
 	const [showModalCalendar, setShowModalCalendar] = useState(false);
 	const [barbershopSelected, setBarbershopSelected] = useState({});
+	const [serviceSelected, setServiceSelected] = useState(null);
 	const [barbershopFav, setBarbershopFav] = useState(false);
 	const [dbBarberFav, setDbBarberFav] = useState([]);
 	const sliderRef = useRef(null);
@@ -80,7 +81,8 @@ const Home = () => {
 
 	const handleDoubleObjectiveCalendar = (data) => {
 		// handleOpenModalCalendar();
-		handleOptionsBarbers(data)
+		handleOptionsBarbers(data);
+
 		setBarbershopSelected(data);
 	};
 
@@ -155,7 +157,7 @@ const Home = () => {
 					<Modal.Title className="text-black">Agendar Horário</Modal.Title>
 				</Modal.Header>
 				<Modal.Body>
-					<Calendar props={barbershopSelected} />
+					<Calendar props={barbershopSelected} children={serviceSelected} />
 				</Modal.Body>
 				<Modal.Footer>
 					<Button variant="secondary" onClick={handleOffModalCalendar}>
@@ -206,11 +208,13 @@ const Home = () => {
 
 			if (barber) {
 				const selectedBarber = barbers?.find(barberItem => barberItem.email === barber);
-				console.log(selectedBarber);
+				// console.log(selectedBarber);
 				// Swal.fire(`You selected: ${selectedBarber.label}`);
+
+
 				setBarbershopSelected(selectedBarber)
 				Swal.close();
-				handleOpenModalCalendar()
+				handleServices(data);
 			}
 		} catch (e) {
 			console.log(`Error from handleOptionsBarbers: ${e}`);
@@ -221,11 +225,64 @@ const Home = () => {
 		}
 	}
 
-	// const filteredBarbers = showFavorites
-    // ? barbers.filter((barber) => dbBarberFav.IDs.includes(barber._id))
-    // : barbers;
-	console.log(showBarbershopFavorites)
-	const filteredBarbers = showBarbershopFavorites ? barbers.filter((barber) => dbBarberFav.IDs.includes(barber._id)) : barbers;
+	const handleServices = async (data) => {
+		const services = data.services?.map((item) => ({
+			name: item.nameService,
+			label: `${item.nameService} - ${item.price}`,
+			price: item.price,
+			duration: item.duration
+		}));
+
+		if (!services || services.length === 0) {
+			// Exibir mensagem ou lidar com o caso em que não há serviços disponíveis
+			Toast.fire({
+				icon: 'info',
+				title: `${data?.name} não tem serviços disponíveis no momento.`
+			});
+			return;
+		}
+
+		try {
+			const { value: service } = await Swal.fire({
+				title: "Agendar com Meu Barber",
+				input: "select",
+				inputOptions: services?.reduce((obj, item) => {
+
+					obj[item.name] = item.label; // Alterei aqui para usar o nome como chave e o rótulo como valor
+					return obj;
+				}, {}),
+				inputPlaceholder: "Selecionar o serviço",
+				showCancelButton: true,
+				inputValidator: (value) => {
+					return new Promise((resolve) => {
+						if (value) {
+							resolve();
+						} else {
+							resolve("Selecione um serviço");
+						}
+					});
+				}
+			});
+
+			if (service) {
+				// Agora você pode encontrar o serviço selecionado usando o nome do serviço
+				const selectedService = services.find(item => item.name === service);
+				
+				setServiceSelected(selectedService)
+				Swal.close();
+				handleOpenModalCalendar()
+			}
+		} catch (e) {
+			console.log("Erro ao lidar com os serviços", e);
+			Toast.fire({
+				icon: 'error',
+				title: "Erro ao buscar serviços oferecidos."
+			});
+		}
+	}
+
+
+	const filteredBarbers = showBarbershopFavorites ? barbers.filter((barber) => dbBarberFav?.IDs?.includes(barber._id)) : barbers;
 
 
 	return (
@@ -238,7 +295,7 @@ const Home = () => {
 								<ImagemFormatted src={"../../../../public/section_img2.jpg"} />
 								<h3 className={styles.barberNome}>{barber?.name}</h3>
 								<div className={styles.fa5}>
-									{dbBarberFav && dbBarberFav.IDs && dbBarberFav.IDs.includes(barber._id) ? (
+									{dbBarberFav && dbBarberFav.IDs && dbBarberFav?.IDs?.includes(barber._id) ? (
 										<i
 											key={barber._id}
 											onClick={() => handleFavoriteBarbershop(barber._id)}
