@@ -23,10 +23,10 @@ const Calendar = () => {
     const [barbers, setBarbers] = useState(null);
     const [emailSelected, setEmailSelected] = useState(null);
     // Obter informações de autenticação do barbeiro do contexto
-    const { tokenBarber, dataBarber } = useAuthBarber();
+    const { token, dataBarber } = useAuthBarber();
 
     // Redirecionar para a página inicial se não houver token ou dados do barbeiro
-    if (!tokenBarber || !dataBarber) return <LandingPage />;
+    if (!token || !dataBarber) return <LandingPage />;
 
     // Carregar dados de agendamento e horários indisponíveis ao montar o componente
 
@@ -71,7 +71,7 @@ const Calendar = () => {
         try {
             const response = await axios.get("http://localhost:3001/dataBarber/unavailableTimeBarber", {
                 headers: {
-                    authorization: `Bearer ${tokenBarber}`,
+                    authorization: `Bearer ${token}`,
                     email: emailBarber,
                 }
             })
@@ -134,7 +134,7 @@ const Calendar = () => {
             const response = await axios.get("http://localhost:3001/dataBarber/barbersPerBarbershop",
                 {
                     headers: {
-                        Authorization: `Bearer ${tokenBarber}`,
+                        Authorization: `Bearer ${token}`,
                         id: dataBarber._id
                     }
                 })

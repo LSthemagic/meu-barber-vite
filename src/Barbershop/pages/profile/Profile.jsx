@@ -28,21 +28,48 @@ const reducerAddBarber = (state, action) => {
     }
 }
 
+const initialStateServices = {
+    service: null,
+    price: null,
+    duration: null,
+}
+
+const reducerServices = (state, action) => {
+    switch (action.type) {
+        case "SET_SERVICE":
+            return { ...state, service: action.data };
+        case "SET_PRICE":
+            return { ...state, price: action.data };
+        case "SET_DURATION":
+            return { ...state, duration: action.data };
+        default:
+            throw new Error('Invalid Action Type!')
+    }
+}
+
+
 const Profile = () => {
     const [barbershop, setBarbershop] = useState([]);
     const auth = useAuth();
+
     // states para add barber
     const [showModalAddBarber, setShowModalAddBarber] = useState(false)
+
     const [stateAddBarber, dispatchAddBarber] = useReducer(reducerAddBarber, initialStateAddBarber);
+
+    const [stateService, dispatchService] = useReducer(reducerServices, initialStateServices);
+
     // states para adicionar services oferecidos
     const [showModalServices, setShowModalServices] = useState(false)
+
     // funções para abrir e fechar modal de add barber 
     const handleOpenModalAddBarber = () => setShowModalAddBarber(true)
     const handleCloseModalAddBarber = () => setShowModalAddBarber(false)
+
+
     // funções para abrir e fechar modal de adicionar serviços
     const handleOpenModalServices = () => setShowModalServices(true)
     const handleCloseModalServices = () => setShowModalServices(false)
-
 
 
     if (!auth) {
@@ -91,6 +118,14 @@ const Profile = () => {
     //  Adiciona um novo barbeiro no state via reducer
     const handleDispatchAddBarber = (type, event) => {
         dispatchAddBarber({
+            type: type,
+            data: event.target.value
+        })
+    }
+
+    //  Adiciona um novo serviço no state via reducer
+    const handleDispatchService = (type, event) => {
+        dispatchService({
             type: type,
             data: event.target.value
         })
@@ -197,6 +232,7 @@ const Profile = () => {
         event.target.value = maskCurrency(digitsFloat);
         console.log(`target value: ${event.target.value}`)
         console.log(`only: ${onlyDigits}`)
+        handleDispatchService("SET_PRICE",event)
     }
 
     function maskCurrency(valor, locale = 'pt-BR', currency = 'BRL') {
@@ -228,7 +264,7 @@ const Profile = () => {
                             required
                             type="text"
                             placeholder="Serviço oferecido"
-                        // onChange={}
+                            onChange={ (e)=> handleDispatchService("SET_SERVICE",e) }
                         />
                         <br />
                         <Form.Control
@@ -262,14 +298,14 @@ const Profile = () => {
 
                 <div className={styles.cardContent}>
                     <div className={styles.textWrapper}>
-                        <h5 style={{ justifyContent: "center", display: "flex", flexDirection: "row", gap: "1rem", alignItems: "center" }}>
+                        <button className={styles.button}>
                             EDITAR PERFIL
                             <SquarePen />
-                        </h5>
-                        <h5 style={{ justifyContent: "center", display: "flex", flexDirection: "row", gap: "1rem", alignItems: "center" }}>
+                        </button>
+                        <button className={styles.button}>
                             EXCLUIR CONTA
                             <Trash2 />
-                        </h5>
+                        </button>
                     </div>
                 </div>
             </div>
@@ -290,8 +326,11 @@ const Profile = () => {
                             {
                                 barbershop.barbers?.map((item, index) => (
                                     <div className={styles.listBarbers} key={index}>
-                                        <h4>{item.name?.toUpperCase()}</h4>
-                                        <SquarePen style={{ cursor: "pointer", height: "20px" }} />
+                                        <button className={styles.button2}>{item.name?.toUpperCase()}
+                                            <SquarePen style={{ cursor: "pointer", height: "20px" }} />
+                                            <Trash2 style={{ cursor: "pointer", height: "20px" }} />
+                                        </button>
+
                                     </div>
                                 ))
                             }
@@ -303,7 +342,7 @@ const Profile = () => {
             <div className={`${styles.card1} mt-3`}>
                 <h2 style={{ textAlign: "center", marginBottom: "3%", display: "flex", flexDirection: "row", gap: "1rem", justifyContent: "center" }}>
                     {"SERVIÇOS OFERECIDOS"}
-                    <ClipboardPlus onClick={handleOpenModalServices} style={{ cursor: "pointer" }} />
+                    <ClipboardPlus onClick={handleOpenModalServices} style={{ cursor: "pointer", height: "20px" }} />
                 </h2>
 
                 <div className={styles.cardContent}>

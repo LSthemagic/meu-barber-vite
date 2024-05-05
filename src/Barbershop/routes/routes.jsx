@@ -5,7 +5,7 @@ import AuthenticateBarber from "../pages/authenticateBarber/AuthenticateBarber";
 import PageNotFound from "../../shared/pages/PageNotFound";
 import Profile from "../pages/profile/Profile";
 import CalendarBarber from "../pages/calendar/CalendarBarber"
-import { PrivateRoutes } from "./privateRoutes";
+import { PrivateRoutes } from "../../shared/routes/PrivateRoutes";
 
 
 const BarberRoutes = () => {

@@ -7,7 +7,7 @@ import Authenticate from "../pages/Authenticate/Authenticate";
 import Footer from "../../shared/layout/footer/Footer";
 import BarberRoutes from "../../Barbershop/routes/routes";
 import PageNotFound from "../../shared/pages/PageNotFound";
-import { PrivateRoutes } from "./privateRoutes";
+import { PrivateRoutes } from "../../shared/routes/PrivateRoutes";
 
 
 const AppRoutes = () => {

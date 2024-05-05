@@ -3,7 +3,7 @@ import { createContext, useContext, useState } from "react";
 const BarberContext = createContext();
 
 export const BarberProvider = ({ children }) => {
-	const [tokenBarber, setTokenBarber] = useState(
+	const [token, setToken] = useState(
 		() => localStorage.getItem("tokenBarber") || null
 	);
 	const [dataBarber, setDataBarber] = useState(() =>
@@ -40,13 +40,13 @@ export const BarberProvider = ({ children }) => {
 	};
 
 	const authToken = (newToken) => {
-		setTokenBarber(newToken);
+		setToken(newToken);
 		localStorage.setItem("tokenBarber", newToken);
 		handleLogged()
 	};
 
 	const offAuthToken = () => {
-		setTokenBarber(null);
+		setToken(null);
 		localStorage.removeItem("tokenBarber");
 		handleNotLogged()
 	};
@@ -54,7 +54,7 @@ export const BarberProvider = ({ children }) => {
 	return (
 		<BarberContext.Provider
 			value={{
-				tokenBarber,
+				token,
 				authToken,
 				offAuthToken,
 				signIn,

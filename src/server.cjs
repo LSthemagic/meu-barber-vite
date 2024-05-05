@@ -33,7 +33,7 @@ app.use("/emailAuth", VerifyEmail);
 app.use("/dataBarber", DataBarberController);
 app.use("/confirmationFromEmail", ConfirmationSchedule)
 app.use("/calendar", scheduleMiddleware, ScheduleController);
-
+app.use("/authToken", authenticateMiddleware)
 app.listen(port, () => {
 	console.log("Servidor rodando na porta 3001");
 });
