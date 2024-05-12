@@ -2,8 +2,9 @@ const express = require("express");
 const router = express.Router();
 require("dotenv").config();
 const nodemailer = require("nodemailer")
+const moment = require('moment')
 
-const sendEmail = (emailBarber, emailClient) => {
+const sendEmail = (emailBarber, emailClient,  nameClient, dataScheduling, nameService) => {
   const transport = nodemailer.createTransport({
     host: "smtp.gmail.com",
     port: 587,
@@ -35,11 +36,11 @@ const sendEmail = (emailBarber, emailClient) => {
                         <table border="0" cellpadding="0" cellspacing="0" width="100%" style="background-color: #fff; border-radius: 5px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.1);">
                             <tr>
                                 <td style="padding: 30px;">
-                                    <p style="color: #333; font-size: 18px; margin: 0;"><strong>Obrigado por escolher nossos serviços! Estamos ansiosos para recebê-lo(a) em breve.</strong></p>
+                                    <p style="color: #333; font-size: 18px; margin: 0;"><strong>Obrigado por escolher nossos serviços! Estamos ansiosos para deixar mais um cliente na régua.</strong></p>
                                     <p style="color: #333; font-size: 16px; margin: 20px 0 10px 0;"><strong>Detalhes do Agendamento:</strong></p>
-                                    <p style="color: #333; font-size: 16px; margin: 10px 0;"><strong>Nome do Cliente:</strong> [Inserir nome do cliente]</p>
-                                    <p style="color: #333; font-size: 16px; margin: 10px 0;"><strong>Data e Hora:</strong> [Inserir data e hora do agendamento]</p>
-                                    <p style="color: #333; font-size: 16px; margin: 10px 0;"><strong>Serviço Agendado:</strong> [Inserir serviço agendado]</p>
+                                    <p style="color: #333; font-size: 16px; margin: 10px 0;"><strong>Nome do Cliente:</strong> ${nameClient}</p>
+                                    <p style="color: #333; font-size: 16px; margin: 10px 0;"><strong>Data e Hora:</strong> ${dataScheduling}</p>
+                                    <p style="color: #333; font-size: 16px; margin: 10px 0;"><strong>Serviço Agendado:</strong> ${nameService}</p>
                                     <br/>
                                     <p style="margin: 0; text-align: center;"><a href="#" style="background-color: #007bff; color: #fff; padding: 12px 24px; text-decoration: none; border-radius: 5px; font-size:30px;">Seu agendamento foi confirmado.</a></p>
                                     <p style="color: #333; font-size: 14px; margin-top: 20px;">Caso haja algum problema com as informações acima, entre em contato conosco o mais breve possível para que possamos fazer as alterações necessárias.</p>
@@ -75,9 +76,17 @@ const sendEmail = (emailBarber, emailClient) => {
 
 router.post("/confirmationSchedule", async (req, res) => {
   try {
-    const { emailBarber, emailClient } = req.body;
+    const { emailBarber, emailClient, nameClient, dataScheduling, service } = req.body;
+  
+    try{
+      const dataFormatted = moment(dataScheduling).format("DD - MM - YYYY HH:mm");
+      sendEmail(emailBarber, emailClient, nameClient, dataFormatted, service)
+    }catch(err){
+      console.log("erro ao formatar horário",err)
+    }
 
-    sendEmail(emailBarber, emailClient)
+    
+
 
     return res.json({
       error: false,

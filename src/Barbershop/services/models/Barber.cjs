@@ -1,6 +1,20 @@
 const mongoose = require("../../../shared/services/database/index.cjs");
 const bcrypt = require("bcryptjs");
 
+const ServicesSchema = new mongoose.Schema({
+	nameService: {
+		type: String,
+		required: true
+	},
+	price: {
+		type: String,
+		required: true
+	},
+	duration: {
+		type: String
+	}
+})
+
 const ClienteSchema = new mongoose.Schema({
 	name: {
 		type: String,
@@ -18,6 +32,9 @@ const ClienteSchema = new mongoose.Schema({
 	endDate: {
 		type: Date
 	},
+	service_id: {
+		type: String,
+	}
 });
 
 const UnavailableDateSchema = new mongoose.Schema({
@@ -61,19 +78,6 @@ const BarberSchema = new mongoose.Schema({
 	}
 });
 
-const ServicesSchema = new mongoose.Schema({
-	nameService: {
-		type: String,
-		required: true
-	},
-	price: {
-		type: String,
-		required: true
-	},
-	duration: {
-		type: String
-	}
-})
 
 const EstablishmentSchema = new mongoose.Schema({
 	name: {

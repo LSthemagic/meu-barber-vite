@@ -169,7 +169,7 @@ const Calendar = () => {
                 `<div class="mb-3">` +
                 `<label for="time">Marcar:</label>` +
                 `<select id="time" class="form-control">` +
-                `<option value="horario">Apenas o horário selecionado</option>` +
+                `<option value="horário">Apenas o horário selecionado</option>` +
                 `<option value="dia">O dia inteiro</option>` +
                 `</select>` +
                 `</div>` +

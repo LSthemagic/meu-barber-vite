@@ -24,9 +24,13 @@ const Calendar = ({ props, children }) => {
 	const navigate = useNavigate();
 	const { name: nameBarber } = props;
 	const { email: emailBarber } = props;
+
 	const { name: nameService } = children;
-	const { price: priceService } = children;
+	
+	// const { price: priceService } = children;
 	const { duration: durationService } = children;
+	const { service_id } = children;
+	
 
 	// verificar se o user esta logado
 	useEffect(() => {
@@ -80,6 +84,9 @@ const Calendar = ({ props, children }) => {
 				body: JSON.stringify({
 					emailBarber: emailBarber,
 					emailClient: data?.email,
+					nameClient: data?.name,
+					dataScheduling: dataScheduling.start,
+					service: nameService,
 				})
 			})
 
@@ -121,7 +128,8 @@ const Calendar = ({ props, children }) => {
 							name: data?.name,
 							email: data?.email,
 							startDate: new Date(dataScheduling?.start).toISOString(),
-							endDate: new Date(dataScheduling?.end).toISOString()
+							endDate: new Date(dataScheduling?.end).toISOString(),
+							service_id: service_id
 						},
 						type: dataScheduling?.type
 					})

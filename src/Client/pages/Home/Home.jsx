@@ -230,7 +230,8 @@ const Home = () => {
 			name: item.nameService,
 			label: `${item.nameService} - ${item.price}`,
 			price: item.price,
-			duration: item.duration
+			duration: item.duration,
+			service_id: item._id,
 		}));
 
 		if (!services || services.length === 0) {

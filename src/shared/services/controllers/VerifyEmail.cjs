@@ -79,7 +79,7 @@ const sendEmail = async (email, codingRandom) => {
         </body>
       </html>`
 		})
-		.then((resp) => console.log(""))
+		.then((resp) => console.log(resp))
 		.catch((err) => console.log("erro ao enviar email ", err));
 };
 
@@ -92,7 +92,7 @@ const sendEmailRequest = async (req, res, Model) => {
 				message: "Esse email já foi cadastrado."
 			});
 		}
-		const random = codingRandom();
+		random = codingRandom();
 		sendEmail(email, random);
 		return res.json({
 			error: false,

@@ -4,14 +4,24 @@ const router = express.Router();
 
 router.post("/update-clients", async (req, res) => {
     try {
-        const { email, clients: clientsFront, type } = req.body;
+        const { email, clients: clientsFront, type, } = req.body;
 
         const barber = await BarberModel.findOne({ "barbers.email": email });
+
+        const service = await BarberModel.findOne({ "services._id": clientsFront.service_id })
+
 
         if (!barber) {
             return res.status(404).json({
                 error: true,
                 message: "Barbeiro não encontrado"
+            });
+        }
+
+        if(!service){
+            return res.status(404).json({
+                error: true,
+                message: "Serviço não encontrado."
             });
         }
 
@@ -54,6 +64,7 @@ router.post("/update-clients", async (req, res) => {
         if (existingClientIndex !== -1) {
             // Update existing client
             barber.barbers[barberIndex].clients[existingClientIndex] = clientsFront;
+
         } else {
             const allBarbershops = await BarberModel.findOne({ "barbers.clients.email": clientsFront.email })
                 .select('barbers')
