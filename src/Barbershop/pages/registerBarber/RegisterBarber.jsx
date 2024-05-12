@@ -131,7 +131,7 @@ const RegisterBarber = () => {
 			console.log(stateEstablishment.file);
 
 			const response = await fetch(
-				"http://localhost:3001/barberAuth/registerBarber",
+				"https://meu-barber-vite-api-2.onrender.com/barberAuth/registerBarber",
 				{
 					method: "POST",
 					headers: {
@@ -171,7 +171,7 @@ const RegisterBarber = () => {
 		if (code) {
 			try {
 				const response = await fetch(
-					"http://localhost:3001/emailAuth/auth-code",
+					"https://meu-barber-vite-api-2.onrender.com/emailAuth/auth-code",
 					{
 						method: "POST",
 						headers: {
@@ -205,7 +205,7 @@ const RegisterBarber = () => {
 		event.preventDefault();
 		try {
 			const response = await fetch(
-				"http://localhost:3001/emailAuth/req-email-barber",
+				"https://meu-barber-vite-api-2.onrender.com/emailAuth/req-email-barber",
 				{
 					method: "POST",
 					headers: {

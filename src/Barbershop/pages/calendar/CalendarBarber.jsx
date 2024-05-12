@@ -69,7 +69,7 @@ const Calendar = () => {
     // Buscar horários indisponíveis do servidor
     const handleGetInvalidHoursDB = async (emailBarber) => {
         try {
-            const response = await axios.get("http://localhost:3001/dataBarber/unavailableTimeBarber", {
+            const response = await axios.get("https://meu-barber-vite-api-2.onrender.com/dataBarber/unavailableTimeBarber", {
                 headers: {
                     authorization: `Bearer ${token}`,
                     email: emailBarber,
@@ -101,7 +101,7 @@ const Calendar = () => {
     // Enviar horários indisponíveis para o servidor
     const handlePostTimeUnavailable = async () => {
         if (!unavailableTime) return
-        const response = await fetch("http://localhost:3001/calendar/unavailableTime", {
+        const response = await fetch("https://meu-barber-vite-api-2.onrender.com/calendar/unavailableTime", {
             method: "POST",
             headers: {
                 'Content-type': 'application/json'
@@ -132,7 +132,7 @@ const Calendar = () => {
     // Get barbers per barbershop from the database and set it to state
     const handleGetBarbers = async () => {
         try {
-            const response = await axios.get("http://localhost:3001/dataBarber/barbersPerBarbershop",
+            const response = await axios.get("https://meu-barber-vite-api-2.onrender.com/dataBarber/barbersPerBarbershop",
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,

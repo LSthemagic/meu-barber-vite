@@ -90,7 +90,7 @@ const Profile = () => {
     const handleDataBarber = async () => {
         try {
             const response = await axios.get(
-                "http://localhost:3001/dataBarber/profileBarber",
+                "https://meu-barber-vite-api-2.onrender.com/dataBarber/profileBarber",
                 {
                     headers: {
                         email: email,
@@ -184,7 +184,7 @@ const Profile = () => {
         e.preventDefault()
         try {
             const response = await fetch(
-                "http://localhost:3001/barberAuth/addBarber",
+                "https://meu-barber-vite-api-2.onrender.com/barberAuth/addBarber",
                 {
                     method: "POST",
                     headers: {
@@ -243,7 +243,7 @@ const Profile = () => {
     const handleSaveService = async (e) => {
         e.preventDefault();
         try {
-            const response = await fetch("http://localhost:3001/barberAuth/saveService",
+            const response = await fetch("https://meu-barber-vite-api-2.onrender.com/barberAuth/saveService",
                 {
                     method: "POST",
                     headers: {

@@ -37,7 +37,7 @@ const Home = () => {
 		const fetchBarbers = async () => {
 			try {
 				const response = await axios.get(
-					"http://localhost:3001/dataBarber/barbers",
+					"https://meu-barber-vite-api-2.onrender.com/dataBarber/barbers",
 					{
 						headers: {
 							"Content-Type": "application/json"
@@ -94,8 +94,9 @@ const Home = () => {
 
 	const handleFavoriteBarbershop = async (id) => {
 		try {
+			console.log(id)
 			const response = await fetch(
-				"http://localhost:3001/auth/userBarbershopFav",
+				"https://meu-barber-vite-api-2.onrender.com/auth/userBarbershopFav",
 				{
 					method: "POST",
 					headers: {
@@ -127,7 +128,7 @@ const Home = () => {
 
 	const handleGetFavBarbershop = async () => {
 		try {
-			const response = await axios.get("http://localhost:3001/dataUser/getFav",
+			const response = await axios.get("https://meu-barber-vite-api-2.onrender.com/dataUser/getFav",
 				{
 					headers: {
 						email: email ? email : null

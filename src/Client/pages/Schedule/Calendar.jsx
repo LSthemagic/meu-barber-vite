@@ -76,7 +76,7 @@ const Calendar = ({ props, children }) => {
 	// enviar email de confirmação de horário agendado para o user e para o barbeiro
 	const confirmationSchedule = async () => {
 		try {
-			const response = await fetch("http://localhost:3001/confirmationFromEmail/confirmationSchedule", {
+			const response = await fetch("https://meu-barber-vite-api-2.onrender.com/confirmationFromEmail/confirmationSchedule", {
 				method: "POST",
 				headers: {
 					"Content-type": "application/json"
@@ -115,7 +115,7 @@ const Calendar = ({ props, children }) => {
 	const handleUpdateDB = async () => {
 		try {
 			const response = await fetch(
-				"http://localhost:3001/calendar/update-clients",
+				"https://meu-barber-vite-api-2.onrender.com/calendar/update-clients",
 				{
 					method: "POST",
 					headers: {
@@ -158,7 +158,7 @@ const Calendar = ({ props, children }) => {
 	const handleGetHoursScheduled = async () => {
 		try {
 			const response = await axios.get(
-				"http://localhost:3001/dataBarber/unavailableTimeBarber",
+				"https://meu-barber-vite-api-2.onrender.com/dataBarber/unavailableTimeBarber",
 				{
 					headers: {
 						Authorization: `Bearer ${token}`,

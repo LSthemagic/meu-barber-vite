@@ -47,7 +47,7 @@ const Register = () => {
 		if (state.code) {
 			try {
 				const response = await fetch(
-					"http://localhost:3001/emailAuth/auth-code",
+					"https://meu-barber-vite-api-2.onrender.com/emailAuth/auth-code",
 					{
 						method: "POST",
 						headers: {
@@ -84,7 +84,7 @@ const Register = () => {
 		event.preventDefault();
 		try {
 			const response = await fetch(
-				"http://localhost:3001/emailAuth/req-email",
+				"https://meu-barber-vite-api-2.onrender.com/emailAuth/req-email",
 				{
 					method: "POST",
 					headers: {
@@ -120,7 +120,7 @@ const Register = () => {
 	const handleSubmit = async () => {
 		// event.preventDefault();
 		try {
-			const response = await fetch("http://localhost:3001/auth/register", {
+			const response = await fetch("https://meu-barber-vite-api-2.onrender.com/auth/register", {
 				method: "POST",
 				headers: {
 					"Content-type": "application/json"

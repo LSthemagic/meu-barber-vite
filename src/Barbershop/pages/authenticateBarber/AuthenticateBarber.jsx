@@ -42,7 +42,7 @@ const AuthenticateBarber = () => {
 			return;
 		}
 		try {
-			const response = await fetch("http://localhost:3001/barberAuth/authenticateBarber", {
+			const response = await fetch("https://meu-barber-vite-api-2.onrender.com/barberAuth/authenticateBarber", {
 				method: "POST",
 				headers: {
 					"Content-type": "application/json"
