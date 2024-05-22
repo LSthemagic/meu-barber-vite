@@ -2,7 +2,7 @@ import React, { useEffect, useState, useRef } from "react";
 import Slider from "react-slick";
 import "slick-carousel/slick/slick.css";
 import "slick-carousel/slick/slick-theme.css";
-import { Button, Modal } from "react-bootstrap";
+import { Button, Modal, Spinner } from "react-bootstrap";
 import { useAuth } from "../../context/AuthContext";
 import Toast from "../../../shared/custom/Toast";
 import axios from "axios";
@@ -11,6 +11,8 @@ import styles from "./Home.module.css";
 import LandingPage from "../../../shared/pages/landingPage";
 import ImagemFormatted from "../../../shared/layout/imgPatterns/ImagemFormatted";
 import Swal from "sweetalert2";
+import path_url from "../../../shared/config/path_url.json"
+import { BeatLoader, ClimbingBoxLoader, PuffLoader } from "react-spinners";
 
 const Home = () => {
 	const [barbers, setBarbers] = useState([]);
@@ -19,6 +21,8 @@ const Home = () => {
 	const [serviceSelected, setServiceSelected] = useState(null);
 	const [barbershopFav, setBarbershopFav] = useState(false);
 	const [dbBarberFav, setDbBarberFav] = useState([]);
+	const [isLoading, setIsLoading] = useState(false);
+	const [isLoadingFavorite, setIsLoadingFavorite] = useState(false);
 	const sliderRef = useRef(null);
 	const auth = useAuth();
 
@@ -35,9 +39,10 @@ const Home = () => {
 
 	useEffect(() => {
 		const fetchBarbers = async () => {
+			setIsLoading(true)
 			try {
 				const response = await axios.get(
-					"https://meu-barber-vite-api-2.onrender.com/dataBarber/barbers",
+					`${path_url.remote}/dataBarber/barbers`,
 					{
 						headers: {
 							"Content-Type": "application/json"
@@ -47,6 +52,8 @@ const Home = () => {
 				setBarbers(response.data);
 			} catch (err) {
 				console.error("Error getBarbers", err.response);
+			} finally {
+				setIsLoading(false)
 			}
 		};
 
@@ -93,10 +100,11 @@ const Home = () => {
 	};
 
 	const handleFavoriteBarbershop = async (id) => {
+		setIsLoadingFavorite(true)
 		try {
 			console.log(id)
 			const response = await fetch(
-				"https://meu-barber-vite-api-2.onrender.com/auth/userBarbershopFav",
+				`${path_url.remote}/auth/userBarbershopFav`,
 				{
 					method: "POST",
 					headers: {
@@ -123,12 +131,15 @@ const Home = () => {
 			}
 		} catch (error) {
 			console.log("error favBarber: " + error.message);
+		} finally {
+			setIsLoadingFavorite(false)
 		}
 	};
 
 	const handleGetFavBarbershop = async () => {
+		setIsLoading(true)
 		try {
-			const response = await axios.get("https://meu-barber-vite-api-2.onrender.com/dataUser/getFav",
+			const response = await axios.get(`${path_url.remote}/dataUser/getFav`,
 				{
 					headers: {
 						email: email ? email : null
@@ -138,6 +149,8 @@ const Home = () => {
 			setDbBarberFav(response.data);
 		} catch (error) {
 			console.error("Erro ao obter favoritos da barbearia", error);
+		} finally {
+			setIsLoading(false)
 		}
 	};
 
@@ -162,9 +175,9 @@ const Home = () => {
 				</Modal.Body>
 				<Modal.Footer>
 					<Button variant="secondary" onClick={handleOffModalCalendar}>
-						Close
+						Fechar
 					</Button>
-					<Button variant="primary">Understood</Button>
+					{/* <Button variant="primary">Understood</Button> */}
 				</Modal.Footer>
 			</Modal>
 		);
@@ -269,7 +282,7 @@ const Home = () => {
 			if (service) {
 				// Agora você pode encontrar o serviço selecionado usando o nome do serviço
 				const selectedService = services.find(item => item.name === service);
-				
+
 				setServiceSelected(selectedService)
 				Swal.close();
 				handleOpenModalCalendar()
@@ -283,6 +296,32 @@ const Home = () => {
 		}
 	}
 
+	const renderHearthFavorites = (barber) => {
+		return (
+			<div>
+				{isLoadingFavorite ? <BeatLoader size={3} /> : (
+					<div>
+						{dbBarberFav && dbBarberFav.IDs && dbBarberFav?.IDs?.includes(barber._id) ? (
+							<i
+								key={barber._id}
+								onClick={() => handleFavoriteBarbershop(barber._id)}
+								className="fa-solid fa-heart"
+							></i>
+						) : (
+							<i
+
+								key={barber._id}
+								onClick={() => handleFavoriteBarbershop(barber._id)}
+								className="fa-regular fa-heart"
+							></i>
+						)
+						}
+					</div>
+				)}
+			</div>
+		)
+	}
+
 
 	const filteredBarbers = showBarbershopFavorites ? barbers.filter((barber) => dbBarberFav?.IDs?.includes(barber._id)) : barbers;
 
@@ -290,27 +329,17 @@ const Home = () => {
 	return (
 		<div className={styles.container}>
 			<div className={styles["slider-wrapper"]}>
+				{isLoading && <PuffLoader className={styles.spinner} />}
 				<Slider {...settings} className={styles.slider}>
-					{filteredBarbers?.map((barber) => (
+
+					{!isLoading && filteredBarbers?.map((barber) => (
 						<div key={barber._id}>
 							<div className={styles.card}>
 								<ImagemFormatted src={"../../../../public/section_img2.jpg"} />
 								<h3 className={styles.barberNome}>{barber?.name}</h3>
 								<div className={styles.fa5}>
-									{dbBarberFav && dbBarberFav.IDs && dbBarberFav?.IDs?.includes(barber._id) ? (
-										<i
-											key={barber._id}
-											onClick={() => handleFavoriteBarbershop(barber._id)}
-											className="fa-solid fa-heart"
-										></i>
-									) : (
-										<i
 
-											key={barber._id}
-											onClick={() => handleFavoriteBarbershop(barber._id)}
-											className="fa-regular fa-heart"
-										></i>
-									)}
+									{renderHearthFavorites(barber)}
 
 									<i
 										className="far fa-calendar"

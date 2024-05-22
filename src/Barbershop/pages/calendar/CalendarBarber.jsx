@@ -10,9 +10,9 @@ import Toast from "../../../shared/custom/Toast";
 import moment from "moment";
 import * as bootstrap from "bootstrap";
 import Swal from "sweetalert2";
-import { Form } from "react-bootstrap";
+import { Form, Spinner } from "react-bootstrap";
 import styles from "./Calendar.module.css";
-
+import path_url from "../../../shared/config/path_url.json"
 const Calendar = () => {
 
     // Estados para armazenar dados de agendamento e horários indisponíveis
@@ -21,6 +21,7 @@ const Calendar = () => {
     const [allEvents, setAllEvents] = useState([])
     const [unavailableEvent, setUnavailableEvent] = useState([]);
     const [barbers, setBarbers] = useState(null);
+    const [isLoading, setIsLoading] = useState(false);
     const [emailSelected, setEmailSelected] = useState(null);
     // Obter informações de autenticação do barbeiro do contexto
     const { token, dataBarber } = useAuthBarber();
@@ -68,8 +69,9 @@ const Calendar = () => {
 
     // Buscar horários indisponíveis do servidor
     const handleGetInvalidHoursDB = async (emailBarber) => {
+        setIsLoading(true)
         try {
-            const response = await axios.get("https://meu-barber-vite-api-2.onrender.com/dataBarber/unavailableTimeBarber", {
+            const response = await axios.get(`${path_url.remote}/dataBarber/unavailableTimeBarber`, {
                 headers: {
                     authorization: `Bearer ${token}`,
                     email: emailBarber,
@@ -95,44 +97,58 @@ const Calendar = () => {
                 icon: "error",
                 title: "Ocorreu um erro interno no servidor. Tente novamente mais tarde."
             })
+        } finally {
+            setIsLoading(false)
         }
     }
 
     // Enviar horários indisponíveis para o servidor
     const handlePostTimeUnavailable = async () => {
         if (!unavailableTime) return
-        const response = await fetch("https://meu-barber-vite-api-2.onrender.com/calendar/unavailableTime", {
-            method: "POST",
-            headers: {
-                'Content-type': 'application/json'
-            },
-            body: JSON.stringify({
-                email: await emailSelected,
-                date: unavailableTime,
-                type: "barber",
-                name: unavailableTime.title
-            })
-        });
+        setIsLoading(true)
+        try {
+            const response = await fetch(`${path_url.remote}/calendar/unavailableTime`, {
+                method: "POST",
+                headers: {
+                    'Content-type': 'application/json'
+                },
+                body: JSON.stringify({
+                    email: await emailSelected,
+                    date: unavailableTime,
+                    type: "barber",
+                    name: unavailableTime.title
+                })
+            });
 
-        const data = await response.json();
-        if (data.error) {
+            const data = await response.json();
+            if (data.error) {
+                Toast.fire({
+                    icon: "error",
+                    title: data.message
+                });
+            } else {
+                Toast.fire({
+                    icon: "success",
+                    title: data.message
+                });
+                handleGetInvalidHoursDB(await emailSelected)
+            }
+        } catch (e) {
+            console.log("handlePostTimeUnavailable " + e)
             Toast.fire({
                 icon: "error",
-                title: data.message
-            });
-        } else {
-            Toast.fire({
-                icon: "success",
-                title: data.message
-            });
-            handleGetInvalidHoursDB(await emailSelected)
+                title: "Ocorreu um erro interno no servidor. Tente novamente mais tarde."
+            })
+        } finally {
+            setIsLoading(false)
         }
     };
 
     // Get barbers per barbershop from the database and set it to state
     const handleGetBarbers = async () => {
+        setIsLoading(true)
         try {
-            const response = await axios.get("https://meu-barber-vite-api-2.onrender.com/dataBarber/barbersPerBarbershop",
+            const response = await axios.get(`${path_url.remote}/dataBarber/barbersPerBarbershop`,
                 {
                     headers: {
                         Authorization: `Bearer ${token}`,
@@ -157,6 +173,8 @@ const Calendar = () => {
                 icon: "error",
                 title: "Ocorreu um erro ao processar os dados. Tente novamente mais tarde."
             })
+        } finally {
+            setIsLoading(false)
         }
     }
 
@@ -256,76 +274,86 @@ const Calendar = () => {
         }
     }
 
-    return (
-        <div className="bg-marrom-claro m-">
-            <div className={`${styles.select}`}>
-                <Form.Select
-                    onChange={handleBarberSelected}
-                    placeholder='Selecionar barbeiro'
-                >
+    const renderCalendar = () => {
+        return (
+            <div className="bg-marrom-claro m-">
+                <div className={`${styles.select}`}>
+                    <Form.Select
+                        onChange={handleBarberSelected}
+                        placeholder='Selecionar barbeiro'
+                    >
 
-                    <option aria-pressed="false" value="">Selecione um barbeiro</option>
-                    {barbers && handleOptionsSelectBarbers()}
+                        <option aria-pressed="false" value="">Selecione um barbeiro</option>
+                        {barbers && handleOptionsSelectBarbers()}
 
-                </Form.Select>
+                    </Form.Select>
+                </div>
+                <div style={{display:"flex", justifyContent:"center", width:"100%" }}>
+                    <FullCalendar
+                        plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+                        initialView="timeGridWeek"
+                        headerToolbar={{
+                            start: "today prev,next",
+                            center: "",
+                            end: "dayGridMonth,timeGridWeek,timeGridDay",
+                        }}
+
+                        
+                        dayCellClassNames={`text-center `}
+                        weekNumberCalculation="ISO"
+                        height={"90vh"}
+                        locale={"pt-br"}
+                        buttonText={{
+                            today: "Hoje",
+                            month: "Mês",
+                            week: "Semana",
+                            day: "Dia",
+                            list: "Lista",
+                            next: "Próximo",
+                            nextYear: "Próximo ano",
+                            previous: "Voltar",
+                            prev: "Anterior",
+                            prevYear: "Ano anterior",
+                        }}
+                        allDayText="Dia inteiro"
+                        allDaySlot={false}
+                        eventTimeFormat={{
+                            hour: "numeric",
+                            minute: "2-digit",
+                            meridiem: "uppercase",
+                        }}
+                        slotLabelFormat={{
+                            hour: "numeric",
+                            minute: "2-digit",
+                            meridiem: "uppercase",
+
+                        }}
+                        editable={true}
+                        selectable={true}
+                        dayMaxEvents={true}
+                        eventColor={"#ff6b45"}
+                        dateClick={handleUnavailableTime}
+                        events={allEvents}
+                        eventDidMount={(info) => {
+                            const popover = new bootstrap.Popover(info.el, {
+                                title: info.event.title,
+                                placement: "auto",
+                                trigger: "hover",
+                                customClass: "popoverStyle",
+                                content: handleVerifyInfoTitle(info),
+                                html: true,
+                            });
+                            return () => popover.dispose();
+                        }}
+                    />
+                </div>
             </div>
-            <FullCalendar
-                plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-                initialView="timeGridWeek"
-                headerToolbar={{
-                    start: "today prev,next",
-                    center: "",
-                    end: "dayGridMonth,timeGridWeek,timeGridDay",
-                }}
+        )
+    }
 
-                viewClassNames={"ml-16"}
-                dayCellClassNames={`text-center `}
-                weekNumberCalculation="ISO"
-                height={"90vh"}
-                locale={"pt-br"}
-                buttonText={{
-                    today: "Hoje",
-                    month: "Mês",
-                    week: "Semana",
-                    day: "Dia",
-                    list: "Lista",
-                    next: "Próximo",
-                    nextYear: "Próximo ano",
-                    previous: "Voltar",
-                    prev: "Anterior",
-                    prevYear: "Ano anterior",
-                }}
-                allDayText="Dia inteiro"
-                allDaySlot={false}
-                eventTimeFormat={{
-                    hour: "numeric",
-                    minute: "2-digit",
-                    meridiem: "uppercase",
-                }}
-                slotLabelFormat={{
-                    hour: "numeric",
-                    minute: "2-digit",
-                    meridiem: "uppercase",
-
-                }}
-                editable={true}
-                selectable={true}
-                dayMaxEvents={true}
-                eventColor={"#ff6b45"}
-                dateClick={handleUnavailableTime}
-                events={allEvents}
-                eventDidMount={(info) => {
-                    const popover = new bootstrap.Popover(info.el, {
-                        title: info.event.title,
-                        placement: "auto",
-                        trigger: "hover",
-                        customClass: "popoverStyle",
-                        content: handleVerifyInfoTitle(info),
-                        html: true,
-                    });
-                    return () => popover.dispose();
-                }}
-            />
+    return (
+        <div>
+            {isLoading ? <Spinner color="black" style={{ margin: 'auto', display: 'flex', justifyContent: 'center', marginTop: "20%", marginBottom: "5%" }} /> : renderCalendar()}
         </div>
     );
 };

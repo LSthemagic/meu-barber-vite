@@ -1,11 +1,12 @@
-import { useReducer } from "react";
+import { useReducer, useState } from "react";
 import { useAuth } from "../../context/BarberContext";
 import "bootstrap/dist/css/bootstrap.min.css";
 import styles from "./AuthenticateBarber.module.css";
 import { Link, useNavigate } from "react-router-dom";
 import ImageLogin from "../../../shared/images/ImageLogin.svg";
 import Toast from "../../../shared/custom/Toast";
-
+import path_url from "../../../shared/config/path_url.json"
+import { Spinner } from "react-bootstrap";
 const initialState = {
 	email: "",
 	password: ""
@@ -24,7 +25,7 @@ const reducer = (state, action) => {
 
 const AuthenticateBarber = () => {
 	const { authToken, signIn } = useAuth();
-
+	const [isLoading, setIsLoading] = useState(false);
 	const [state, dispatch] = useReducer(reducer, initialState);
 	const navigate = useNavigate();
 
@@ -38,11 +39,12 @@ const AuthenticateBarber = () => {
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
+		setIsLoading(true)
 		if (!state.email || !state.password) {
 			return;
 		}
 		try {
-			const response = await fetch("https://meu-barber-vite-api-2.onrender.com/barberAuth/authenticateBarber", {
+			const response = await fetch(`${path_url.remote}/barberAuth/authenticateBarber`, {
 				method: "POST",
 				headers: {
 					"Content-type": "application/json"
@@ -73,6 +75,8 @@ const AuthenticateBarber = () => {
 			}
 		} catch (error) {
 			console.log("ERROR EM HANDLE SUBMIT AUTHENTICATE ", error);
+		} finally {
+			setIsLoading(false)
 		}
 	};
 
@@ -128,20 +132,23 @@ const AuthenticateBarber = () => {
 								handleInputChange("SET_PASSWORD", event);
 							}}
 						/>
-						<div className={styles.link}>
-							<Link to="/register" className={styles.link}>
-								Sou novo aqui
-							</Link>
-							<Link className={styles.link}>Esqueci minha senha</Link>
-						</div>
+
 
 						<button
 							style={{ marginTop: "4%" }}
 							className="btn btn-primary"
 							type="submit"
 						>
-							Entrar
+							{isLoading ? <Spinner /> : "ENTRAR"}
 						</button>
+						<hr className={styles.hr} />
+
+						<div style={{ display: "flex", flexDirection: "column", flexWrap: "nowrap", justifyContent: "space-around" }}>
+							<Link to="/barber/registerBarber" className={styles.link}>
+								SOU NOVO AQUI
+							</Link>
+							<Link className={styles.link}>ESQUECI MINHA SENHA</Link>
+						</div>
 					</form>
 				</div>
 			</div>

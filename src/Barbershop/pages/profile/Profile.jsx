@@ -10,7 +10,8 @@ import {
     Trash2,
     UserRoundPlus,
 } from "lucide-react"
-import { Button, Form, Modal } from "react-bootstrap";
+import { Button, Form, Modal, Spinner } from "react-bootstrap";
+import path_url from "../../../shared/config/path_url.json"
 
 const initialStateAddBarber = {
     name: null,
@@ -49,6 +50,7 @@ const reducerServices = (state, action) => {
 
 
 const Profile = () => {
+    const [isLoading, setIsLoading] = useState(false);
     const [barbershop, setBarbershop] = useState([]);
     const auth = useAuth();
 
@@ -88,9 +90,10 @@ const Profile = () => {
 
     //  Pegar barbeiros via API
     const handleDataBarber = async () => {
+        setIsLoading(true)
         try {
             const response = await axios.get(
-                "https://meu-barber-vite-api-2.onrender.com/dataBarber/profileBarber",
+                `${path_url.remote}/dataBarber/profileBarber`,
                 {
                     headers: {
                         email: email,
@@ -112,6 +115,8 @@ const Profile = () => {
                 icon: "error",
                 title: err.message,
             });
+        } finally {
+            setIsLoading(false)
         }
     };
 
@@ -166,9 +171,11 @@ const Profile = () => {
 
                         <div className="modal-footer">
                             <Button variant="secondary" onClick={handleCloseModalAddBarber}>
-                                Fechar
+                                FECHAR
                             </Button>
-                            <Button variant="primary" type="submit">Salvar</Button>
+                            <Button variant="primary" type="submit">
+                                {isLoading ?  <Spinner/> : "SALVAR"}
+                            </Button>
                         </div>
                     </Form>
                 </Modal.Body>
@@ -182,9 +189,10 @@ const Profile = () => {
     // adicionar o barbeiro via API no banco de dados
     const handleAddBarber = async (e) => {
         e.preventDefault()
+        setIsLoading(true)
         try {
             const response = await fetch(
-                "https://meu-barber-vite-api-2.onrender.com/barberAuth/addBarber",
+                `${path_url.remote}/barberAuth/addBarber`,
                 {
                     method: "POST",
                     headers: {
@@ -217,6 +225,8 @@ const Profile = () => {
                 icon: "error",
                 title: "Erro ao adicionar barbeiro. Se atente nas informações e tente novamente!",
             })
+        } finally {
+            setIsLoading(false)
         }
     }
 
@@ -242,8 +252,9 @@ const Profile = () => {
     // salvar serviço via API
     const handleSaveService = async (e) => {
         e.preventDefault();
+        setIsLoading(true)
         try {
-            const response = await fetch("https://meu-barber-vite-api-2.onrender.com/barberAuth/saveService",
+            const response = await fetch(`${path_url.remote}/barberAuth/saveService`,
                 {
                     method: "POST",
                     headers: {
@@ -271,6 +282,8 @@ const Profile = () => {
                 icon: "error",
                 title: "Erro ao carregar requisição."
             })
+        } finally {
+            setIsLoading(false)
         }
     }
 
@@ -313,8 +326,10 @@ const Profile = () => {
                             onChange={(e) => handleDispatchService("SET_DURATION", e)}
                         />
                         <Modal.Footer>
-                            <Button onClick={handleCloseModalServices} variant="secondary" >Cancelar</Button>
-                            <Button type="submit" variant="primary" >Clica ai</Button>
+                            <Button onClick={handleCloseModalServices} variant="secondary" >CANCELAR</Button>
+                            <Button type="submit" variant="primary" >
+                                {isLoading ? <Spinner/> : "SALVAR"}
+                            </Button>
                         </Modal.Footer>
 
                     </Form>
@@ -329,76 +344,79 @@ const Profile = () => {
 
 
     return (
+
         <div className={styles.container}>
-            <div className={styles.card1}>
-                <h2 style={{ textAlign: "center", marginBottom: "3%", display: "inline" }}>{"Perfil da Barbearia - ".toUpperCase() + barbershop.name?.toUpperCase()}</h2>
+            {isLoading ? <Spinner color="black" style={{ margin: 'auto', display: 'flex', justifyContent: 'center', marginTop:"20%", marginBottom:"5%"}} /> : (<div>
+                <div className={styles.card1}>
+                    <h2 style={{ textAlign: "center", marginBottom: "3%", display: "inline" }}>{"Perfil da Barbearia - ".toUpperCase() + barbershop.name?.toUpperCase()}</h2>
 
-                <div className={styles.cardContent}>
-                    <div className={styles.textWrapper}>
-                        <button className={styles.button}>
-                            EDITAR PERFIL
-                            <SquarePen />
-                        </button>
-                        <button className={styles.button}>
-                            EXCLUIR CONTA
-                            <Trash2 />
-                        </button>
-                    </div>
-                </div>
-            </div>
-            <div className={styles.card2}>
-                <div className={styles.headerCard2}>
-                    <h1>{"PERFIL DE BARBEIROS"} </h1>
-                    <UserRoundPlus onClick={handleOpenModalAddBarber} style={{ cursor: "pointer" }} />
-                </div>
-
-                <div>
-                    {barbershop.barbers?.length === 0 ? (
-                        <div>
-                            <h1>Nenhum Barbeiro Cadastrado</h1>
-                        </div>
-
-                    ) : (
+                    <div className={styles.cardContent}>
                         <div className={styles.textWrapper}>
-                            {
-                                barbershop.barbers?.map((item, index) => (
-                                    <div className={styles.listBarbers} key={index}>
-                                        <button className={styles.button2}>{item.name?.toUpperCase()}
-                                            <SquarePen style={{ cursor: "pointer", height: "20px" }} />
-                                            <Trash2 style={{ cursor: "pointer", height: "20px" }} />
-                                        </button>
-
-                                    </div>
-                                ))
-                            }
+                            <button className={styles.button}>
+                                EDITAR PERFIL
+                                <SquarePen />
+                            </button>
+                            <button className={styles.button}>
+                                EXCLUIR CONTA
+                                <Trash2 />
+                            </button>
                         </div>
-
-                    )}
-                </div>
-            </div>
-            <div className={`${styles.card1} mt-3`}>
-                <h2 style={{ textAlign: "center", marginBottom: "3%", display: "flex", flexDirection: "row", gap: "1rem", justifyContent: "center" }}>
-                    {"SERVIÇOS OFERECIDOS"}
-                    <ClipboardPlus onClick={handleOpenModalServices} style={{ cursor: "pointer", height: "20px" }} />
-                </h2>
-
-                <div className={styles.cardContent}>
-                    <div className={styles.textWrapper}>
-                        {barbershop?.services ?
-                            barbershop.services?.map((item, index) => (
-                                <button style={{
-                                    textAlign:"left"
-                                }} className={styles.button} disabled key={index}>
-                                    Serviço: {item.nameService} <br />
-                                    Valor: {item.price} <br />
-                                    Duração: {item.duration}
-                                </button>
-
-                            ))
-                            : "Ainda não há serviços cadastrados."}
                     </div>
                 </div>
-            </div>
+                <div className={styles.card2}>
+                    <div className={styles.headerCard2}>
+                        <h1>{"PERFIL DE BARBEIROS"} </h1>
+                        <UserRoundPlus onClick={handleOpenModalAddBarber} style={{ cursor: "pointer" }} />
+                    </div>
+
+                    <div>
+                        {barbershop.barbers?.length === 0 ? (
+                            <div>
+                                <h1>Nenhum Barbeiro Cadastrado</h1>
+                            </div>
+
+                        ) : (
+                            <div className={styles.textWrapper}>
+                                {
+                                    barbershop.barbers?.map((item, index) => (
+                                        <div className={styles.listBarbers} key={index}>
+                                            <button className={styles.button2}>{item.name?.toUpperCase()}
+                                                <SquarePen style={{ cursor: "pointer", height: "20px" }} />
+                                                <Trash2 style={{ cursor: "pointer", height: "20px" }} />
+                                            </button>
+
+                                        </div>
+                                    ))
+                                }
+                            </div>
+
+                        )}
+                    </div>
+                </div>
+                <div className={`${styles.card1} mt-3`}>
+                    <h2 style={{ textAlign: "center", marginBottom: "3%", display: "flex", flexDirection: "row", gap: "1rem", justifyContent: "center" }}>
+                        {"SERVIÇOS OFERECIDOS"}
+                        <ClipboardPlus onClick={handleOpenModalServices} style={{ cursor: "pointer", height: "20px" }} />
+                    </h2>
+
+                    <div className={styles.cardContent}>
+                        <div className={styles.textWrapper}>
+                            {barbershop?.services ?
+                                barbershop.services?.map((item, index) => (
+                                    <button style={{
+                                        textAlign: "left"
+                                    }} className={styles.button} disabled key={index}>
+                                        Serviço: {item.nameService} <br />
+                                        Valor: {item.price} <br />
+                                        Duração: {item.duration}
+                                    </button>
+
+                                ))
+                                : "Ainda não há serviços cadastrados."}
+                        </div>
+                    </div>
+                </div>
+            </div>)}
             {showModalAddBarber && handleModalAddBarber()}
             {showModalServices && handleModalServices()}
         </div>
