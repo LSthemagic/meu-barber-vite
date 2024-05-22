@@ -420,6 +420,7 @@ const RegisterBarber = () => {
 										>
 											{isLoading ? <Spinner /> : "CONFIRMAR"}
 										</button>
+										
 										<button
 											style={{ marginTop: "2%" }}
 											className="btn btn-secondary"

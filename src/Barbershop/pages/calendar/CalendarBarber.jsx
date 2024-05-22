@@ -13,6 +13,7 @@ import Swal from "sweetalert2";
 import { Form, Spinner } from "react-bootstrap";
 import styles from "./Calendar.module.css";
 import path_url from "../../../shared/config/path_url.json"
+
 const Calendar = () => {
 
     // Estados para armazenar dados de agendamento e horários indisponíveis
@@ -69,6 +70,7 @@ const Calendar = () => {
 
     // Buscar horários indisponíveis do servidor
     const handleGetInvalidHoursDB = async (emailBarber) => {
+        setIsLoading(true)
         setIsLoading(true)
         try {
             const response = await axios.get(`${path_url.remote}/dataBarber/unavailableTimeBarber`, {
@@ -274,21 +276,20 @@ const Calendar = () => {
         }
     }
 
+
     const renderCalendar = () => {
         return (
             <div className="bg-marrom-claro m-">
                 <div className={`${styles.select}`}>
                     <Form.Select
                         onChange={handleBarberSelected}
-                        placeholder='Selecionar barbeiro'
+                        placeholder="Selecionar barbeiro"
                     >
-
                         <option aria-pressed="false" value="">Selecione um barbeiro</option>
                         {barbers && handleOptionsSelectBarbers()}
-
                     </Form.Select>
                 </div>
-                <div style={{display:"flex", justifyContent:"center", width:"100%" }}>
+                <div style={{ display: "flex", justifyContent: "center", width: "100%" }}>
                     <FullCalendar
                         plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
                         initialView="timeGridWeek"
@@ -297,12 +298,10 @@ const Calendar = () => {
                             center: "",
                             end: "dayGridMonth,timeGridWeek,timeGridDay",
                         }}
-
-                        
-                        dayCellClassNames={`text-center `}
+                        dayCellClassNames="text-center"
                         weekNumberCalculation="ISO"
-                        height={"90vh"}
-                        locale={"pt-br"}
+                        height="90vh"
+                        locale="pt-br"
                         buttonText={{
                             today: "Hoje",
                             month: "Mês",
@@ -326,12 +325,11 @@ const Calendar = () => {
                             hour: "numeric",
                             minute: "2-digit",
                             meridiem: "uppercase",
-
                         }}
                         editable={true}
                         selectable={true}
                         dayMaxEvents={true}
-                        eventColor={"#ff6b45"}
+                        eventColor="#ff6b45"
                         dateClick={handleUnavailableTime}
                         events={allEvents}
                         eventDidMount={(info) => {
@@ -348,8 +346,8 @@ const Calendar = () => {
                     />
                 </div>
             </div>
-        )
-    }
+        );
+    };
 
     return (
         <div>

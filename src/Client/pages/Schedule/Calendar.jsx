@@ -15,8 +15,7 @@ import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import PageUnauthorized from "../../../shared/images/PageUnauthorized.svg";
 import path_url from "../../../shared/config/path_url.json"
-import { Spinner } from "react-bootstrap";
-import { CircleLoader, FadeLoader } from "react-spinners";
+import { FadeLoader } from "react-spinners";
 
 const Calendar = ({ props, children }) => {
 	const [dataScheduling, setDataScheduling] = useState(null);
@@ -31,9 +30,11 @@ const Calendar = ({ props, children }) => {
 
 	const { name: nameService } = children;
 
+
 	// const { price: priceService } = children;
 	const { duration: durationService } = children;
 	const { service_id } = children;
+
 
 
 	// verificar se o user esta logado

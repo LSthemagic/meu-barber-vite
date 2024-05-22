@@ -54,7 +54,7 @@ const Navbar = () => {
   const { signOut, offAuthToken, isLogged: isLoggedBarber } = useAuthBarbershop()
   const { logout, offDataAuth, isLogged, handleShowFavorites, handleCloseShowFavorites, showBarbershopFavorites } = useAuthClient()
 
-  const isLoggedForRoute = isBarberRoutes && isLoggedBarber;
+  const isLoggedForRoute = isBarberRoutes && isLoggedBarber || isLogged;
 
   React.useEffect(() => {
     document.body.classList.add('dark'); // Adiciona a classe 'dark' ao body quando a página é montada
