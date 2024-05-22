@@ -3,27 +3,34 @@
     position: relative; /* Posicionamento relativo para posicionar a seta customizada */
     width: 100%; /* Largura total do container */
     margin: 1rem 0; /* Espaçamento em torno do select */
-    
 }
 
-@media screen and (min-width: 768px) {
-    .select{
-        width:  80%; 
-        display: inline-block; 
-        vertical-align: middle;
-        font-size: 1em;
-        margin-left: 10%;
-        margin-right: 5%;
+@media (max-width: 768px) {
+    .select {
+        width: 80%; 
+        margin: 1rem auto; /* Centralizar o container */
     }
 }
 
+.fullCalendar {
+    margin-left: 5%;/* Margem horizontal */
+}
+
+@media (max-width: 768px) {
+    .fullCalendar {
+        margin: 0 auto; /* Centralizar */
+        display: flex;
+        justify-content: center;
+    }
+}
 
 .select select {
+    margin-left: 5%;
     appearance: none; /* Ocultar o visual padrão do select */
     background: transparent; /* Remover o fundo padrão */
     border: 1px solid #764217de; /* Borda fina marrom claro */
     padding: 0.8rem 1.2rem; /* Espaçamento interno */
-    width: calc(100% - 30px); /* Largura total do select com ajuste para a seta */
+    width: 100%; /* Largura total do select */
     font-size: 1rem; /* Tamanho da fonte */
     cursor: pointer; /* Indicar que o elemento é clicável */
     border-radius: 4px; /* Arredondar os cantos */
@@ -71,13 +78,7 @@
     flex: 1 1 auto;
 }
 
-.fc-header-toolbar button {
+.fc-header-toolbar button, .fc-header-toolbar select {
     flex: 1 1 auto;
     margin: 0.2rem;
-}
-
-.fc-header-toolbar select {
-    flex: 1 1 auto;
-    margin: 0.2rem;
-    width: auto;
 }

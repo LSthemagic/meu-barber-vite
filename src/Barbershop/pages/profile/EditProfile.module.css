@@ -1,0 +1,33 @@
+.container{
+    display: flex;
+    flex-direction: row;
+    justify-content: space-evenly;
+    flex-wrap: wrap;
+}
+
+.card{
+    display: flex;
+    color: white;
+    border-radius: 4%;
+    box-shadow: 0 2px 5px rgba(255, 255, 255, 0.46);
+    padding: 15px;
+    background: rgba(7, 7, 7, 0.379);
+    justify-content: flex-start;
+}
+
+.cardImage{
+    width: 100%;
+    height: 100%;
+    border-radius: 4%;
+}
+
+/* Estilo padrão */
+.headTab {
+    border: 2px solid white;
+    border-radius: 10px 10px;
+}
+
+/* Estilize a classe .active para mudar a cor de fundo */
+.TabsTrigger:focus {
+    background: black;
+}

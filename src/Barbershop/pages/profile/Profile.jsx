@@ -12,6 +12,8 @@ import {
 } from "lucide-react"
 import { Button, Form, Modal, Spinner } from "react-bootstrap";
 import path_url from "../../../shared/config/path_url.json"
+import EditProfile from "./EditProfile";
+
 
 const initialStateAddBarber = {
     name: null,
@@ -51,6 +53,7 @@ const reducerServices = (state, action) => {
 
 const Profile = () => {
     const [isLoading, setIsLoading] = useState(false);
+    const [isEditProfile, setIsEditProfile] = useState(false);
     const [barbershop, setBarbershop] = useState([]);
     const auth = useAuth();
 
@@ -72,6 +75,10 @@ const Profile = () => {
     // funções para abrir e fechar modal de adicionar serviços
     const handleOpenModalServices = () => setShowModalServices(true)
     const handleCloseModalServices = () => setShowModalServices(false)
+
+    // funções para abrir e fechar modal de adicionar serviços
+    const handleOpenModalEditProfile = () => setIsEditProfile(true)
+    const handleCloseModalEditProfile = () => setIsEditProfile(false)
 
 
     if (!auth) {
@@ -174,12 +181,37 @@ const Profile = () => {
                                 FECHAR
                             </Button>
                             <Button variant="primary" type="submit">
-                                {isLoading ?  <Spinner/> : "SALVAR"}
+                                {isLoading ? <Spinner /> : "SALVAR"}
                             </Button>
                         </div>
                     </Form>
                 </Modal.Body>
 
+                {/* <Modal.Footer> */}
+                {/* </Modal.Footer> */}
+            </Modal>
+        );
+    }
+    const handleModalEditProfile = () => {
+        return (
+            <Modal
+                show={isEditProfile}
+                onHide={handleCloseModalEditProfile}
+                backdrop="static"
+                keyboard={false}
+                className={styles.modal}
+                size="lg"
+                aria-labelledby="contained-modal-title-vcenter"
+                centered
+            >
+                <div className="rounded" style={{background:"#333", color:"white",}}>
+                    <Modal.Header closeButton closeVariant="white">
+                        <Modal.Title className="text-white">Editar Perfil</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        <EditProfile props={barbershop} />
+                    </Modal.Body>
+                </div>
                 {/* <Modal.Footer> */}
                 {/* </Modal.Footer> */}
             </Modal>
@@ -328,7 +360,7 @@ const Profile = () => {
                         <Modal.Footer>
                             <Button onClick={handleCloseModalServices} variant="secondary" >CANCELAR</Button>
                             <Button type="submit" variant="primary" >
-                                {isLoading ? <Spinner/> : "SALVAR"}
+                                {isLoading ? <Spinner /> : "SALVAR"}
                             </Button>
                         </Modal.Footer>
 
@@ -344,83 +376,103 @@ const Profile = () => {
 
 
     return (
-
         <div className={styles.container}>
-            {isLoading ? <Spinner color="black" style={{ margin: 'auto', display: 'flex', justifyContent: 'center', marginTop:"20%", marginBottom:"5%"}} /> : (<div>
-                <div className={styles.card1}>
-                    <h2 style={{ textAlign: "center", marginBottom: "3%", display: "inline" }}>{"Perfil da Barbearia - ".toUpperCase() + barbershop.name?.toUpperCase()}</h2>
+            {isLoading ? (
+                <Spinner
+                    color="black"
+                    style={{ margin: 'auto', display: 'flex', justifyContent: 'center', marginTop: '20%', marginBottom: '5%' }}
+                />
+            ) : (
+                <div>
+                    <div className={styles.card1}>
+                        <h2 style={{ textAlign: 'center', marginBottom: '3%', display: 'inline' }}>
+                            {`PERFIL DA BARBEARIA - ${barbershop.name?.toUpperCase()}`}
+                        </h2>
 
-                    <div className={styles.cardContent}>
-                        <div className={styles.textWrapper}>
-                            <button className={styles.button}>
-                                EDITAR PERFIL
-                                <SquarePen />
-                            </button>
-                            <button className={styles.button}>
-                                EXCLUIR CONTA
-                                <Trash2 />
-                            </button>
-                        </div>
-                    </div>
-                </div>
-                <div className={styles.card2}>
-                    <div className={styles.headerCard2}>
-                        <h1>{"PERFIL DE BARBEIROS"} </h1>
-                        <UserRoundPlus onClick={handleOpenModalAddBarber} style={{ cursor: "pointer" }} />
-                    </div>
-
-                    <div>
-                        {barbershop.barbers?.length === 0 ? (
-                            <div>
-                                <h1>Nenhum Barbeiro Cadastrado</h1>
-                            </div>
-
-                        ) : (
+                        <div className={styles.cardContent}>
                             <div className={styles.textWrapper}>
-                                {
-                                    barbershop.barbers?.map((item, index) => (
-                                        <div className={styles.listBarbers} key={index}>
-                                            <button className={styles.button2}>{item.name?.toUpperCase()}
-                                                <SquarePen style={{ cursor: "pointer", height: "20px" }} />
-                                                <Trash2 style={{ cursor: "pointer", height: "20px" }} />
-                                            </button>
-
-                                        </div>
-                                    ))
-                                }
+                                <button onClick={handleOpenModalEditProfile} className={styles.button}>
+                                    EDITAR PERFIL
+                                    <SquarePen />
+                                </button>
+                                <button className={styles.button}>
+                                    EXCLUIR CONTA
+                                    <Trash2 />
+                                </button>
                             </div>
-
-                        )}
+                        </div>
                     </div>
-                </div>
-                <div className={`${styles.card1} mt-3`}>
-                    <h2 style={{ textAlign: "center", marginBottom: "3%", display: "flex", flexDirection: "row", gap: "1rem", justifyContent: "center" }}>
-                        {"SERVIÇOS OFERECIDOS"}
-                        <ClipboardPlus onClick={handleOpenModalServices} style={{ cursor: "pointer", height: "20px" }} />
-                    </h2>
 
-                    <div className={styles.cardContent}>
-                        <div className={styles.textWrapper}>
-                            {barbershop?.services ?
-                                barbershop.services?.map((item, index) => (
-                                    <button style={{
-                                        textAlign: "left"
-                                    }} className={styles.button} disabled key={index}>
-                                        Serviço: {item.nameService} <br />
-                                        Valor: {item.price} <br />
-                                        Duração: {item.duration}
-                                    </button>
+                    <div className={styles.card2}>
+                        <div className={styles.headerCard2}>
+                            <h1>PERFIL DE BARBEIROS</h1>
+                            <UserRoundPlus onClick={handleOpenModalAddBarber} style={{ cursor: 'pointer' }} />
+                        </div>
+                        <div className={styles.cardContent}>
+                            {barbershop.barbers?.length === 0 ? (
+                                <div>
+                                    <h1>Nenhum Barbeiro Cadastrado</h1>
+                                </div>
+                            ) : (
+                                <div className={styles.textWrapper}>
+                                    {barbershop.barbers?.map((item, index) => (
+                                        <div className={styles.listBarbers} key={index}>
+                                            <button className={styles.button2}>
+                                                {item.name?.toUpperCase()}
+                                                <SquarePen style={{ cursor: 'pointer', height: '20px' }} />
+                                                <Trash2 style={{ cursor: 'pointer', height: '20px' }} />
+                                            </button>
+                                        </div>
+                                    ))}
+                                </div>
+                            )}
+                        </div>
+                    </div>
 
-                                ))
-                                : "Ainda não há serviços cadastrados."}
+                    <div className={`${styles.card1} mt-3`}>
+                        <h2
+                            style={{
+                                textAlign: 'center',
+                                marginBottom: '3%',
+                                display: 'flex',
+                                flexDirection: 'row',
+                                gap: '1rem',
+                                justifyContent: 'center',
+                            }}
+                        >
+                            SERVIÇOS OFERECIDOS
+                            <ClipboardPlus onClick={handleOpenModalServices} style={{ cursor: 'pointer', height: '20px' }} />
+                        </h2>
+
+                        <div className={styles.cardContent}>
+                            <div className={styles.textWrapper}>
+                                {barbershop?.services ? (
+                                    barbershop.services?.map((item, index) => (
+                                        <button
+                                            style={{ textAlign: 'left' }}
+                                            className={styles.button}
+                                            disabled
+                                            key={index}
+                                        >
+                                            Serviço: {item.nameService} <br />
+                                            Valor: {item.price} <br />
+                                            Duração: {item.duration}
+                                        </button>
+                                    ))
+                                ) : (
+                                    'Ainda não há serviços cadastrados.'
+                                )}
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>)}
+            )}
             {showModalAddBarber && handleModalAddBarber()}
             {showModalServices && handleModalServices()}
+            {isEditProfile && handleModalEditProfile()}
         </div>
     );
+
 };
 
 export default Profile;

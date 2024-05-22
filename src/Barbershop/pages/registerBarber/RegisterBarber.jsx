@@ -20,7 +20,6 @@ const initialStateEstablishment = {
 	name: null,
 	email: null,
 	password: null,
-	file: null
 };
 
 const reducerEstablishment = (state, action) => {
@@ -35,8 +34,6 @@ const reducerEstablishment = (state, action) => {
 			return { ...state, latitude: action.data };
 		case "SET_LONGITUDE":
 			return { ...state, longitude: action.data };
-		case "SET_FILE":
-			return { ...state, file: action.data };
 		default:
 			throw new Error("Unhandled action type: ", action);
 	}
@@ -123,12 +120,7 @@ const RegisterBarber = () => {
 			data: event.target.value
 		});
 	};
-	const handleDispatchFile = (type, event) => {
-		dispatchEstablishment({
-			type: type,
-			data: event.target.files[0]
-		});
-	};
+
 	const handleSubmit = async () => {
 		setIsLoading(true)
 		try {
@@ -261,6 +253,7 @@ const RegisterBarber = () => {
 			<div style={{ opacity: "93%" }} className={styles.card}>
 				<Box sx={{ width: "100%" }}>
 					<div>
+
 						{activeStep === 0 ? (
 							<div className="form-group">
 								<form className={styles.input} onSubmit={handleReqEmail}>
@@ -370,11 +363,6 @@ const RegisterBarber = () => {
 											</option>
 										))}
 									</Form.Select>
-									<Form.Control
-										type="file"
-										name="file"
-										onChange={(event) => handleDispatchFile("SET_FILE", event)}
-									/>
 									<button
 										style={{ marginTop: "5%" }}
 										className="btn btn-primary"
@@ -420,6 +408,7 @@ const RegisterBarber = () => {
 										>
 											{isLoading ? <Spinner /> : "CONFIRMAR"}
 										</button>
+										
 										<button
 											style={{ marginTop: "2%" }}
 											className="btn btn-secondary"
