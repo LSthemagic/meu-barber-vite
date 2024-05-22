@@ -3,32 +3,39 @@
 	--marrom-claro: #e7d7b7;
 	--marrom-medio: #764217de;
 	--marrom-escuro: #5c4033;
-  }
-  
-  * {
+}
+
+* {
 	box-sizing: border-box;
 	margin: 0;
 	padding: 0;
-  }
-  
-  /* Container principal */
-  .container {
+}
+.spinner {
+	color: red;
+	margin-left: auto;
+	margin-right: auto;
+	display: flex;
+	width: 50px;
+}
+
+/* Container principal */
+.container {
 	display: flex;
 	align-items: center;
 	justify-content: center;
 	min-height: 100vh; /* Use min-height instead of fixed height for responsiveness */
 	background-color: var(--marrom-claro);
-  }
-  
-  /* Wrapper do slider */
-  .slider-wrapper {
-  	flex-wrap: wrap; /* Wrap cards if needed */
+}
+
+/* Wrapper do slider */
+.slider-wrapper {
+	flex-wrap: wrap; /* Wrap cards if needed */
 	flex: 1;
 	max-width: 90%;
 	margin: 0 2%;
 	padding: 2%; /* Add some padding for smaller screens */
-  }
-  
+}
+
 /* Card individual */
 .card {
 	background-color: #fff;
@@ -40,8 +47,8 @@
 	transition: all 0.3s ease-in-out;
 	max-width: 300px; /* Largura máxima dos cards */
 }
-.card:hover{
-	transform:scale(1.07)
+.card:hover {
+	transform: scale(1.07);
 }
 
 /* Responsividade do card */
@@ -51,47 +58,47 @@
 		margin: 20px auto; /* Centralizando o card na tela com margem automática */
 	}
 }
-  /* Título do card */
-  .card h3 {
+/* Título do card */
+.card h3 {
 	font-size: 18px;
 	margin-bottom: 10px;
 	font-weight: bold;
 	color: #333;
-  }
-  
-  /* Conteúdo do card */
-  .card-content {
+}
+
+/* Conteúdo do card */
+.card-content {
 	font-size: 16px;
 	color: #666;
 	line-height: 1.5;
-  }
-  
-  /* Estilo da imagem dentro do card */
-  .card img {
+}
+
+/* Estilo da imagem dentro do card */
+.card img {
 	/* Centraliza a imagem horizontal e verticalmente dentro do card */
 	display: block;
 	margin: 0 auto;
-  
+
 	/* Adiciona espaço abaixo da imagem */
 	margin-bottom: 20px;
-  
+
 	/* Define a largura máxima para evitar que a imagem extrapole o card */
 	max-width: 100%;
-  
+
 	/* Mantém a proporção da imagem se ela for mais larga que o card */
 	height: auto;
 	border-radius: 10px;
-  
+
 	/* Responsividade da imagem */
 	@media (max-width: 768px) {
-	  /* Ajusta a largura da imagem para telas menores */
-	  max-width: 80%;
+		/* Ajusta a largura da imagem para telas menores */
+		max-width: 80%;
 	}
-  }
-  
-  /* Botões de navegação */
-  .slick-prev,
-  .slick-next {
+}
+
+/* Botões de navegação */
+.slick-prev,
+.slick-next {
 	font-size: 132px !important; /* Ajuste o tamanho do botão conforme desejado */
 	color: #333 !important;
 	cursor: pointer;
@@ -99,108 +106,107 @@
 	top: 50%;
 	transform: translateY(-50%);
 	z-index: 1;
-  
+
 	/* Posicionamento dos botões */
 	&.slick-prev {
-	  left: 10px;
+		left: 10px;
 	}
-  
+
 	&.slick-next {
-	  right: 10px;
+		right: 10px;
 	}
-  
+
 	/* Opacidade dos botões */
 	&:hover {
-	  opacity: 0.7;
+		opacity: 0.7;
 	}
-  
+
 	/* Ocultar botões em telas muito pequenas */
 	@media (max-width: 576px) {
-	  display: none;
+		display: none;
 	}
-  }
-  
-  /* Pontos de navegação */
-  .slick-dots {
+}
+
+/* Pontos de navegação */
+.slick-dots {
 	bottom: 10px;
 	text-align: center;
-  
+
 	/* Estilo dos pontos */
 	li {
-	  display: inline-block;
-	  margin: 0 5px;
-	  padding: 5px;
-	  border-radius: 50%;
-	  background-color: #ccc;
-  
-	  &.slick-active {
-		background-color: #333;
-	  }
+		display: inline-block;
+		margin: 0 5px;
+		padding: 5px;
+		border-radius: 50%;
+		background-color: #ccc;
+
+		&.slick-active {
+			background-color: #333;
+		}
 	}
-  }
-  
-  .fa5 {
+}
+
+.fa5 {
 	color: #333;
 	/* Permite que o cursor se transforme em mão ao passar sobre a div */
 	cursor: pointer;
-  
+
 	/* Distribui os itens uniformemente com espaço entre eles */
 	justify-content: center;
-	
+
 	/* Ativa o layout flexbox para usar as propriedades acima */
 	display: flex;
-  
+
 	/* Define o espaçamento entre os itens com base no tamanho da fonte */
 	gap: 3rem;
-  }
-  @media (max-width: 768px){
-	.fa5{
-		gap:  2rem;
+}
+@media (max-width: 768px) {
+	.fa5 {
+		gap: 2rem;
 		display: flex;
 		margin: 10%;
 	}
-  }
-  .modal {
+}
+.modal {
 	display: flex; /* Permite layout horizontal */
 	flex-direction: column; /* Empilha conteúdo verticalmente por padrão */
 	margin: 0 auto; /* Centraliza o modal horizontalmente */
 	border-radius: 4px; /* Arredonda os cantos do modal */
 	box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Adiciona sombra sutil */
-  }
-  
-  @media (max-width: 768px) {
+}
+
+@media (max-width: 768px) {
 	/* Ajustes para telas menores (celulares, tablets) */
 	.modal {
-	  flex-direction: row; /* Muda para layout horizontal em telas menores */
-	  max-width: 100%; /* Garante que o modal ocupe a largura total em telas pequenas */
+		flex-direction: row; /* Muda para layout horizontal em telas menores */
+		max-width: 100%; /* Garante que o modal ocupe a largura total em telas pequenas */
 	}
-  
+
 	.modal-header,
 	.modal-body,
 	.modal-footer {
-	  flex: 1; /* Torna cabeçalho, corpo e rodapé flexíveis para distribuir espaço */
-	  padding: 10px; /* Adiciona algum padding para telas menores */
+		flex: 1; /* Torna cabeçalho, corpo e rodapé flexíveis para distribuir espaço */
+		padding: 10px; /* Adiciona algum padding para telas menores */
 	}
-  }
-  
-  .barberNome{
+}
+
+.barberNome {
 	margin-bottom: 10px !important;
-  }
-  
-  /* Estilo do parágrafo */
-  .descricao {
+}
+
+/* Estilo do parágrafo */
+.descricao {
 	color: #333;
 	margin-top: 10px;
 	font-size: 1rem; /* Tamanho do texto do parágrafo */
 	line-height: 1.5; /* Espaçamento entre linhas do parágrafo */
 	margin-bottom: 10px; /* Espaçamento inferior do parágrafo */
-  }
-  
-  @media (max-width: 768px) {
+}
+
+@media (max-width: 768px) {
 	/* Ajustes para telas menores */
 	.descricao {
-	  font-size: 0.9rem; /* Tamanho do texto reduzido para telas menores */
-	  margin-bottom: 8px; /* Espaçamento inferior reduzido para telas menores */
+		font-size: 0.9rem; /* Tamanho do texto reduzido para telas menores */
+		margin-bottom: 8px; /* Espaçamento inferior reduzido para telas menores */
 	}
-  }
-  
+}

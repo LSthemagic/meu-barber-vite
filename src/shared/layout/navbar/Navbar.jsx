@@ -2,15 +2,11 @@ import * as React from "react"
 import { Link, Navigate, useLocation } from "react-router-dom"
 import {
   Home,
-  LineChart,
-  Package,
   CalendarClock,
   PanelLeft,
   LogOut,
   Search,
   Settings,
-  ShoppingCart,
-  Users2,
   User,
   CalendarHeart
 } from "lucide-react"
@@ -55,8 +51,10 @@ import { useAuth as useAuthBarbershop } from "../../../Barbershop/context/Barber
 const Navbar = () => {
   const { pathname } = useLocation()
   const isBarberRoutes = pathname.startsWith("/barber")
-  const { signOut, offAuthToken } = useAuthBarbershop()
+  const { signOut, offAuthToken, isLogged: isLoggedBarber } = useAuthBarbershop()
   const { logout, offDataAuth, isLogged, handleShowFavorites, handleCloseShowFavorites, showBarbershopFavorites } = useAuthClient()
+
+  const isLoggedForRoute = isBarberRoutes && isLoggedBarber;
 
   React.useEffect(() => {
     document.body.classList.add('dark'); // Adiciona a classe 'dark' ao body quando a página é montada
@@ -66,7 +64,7 @@ const Navbar = () => {
   }, []);
 
   const handlePathGenerate = (path) => {
-    
+
 
     const routes = {
       home: {
@@ -214,7 +212,7 @@ const Navbar = () => {
         </nav>
       </aside>
 
-      <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14">
+      <div className="flex flex-col sm:gap-4 sm:py-4 sm:pl-14 ">
         <header className="sticky top-0 z-30 flex h-14 items-center gap-4 border-b bg-background px-4 sm:static sm:h-auto sm:border-0 sm:bg-transparent sm:px-6">
           <Sheet>
             <SheetTrigger asChild>
@@ -224,37 +222,37 @@ const Navbar = () => {
               </Button>
             </SheetTrigger>
             <SheetContent side="left" className="sm:max-w-xs">
-              <nav className="grid pt-20 gap-6 text-lg font-medium">
-
+              <nav className="grid pt-20 gap-6 text-lg font-medium ml-2">
                 <Link
                   to={handlePathGenerate("home")}
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
-                  <img src={logo} className="h-5 w-5" />
-                  Dashboard
-                </Link>
-                <Link
-                  href="#"
-                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
-                >
                   <Home className="h-5 w-5" />
-                  Dashboard
+                  Home
                 </Link>
                 <Link
-                  href="#"
+                  to={handlePathGenerate("calendar")}
                   className="flex items-center gap-4 px-2.5 text-foreground"
                 >
-                  <ShoppingCart className="h-5 w-5" />
-                  Orders
+                  <CalendarClock className="h-5 w-5" />
+                  Agenda
                 </Link>
                 <Link
-                  href="#"
+                  to={handlePathGenerate("profile")}
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
-                  <Package className="h-5 w-5" />
-                  Products
+                  <User className="h-5 w-5" />
+                  Perfil
                 </Link>
-                <Link
+                <button
+                  onClick={handleOffPage}
+                  className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
+                >
+                  <LogOut className="h-5 w-5" />
+                  Sair
+                </button>
+
+                {/* <Link
                   href="#"
                   className="flex items-center gap-4 px-2.5 text-muted-foreground hover:text-foreground"
                 >
@@ -267,7 +265,7 @@ const Navbar = () => {
                 >
                   <LineChart className="h-5 w-5" />
                   Settings
-                </Link>
+                </Link> */}
               </nav>
             </SheetContent>
           </Sheet>
@@ -287,8 +285,8 @@ const Navbar = () => {
               <BreadcrumbSeparator />
               <BreadcrumbItem>
                 <BreadcrumbLink asChild>
-                  <Link to={handlePathGenerate(isLogged ? "profile" : "authenticate")}>
-                    {isLogged ? "Perfil" : "Entrar"}
+                  <Link to={handlePathGenerate(isLoggedForRoute ? "profile" : "authenticate")}>
+                    {isLoggedForRoute ? "Perfil" : "Entrar"}
                   </Link>
                 </BreadcrumbLink>
               </BreadcrumbItem>

@@ -5,6 +5,8 @@ import { useAuth } from "../../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 import Toast from "../../../shared/custom/Toast";
 import ImageLogin from "../../../shared/images/ImageLogin.svg";
+import path_url from "../../../shared/config/path_url.json"
+import { Spinner } from "react-bootstrap";
 
 const initialState = {
 	nameCad: null,
@@ -31,6 +33,7 @@ const reducer = (state, action) => {
 const Register = () => {
 	const [state, dispatch] = useReducer(reducer, initialState);
 	const [emailSubmit, setEmailSubmit] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 	const [textButton, setTextButton] = useState("Cadastrar-se");
 	const { login, dataAuth } = useAuth();
 	const navigate = useNavigate();
@@ -44,10 +47,11 @@ const Register = () => {
 
 	const handleConfirmCode = async (event) => {
 		event.preventDefault();
+		setIsLoading(true)
 		if (state.code) {
 			try {
 				const response = await fetch(
-					"https://meu-barber-vite-api-2.onrender.com/emailAuth/auth-code",
+					`${path_url.local}/emailAuth/auth-code`,
 					{
 						method: "POST",
 						headers: {
@@ -76,15 +80,18 @@ const Register = () => {
 					icon: "error",
 					title: "Erro interno ao verificar código."
 				});
+			} finally {
+				setIsLoading(false)
 			}
 		}
 	};
 
 	const handleReqEmail = async (event) => {
 		event.preventDefault();
+		setIsLoading(true)
 		try {
 			const response = await fetch(
-				"https://meu-barber-vite-api-2.onrender.com/emailAuth/req-email",
+				`${path_url.local}/emailAuth/req-email`,
 				{
 					method: "POST",
 					headers: {
@@ -100,7 +107,7 @@ const Register = () => {
 				setTextButton("Confirmar");
 				// console.log("email enviado", data);
 				setEmailSubmit(true);
-				
+
 				Toast.fire({
 					icon: "success",
 					title: data.message
@@ -114,13 +121,16 @@ const Register = () => {
 			}
 		} catch (error) {
 			console.log("error reqEmail", error);
+		} finally {
+			setIsLoading(false)
 		}
 	};
 
 	const handleSubmit = async () => {
 		// event.preventDefault();
+		setIsLoading(true)
 		try {
-			const response = await fetch("https://meu-barber-vite-api-2.onrender.com/auth/register", {
+			const response = await fetch(`${path_url.local}/auth/register`, {
 				method: "POST",
 				headers: {
 					"Content-type": "application/json"
@@ -154,6 +164,8 @@ const Register = () => {
 		} catch (error) {
 			console.log("Error in register handle submit", error);
 			alert("Ocorreu um erro no envio do formulário");
+		} finally {
+			setIsLoading(false)
 		}
 	};
 
@@ -170,7 +182,7 @@ const Register = () => {
 		>
 			<div style={{ opacity: "93%" }} className={`card ${styles.card}`}>
 				<div className="form-group">
-					<form className={styles.input} onSubmit={ textButton === "Cadastrar-se" ? handleReqEmail : handleConfirmCode}>
+					<form className={styles.input} onSubmit={textButton === "Cadastrar-se" ? handleReqEmail : handleConfirmCode}>
 						<h1
 							style={{
 								fontFamily: "cursive",
@@ -225,15 +237,13 @@ const Register = () => {
 								<br />
 							</div>
 						)}
-						<Link className={styles.link} to={"/authenticate"} type="submit">
-							Já tenho uma conta
-						</Link>
+
 						<button
 							style={{ marginTop: "2%" }}
 							className="btn btn-primary"
 							type="submit"
 						>
-							{textButton}
+							{isLoading ? <Spinner /> : textButton.toUpperCase()}
 						</button>
 
 						<hr />
@@ -243,7 +253,11 @@ const Register = () => {
 							className="btn btn-primary"
 							type="button"
 						>
-							Sou Barbeiro
+							SOU BARBEIRO
+						</Link>
+						<hr />
+						<Link className={`btn btn-secondary`} to={"/authenticate"} type="submit">
+							{"Já tenho uma conta".toUpperCase()}
 						</Link>
 					</form>
 				</div>

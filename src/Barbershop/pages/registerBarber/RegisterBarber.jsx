@@ -2,7 +2,7 @@ import { useEffect, useReducer, useState } from "react";
 import "bootstrap/dist/css/bootstrap.min.css";
 import axios from "axios";
 import styles from "./registerBarber.module.css";
-import { Form } from "react-bootstrap";
+import { Form, Spinner } from "react-bootstrap";
 import Box from "@mui/material/Box";
 import Stepper from "@mui/material/Stepper";
 import Step from "@mui/material/Step";
@@ -10,6 +10,9 @@ import StepButton from "@mui/material/StepButton";
 import Toast from "../../../shared/custom/Toast";
 import ImageLogin from "../../../shared/images/ImageLogin.svg";
 import { useAuth } from "../../context/BarberContext";
+import { Link } from "react-router-dom";
+import path_url from "../../../shared/config/path_url.json"
+
 
 const initialStateEstablishment = {
 	latitude: null,
@@ -46,6 +49,7 @@ const RegisterBarber = () => {
 	);
 
 	const [valor, setValor] = useState("");
+	const [isLoading, setIsLoading] = useState(false);
 	const [dataAPI, setDataAPI] = useState([]);
 	const [location, setLocation] = useState(null);
 	const [selected, setSelected] = useState("");
@@ -86,7 +90,6 @@ const RegisterBarber = () => {
 
 	const handleEstablishment = async (event) => {
 		event.preventDefault();
-
 		if (selected) {
 			const selectedDataAPI = dataAPI.find(
 				(item) => item.poi.name === selected
@@ -127,11 +130,12 @@ const RegisterBarber = () => {
 		});
 	};
 	const handleSubmit = async () => {
+		setIsLoading(true)
 		try {
 			console.log(stateEstablishment.file);
 
 			const response = await fetch(
-				"https://meu-barber-vite-api-2.onrender.com/barberAuth/registerBarber",
+				`${path_url.local}/barberAuth/registerBarber`,
 				{
 					method: "POST",
 					headers: {
@@ -164,14 +168,17 @@ const RegisterBarber = () => {
 			}
 		} catch (error) {
 			console.error("error in handle submit", error);
+		} finally {
+			setIsLoading(false)
 		}
 	};
 	const handleConfirmCode = async (event) => {
 		event.preventDefault();
+		setIsLoading(true)
 		if (code) {
 			try {
 				const response = await fetch(
-					"https://meu-barber-vite-api-2.onrender.com/emailAuth/auth-code",
+					`${path_url.local}/emailAuth/auth-code`,
 					{
 						method: "POST",
 						headers: {
@@ -197,15 +204,18 @@ const RegisterBarber = () => {
 				}
 			} catch (error) {
 				console.error("error in confirm code", error);
+			} finally {
+				setIsLoading(false)
 			}
 		}
 	};
 
 	const handleReqEmail = async (event) => {
 		event.preventDefault();
+		setIsLoading(true)
 		try {
 			const response = await fetch(
-				"https://meu-barber-vite-api-2.onrender.com/emailAuth/req-email-barber",
+				`${path_url.local}/emailAuth/req-email-barber`,
 				{
 					method: "POST",
 					headers: {
@@ -231,6 +241,8 @@ const RegisterBarber = () => {
 			}
 		} catch (error) {
 			console.log("ERROR IN HANDLE REQ EMAIL", error);
+		} finally {
+			setIsLoading(false)
 		}
 	};
 
@@ -292,8 +304,15 @@ const RegisterBarber = () => {
 										className="btn btn-primary"
 										type="submit"
 									>
-										Próximo
+										{isLoading ? <Spinner /> : "PRÓXIMO"}
 									</button>
+									<Link
+										style={{ marginTop: "1%" }}
+										className="btn btn-primary"
+										to={"/barber/authenticateBarber"}
+									>
+										JÁ TENHO UMA CONTA
+									</Link>
 								</form>
 							</div>
 						) : activeStep === 1 ? (
@@ -361,11 +380,11 @@ const RegisterBarber = () => {
 										className="btn btn-primary"
 										type="submit"
 									>
-										Próximo
+										{isLoading ? <Spinner /> : "PRÓXIMO"}
 									</button>
 									<button
 										style={{ marginTop: "2%" }}
-										className="btn btn-primary"
+										className="btn btn-secondary"
 										onClick={() => setActiveStep(0)}
 									>
 										Voltar
@@ -399,7 +418,14 @@ const RegisterBarber = () => {
 											style={{ marginTop: "2%" }}
 											className="btn btn-primary"
 										>
-											Confirmar
+											{isLoading ? <Spinner /> : "CONFIRMAR"}
+										</button>
+										<button
+											style={{ marginTop: "2%" }}
+											className="btn btn-secondary"
+											onClick={() => setActiveStep(1)}
+										>
+											VOLTAR
 										</button>
 									</form>
 								</div>

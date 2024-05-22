@@ -19,19 +19,41 @@
 		width: 100%; /* Make card full width on small screens */
 	}
 }
-
+.hr {
+	margin-top: 2%;
+	margin-bottom: 0%;
+	border: 3px solid;
+	border-radius: 50%;
+	size: 5px;
+	width: 100%;
+	color: #333;
+	text-align: center; /* Assuming you want 'align' property */
+}
 .link {
+	border: 2px solid #33333380;
+	padding: 1%;
+	border-radius: 12px;
 	font-style: unset;
 	text-decoration: none;
 	color: #333;
 	display: flex;
-	align-items: end;
-	justify-content: space-evenly;
-	margin-top: 3%;
+	margin-top: 1%;
+	display: flex;
+	justify-content: center;
 }
 
 .link:hover {
-	color: rgb(167, 70, 13);
+	color: #38241a;
+	animation: colorChange 1s forwards;
+}
+@keyframes colorChange {
+	0% {
+		background-color: #fff;
+	}
+	100% {
+		background-color: #333;
+		color: white;
+	}
 }
 
 .input {

@@ -137,6 +137,8 @@
   border-radius: 10px; /* Arredondando as bordas */
   box-shadow: 0 0 10px 0 rgba(255, 255, 255, 0.5); /* Adicionando a sombra branca */
 }
+
+
 .button2 {
   display: flex;
   justify-content: center;
@@ -148,6 +150,12 @@
   border-radius: 10px; /* Arredondando as bordas */
   box-shadow: 0 10px 10px 0 var(--marrom-medio); /* Adicionando a sombra branca */
 }
+
+.button:hover,
+.button2:hover {
+    transform: scale(1.1);
+}
+
 
 @media (max-width: 768px) {
 	.modal {
@@ -191,6 +199,7 @@
 	flex-direction: row;
 	gap: 1rem;
 	font-size: medium;
+	margin-top: 2%;
 }
 /* Regras de mídia para tornar o layout responsivo */
 @media (max-width: 768px) {

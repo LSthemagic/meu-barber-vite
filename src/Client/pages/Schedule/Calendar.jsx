@@ -14,11 +14,15 @@ import Toast from "../../../shared/custom/Toast";
 import axios from "axios";
 import { Link, useNavigate } from "react-router-dom";
 import PageUnauthorized from "../../../shared/images/PageUnauthorized.svg";
+import path_url from "../../../shared/config/path_url.json"
+import { Spinner } from "react-bootstrap";
+import { CircleLoader, FadeLoader } from "react-spinners";
 
 const Calendar = ({ props, children }) => {
 	const [dataScheduling, setDataScheduling] = useState(null);
 	const [dataFromDB, setDataFromDB] = useState([]);
 	const [update, setUpdate] = useState(false);
+	const [isLoading, setIsLoading] = useState(false);
 	const { data, token, offDataAuth, logout } = useAuth();
 	const [allEvents, setAllEvents] = useState([])
 	const navigate = useNavigate();
@@ -26,11 +30,11 @@ const Calendar = ({ props, children }) => {
 	const { email: emailBarber } = props;
 
 	const { name: nameService } = children;
-	
+
 	// const { price: priceService } = children;
 	const { duration: durationService } = children;
 	const { service_id } = children;
-	
+
 
 	// verificar se o user esta logado
 	useEffect(() => {
@@ -75,8 +79,9 @@ const Calendar = ({ props, children }) => {
 
 	// enviar email de confirmação de horário agendado para o user e para o barbeiro
 	const confirmationSchedule = async () => {
+		setIsLoading(true)
 		try {
-			const response = await fetch("https://meu-barber-vite-api-2.onrender.com/confirmationFromEmail/confirmationSchedule", {
+			const response = await fetch(`${path_url.local}/confirmationFromEmail/confirmationSchedule`, {
 				method: "POST",
 				headers: {
 					"Content-type": "application/json"
@@ -108,14 +113,17 @@ const Calendar = ({ props, children }) => {
 				icon: "error",
 				title: dataReq.message
 			});
+		} finally {
+			setIsLoading(false)
 		}
 	}
 
 	// registrar um novo agendamento
 	const handleUpdateDB = async () => {
+		setIsLoading(true)
 		try {
 			const response = await fetch(
-				"https://meu-barber-vite-api-2.onrender.com/calendar/update-clients",
+				`${path_url.local}/calendar/update-clients`,
 				{
 					method: "POST",
 					headers: {
@@ -151,14 +159,17 @@ const Calendar = ({ props, children }) => {
 			}
 		} catch (err) {
 			console.log("ERRO EM ATT_CLIENTES_DB", err);
+		} finally {
+			setIsLoading(false)
 		}
 	};
 
 	// pegar horários dos clientes agendados
 	const handleGetHoursScheduled = async () => {
+		setIsLoading(true)
 		try {
 			const response = await axios.get(
-				"https://meu-barber-vite-api-2.onrender.com/dataBarber/unavailableTimeBarber",
+				`${path_url.local}/dataBarber/unavailableTimeBarber`,
 				{
 					headers: {
 						Authorization: `Bearer ${token}`,
@@ -194,6 +205,8 @@ const Calendar = ({ props, children }) => {
 				icon: "error",
 				title: "Erro interno ao buscar horários marcados"
 			});
+		} finally {
+			setIsLoading(false)
 		}
 	};
 
@@ -226,88 +239,110 @@ const Calendar = ({ props, children }) => {
 		}
 	};
 
-	return (
-		<div className="container">
-			{data ? (
-				<FullCalendar
-					viewClassNames={"text-center, text-black"}
-					plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
-					initialView="timeGridWeek"
-					headerToolbar={{
-						start: "today prev,next",
-						center: "",
-						end: "dayGridMonth,timeGridWeek,timeGridDay"
-					}}
-					// validRange={(now) => ({ // Permite a partir de agora
-					// 	start: now,
-					//   })}
-					//   selectConstraint="businessHours" // Restringe às horas de funcionamento
-					// />
-					validRange={(now) => ({
-						start: now, //permite a partir do horário atual
-					})}
-					// selectConstraint={"businessHours"} //Restringe as horas de trabalho
-					// businessHours={
-					// 	{
-					// 		daysOfWeek: [1, 2, 3, 4, 5], // Sexta e Sábado
-					// 		// startTime: data.open_at,
-					// 		// endTime: data.close_at,
-					// 	}
+	const renderFullCalendar = () => {
+		return (
+			<div>
+				{data ? (
+					<FullCalendar
+						viewClassNames={"text-center, text-black"}
+						plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
+						initialView="timeGridWeek"
+						headerToolbar={{
+							start: "today prev,next",
+							center: "",
+							end: "dayGridMonth,timeGridWeek,timeGridDay"
+						}}
+						// validRange={(now) => ({ // Permite a partir de agora
+						// 	start: now,
+						//   })}
+						//   selectConstraint="businessHours" // Restringe às horas de funcionamento
+						// />
+						validRange={(now) => ({
+							start: now, //permite a partir do horário atual
+						})}
+						// selectConstraint={"businessHours"} //Restringe as horas de trabalho
+						// businessHours={
+						// 	{
+						// 		daysOfWeek: [1, 2, 3, 4, 5], // Sexta e Sábado
+						// 		// startTime: data.open_at,
+						// 		// endTime: data.close_at,
+						// 	}
 
-					// }
-					dayCellClassNames={`text-center`}
-					weekNumberCalculation="ISO"
-					height={"90vh"}
-					locale={"pt-br"}
-					buttonText={{
-						today: "Hoje",
-						month: "Mês",
-						week: "Semana",
-						day: "Dia",
-						list: "Lista",
-						next: "Próximo",
-						nextYear: "Próximo ano",
-						previous: "Voltar",
-						prev: "Anterior",
-						prevYear: "Ano anterior"
+						// }
+						dayCellClassNames={`text-center`}
+						weekNumberCalculation="ISO"
+						height={"90vh"}
+						locale={"pt-br"}
+						buttonText={{
+							today: "Hoje",
+							month: "Mês",
+							week: "Semana",
+							day: "Dia",
+							list: "Lista",
+							next: "Próximo",
+							nextYear: "Próximo ano",
+							previous: "Voltar",
+							prev: "Anterior",
+							prevYear: "Ano anterior"
+						}}
+						allDaySlot={false}
+						allDayText="Dia inteiro"
+						eventTimeFormat={{
+							hour: "numeric",
+							minute: "2-digit",
+							meridiem: "uppercase"
+						}}
+						slotLabelFormat={{
+							hour: "numeric",
+							minute: "2-digit",
+							meridiem: "uppercase"
+						}}
+						slotMinTime="08:00" // Horário mínimo (8h)
+						slotMaxTime="18:00" // Horário máximo (18h)
+						hiddenDays={[0]}
+						editable={false}
+						selectable={true}
+						dayMaxEvents={true}
+						eventColor="red"
+						dateClick={handleDateClick}
+						events={allEvents || []}
+						eventDidMount={(info) => {
+							// Use Bootstrap to create the popover
+							return new bootstrap.Popover(info.el, {
+								title: info.event.title,
+								placement: "auto",
+								trigger: "hover",
+								customClass: "popoverStyle",
+								content: `<p>Encontre um horário disponível para o agendamento..</p>`,
+								html: true
+							});
+						}}
+					/>
+				) : (
+					<img src={PageUnauthorized} alt=""></img>
+				)}
+			</div>
+		)
+	}
+
+	return (
+
+		<div className="container">
+			{isLoading ? (
+				<div
+					style={{
+						display: "flex",
+						justifyContent: "center",
+						alignItems: "center",
 					}}
-					allDaySlot={false}
-					allDayText="Dia inteiro"
-					eventTimeFormat={{
-						hour: "numeric",
-						minute: "2-digit",
-						meridiem: "uppercase"
-					}}
-					slotLabelFormat={{
-						hour: "numeric",
-						minute: "2-digit",
-						meridiem: "uppercase"
-					}}
-					slotMinTime="08:00" // Horário mínimo (8h)
-					slotMaxTime="18:00" // Horário máximo (18h)
-					hiddenDays={[0]}
-					editable={false}
-					selectable={true}
-					dayMaxEvents={true}
-					eventColor="red"
-					dateClick={handleDateClick}
-					events={allEvents || []}
-					eventDidMount={(info) => {
-						// Use Bootstrap to create the popover
-						return new bootstrap.Popover(info.el, {
-							title: info.event.title,
-							placement: "auto",
-							trigger: "hover",
-							customClass: "popoverStyle",
-							content: `<p>Encontre um horário disponível para o agendamento..</p>`,
-							html: true
-						});
-					}}
-				/>
+				>
+					<FadeLoader color="black" />
+				</div>
 			) : (
-				<img src={PageUnauthorized} alt=""></img>
+				renderFullCalendar()
 			)}
 		</div>
+
 	);
 };
 
