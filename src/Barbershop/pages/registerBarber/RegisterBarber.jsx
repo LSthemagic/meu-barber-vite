@@ -421,7 +421,7 @@ const RegisterBarber = () => {
 							</>
 						)}
 					</div>
-					<div style={{ marginTop: "5%" }}>
+					<div className={styles.stepper} style={{ marginTop: "5%", width: "100%", }}>
 						<Stepper nonLinear activeStep={activeStep}>
 							<Step>
 								<StepButton>Criar conta</StepButton>

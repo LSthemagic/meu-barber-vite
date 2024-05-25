@@ -12,8 +12,8 @@ import LandingPage from "../../../shared/pages/landingPage";
 import ImagemFormatted from "../../../shared/layout/imgPatterns/ImagemFormatted";
 import Swal from "sweetalert2";
 import path_url from "../../../shared/config/path_url.json"
-import { BeatLoader, ClimbingBoxLoader, PuffLoader } from "react-spinners";
-
+import { BeatLoader, PuffLoader } from "react-spinners";
+import imagemDefault from "../../../shared/images/imageDefault.jpg"
 const Home = () => {
 	const [barbers, setBarbers] = useState([]);
 	const [showModalCalendar, setShowModalCalendar] = useState(false);
@@ -23,7 +23,7 @@ const Home = () => {
 	const [dbBarberFav, setDbBarberFav] = useState([]);
 	const [isLoading, setIsLoading] = useState(false);
 	const [isLoadingFavorite, setIsLoadingFavorite] = useState(false);
-	const sliderRef = useRef(null);
+
 	const auth = useAuth();
 
 	if (!auth.isLogged) {
@@ -85,6 +85,8 @@ const Home = () => {
 			},
 		],
 	};
+
+
 
 	const handleDoubleObjectiveCalendar = (data) => {
 		// handleOpenModalCalendar();
@@ -322,7 +324,6 @@ const Home = () => {
 		)
 	}
 
-
 	const filteredBarbers = showBarbershopFavorites ? barbers.filter((barber) => dbBarberFav?.IDs?.includes(barber._id)) : barbers;
 
 
@@ -335,7 +336,7 @@ const Home = () => {
 					{!isLoading && filteredBarbers?.map((barber) => (
 						<div key={barber._id}>
 							<div className={styles.card}>
-								<ImagemFormatted src={"../../../../public/section_img2.jpg"} />
+							<ImagemFormatted src={barber.picture[0]?.src ? `${path_url.remote}/picture/${barber.picture[0]?.src}` : imagemDefault} />
 								<h3 className={styles.barberNome}>{barber?.name}</h3>
 								<div className={styles.fa5}>
 

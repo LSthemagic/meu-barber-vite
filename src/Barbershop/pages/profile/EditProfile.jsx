@@ -1,9 +1,8 @@
-import { Button as ButtonBs, Card } from "react-bootstrap";
-import { useRef } from "react";
+import { Button as ButtonBs, Card, Form, Spinner } from "react-bootstrap";
+import { useEffect, useRef, useState } from "react";
 import imageDefault from "../../../shared/images/imageDefault.jpg";
 import path_url from "../../../shared/config/path_url.json"
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../../@/components/ui/tabs"
-import { Button } from "../../../../@/components/ui/button"
 import {
     Card as CardShadCn,
     CardContent,
@@ -14,113 +13,209 @@ import {
 } from "../../../../@/components/ui/card"
 import { Input } from "../../../../@/components/ui/input"
 import { Label } from "../../../../@/components/ui/label"
-
 import styles from "./EditProfile.module.css"
+import { SquarePen } from "lucide-react";
+import Toast from "../../../shared/custom/Toast";
+import axios from "axios";
+
+
 const EditProfile = ({ props }) => {
+    const [imagem, setImagem] = useState(null);
+    const [loading, setLoading] = useState(false);
+    const [loadingGet, setLoadingGet] = useState(false);
+    const [source, setSource] = useState(null)
+    const [nameSource, setNameSource] = useState(null)
     const fileInputRef = useRef(null);
     const barbershop = (props);
 
-    const imageResponse = `${path_url.remote}/getPicture\\${barbershop?.picture?.[0]?.src}`
-    const image = imageResponse ? imageResponse : imageDefault;
+    useEffect(() => {
+        handleGetImages()
+    }, [imagem])
 
-    const handleCardClick = () => {
-        fileInputRef.current.click();
-    }
+    const imageResponse = `${path_url.remote}/picture\\${source}`
+    const image = imageResponse ? imageResponse : imageDefault;
 
     const typeImages = {
         "image/jpeg": "image/jpeg",
         "image/png": "image/png",
         "image/jpg": "image/jpg"
     }
+    const handleCardClick = () => {
+        fileInputRef.current.click();
+    }
 
-    const handleFileInputChange = (event) => {
-        const selectedFile = event.target.files[0];
-        console.log(selectedFile)
+    const handleFileChange = (e) => {
+        const selectedFile = e.target.files[0];
         if (!typeImages[selectedFile.type]) {
-            alert("Selecione uma imagem")
+            Toast.fire({
+                icon: 'error',
+                title: 'Formato de imagem não suportado.'
+            });
+        } else {
+            setImagem(selectedFile);
+            Toast.fire({
+                icon: 'info',
+                title: 'Imagem selecionada com sucesso. Para fazer alteração, basta salvar.'
+            })
         }
+    };
+
+    const handleFileInputChange = async (event) => {
+        event.preventDefault();
+        setLoading(true);
+        try {
+            const formData = new FormData();
+            formData.append("file", imagem);
+            formData.append("ID", barbershop._id);
+            const response = await axios.put(`${path_url.remote}/imageController/putPictureBarbershop`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            });
+            const res = {
+                icon: null,
+                message: null
+            };
+            
+            if (response.data.error) {
+                res.icon = 'error'
+                res.message = response.data.message
+            }
+            else {
+                res.icon = 'success'
+                res.message = "Dados alterados com sucesso."
+            }
+            handleGetImages()
+            Toast.fire({
+                icon: res.icon,
+                title: res.message
+            })
+
+        } catch (e) {
+            console.log(e);
+            Toast.fire({
+                icon: 'error',
+                title: 'Erro ao enviar imagem.'
+            });
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleGetImages = async () => {
+        setLoadingGet(true);
+        try {
+            const response = await axios.get(`${path_url.remote}/imageController/pictureBarbershop`, {
+                headers: {
+                    ID: barbershop._id,
+                }
+            })
+            setSource(response.data[0]?.src)
+            setNameSource(response.data[0].name)
+        } catch (error) {
+            console.log("get image error", error)
+            Toast.fire({
+                icon: 'error',
+                title: 'Erro ao buscar imagem.'
+            })
+        } finally {
+            setLoadingGet(false);
+        }
+    }
+
+    const cardImage = () => {
+        return (
+            <>
+                <div onClick={handleCardClick} className={styles.cardImage}>
+                    <Card.Img className={styles.image} style={{ cursor: "pointer" }} variant="top" src={image} />
+                    <input
+                        ref={fileInputRef}
+                        type="file"
+                        style={{ display: 'none' }}
+                        onChange={handleFileChange}
+                        accept="image/*" />
+                    <div className={styles.footerImage}>
+                        <Card.Title style={{ fontSize: "15px" }}>{nameSource}</Card.Title>
+                        <SquarePen style={{ width: "20px" }} />
+                    </div>
+                </div><Card.Body>
+                    <Card.Text>
+                        Essa imagem aparecerá
+                        para seus clientes.
+                        <br />
+                    </Card.Text>
+                    <ButtonBs onClick={handleFileInputChange} className="mt-2 w-full bg-black border-black" variant="primary">{loading ? <Spinner /> : "Salvar"}</ButtonBs>
+                </Card.Body>
+            </>
+
+        )
     }
 
     return (
         <div className={styles.container}>
             <div>
                 <div className="profile-pic">
-                    <Card className={styles.card} style={{ width: '18rem', }}>
-                        <Card.Img className={styles.cardImage} onClick={handleCardClick} variant="top" src={image} />
-                        <input
-                            ref={fileInputRef}
-                            type="file"
-                            style={{ display: 'none' }}
-                            onChange={handleFileInputChange}
-                            accept="image/*"
-                        />
-                        <Card.Body>
-                            <Card.Title>{barbershop?.name}</Card.Title>
-                            <Card.Text>
-                                <br />
-                                Essa imagem aparecerá
-                                para seus clientes no perfil de cliente
-                                <br />
-                            </Card.Text>
-                            <ButtonBs className="mt-2" variant="primary">Salvar</ButtonBs>
-                        </Card.Body>
+                    <Card className={styles.card} style={{ width: '18rem' }}>
+                        {loadingGet ? <Spinner style={{ display: "flex", justifyContent: "center", marginLeft: "auto", marginRight: "auto" }} /> : cardImage()}
                     </Card>
                 </div>
             </div>
 
-            <Tabs defaultValue="account" className="w-[400px]  text-white p-4" >
-                <TabsList className="grid w-full grid-cols-2 bg-easy-black rounded mt-1 ">
-                    <TabsTrigger className="focus:bg-black rounded" value="account">Account</TabsTrigger>
-                    <TabsTrigger className="focus:bg-black rounded" value="password">Password</TabsTrigger>
-                </TabsList>
-                <TabsContent value="account">
-                    <Card className="bg-easy-black text-white p-3">
-                        <CardHeader>
-                            <CardTitle>Account</CardTitle>
-                            <CardDescription>
-                                Make changes to your account here. Click save when you're done.
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-2">
-                            <div className="space-y-1">
-                                <Label htmlFor="name">Name</Label>
-                                <Input id="name" defaultValue={barbershop?.name} />
-                            </div>
-                            <div className="space-y-1">
-                                <Label htmlFor="username">Username</Label>
-                                <Input id="username" defaultValue={barbershop?.email} />
-                            </div>
-                        </CardContent>
-                        <CardFooter>
-                            <ButtonBs className="mt-3">Save changes</ButtonBs>
-                        </CardFooter>
-                    </Card>
-                </TabsContent>
-                <TabsContent value="password">
-                    <Card className="bg-easy-black text-white p-3">
-                        <CardHeader>
-                            <CardTitle>Password</CardTitle>
-                            <CardDescription>
-                                Change your password here. After saving, you'll be logged out.
-                            </CardDescription>
-                        </CardHeader>
-                        <CardContent className="space-y-2 rounded">
-                            <div className="space-y-1">
-                                <Label htmlFor="current">Current password</Label>
-                                <Input id="current" type="password" />
-                            </div>
-                            <div className="space-y-1">
-                                <Label htmlFor="new">New password</Label>
-                                <Input id="new" type="password" />
-                            </div>
-                        </CardContent>
-                        <CardFooter>
-                            <ButtonBs className="mt-3" >Save password</ButtonBs>
-                        </CardFooter>
-                    </Card>
-                </TabsContent>
-            </Tabs>
-
+            <div className={styles.tabsContainer}>
+                <Tabs defaultValue="account" className="w-[350px] text-white" >
+                    <TabsList className="grid w-full grid-cols-2 bg-easy-black rounded mt-1 ">
+                        <TabsTrigger className="focus:bg-black rounded" value="account">Conta</TabsTrigger>
+                        <TabsTrigger className="focus:bg-black rounded" value="password">Senha</TabsTrigger>
+                    </TabsList>
+                    <TabsContent value="account">
+                        <CardShadCn className="bg-easy-black text-white p-3">
+                            <CardHeader>
+                                <CardTitle>Conta</CardTitle>
+                                <CardDescription>
+                                    Faça alterações em sua conta aqui. Clique em salvar quando estiver pronto.
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-2">
+                                <div className="space-y-1">
+                                    <Label htmlFor="name">Nome</Label>
+                                    <Input id="name" defaultValue={barbershop?.name} />
+                                </div>
+                                <div className="space-y-1">
+                                    <Label htmlFor="username">Email</Label>
+                                    <Input id="username" defaultValue={barbershop?.email} />
+                                </div>
+                            </CardContent>
+                            <CardFooter>
+                                <ButtonBs className="mt-3 w-full bg-black border-black">Salvar Alterações</ButtonBs>
+                            </CardFooter>
+                        </CardShadCn>
+                    </TabsContent>
+                    <TabsContent value="password">
+                        <CardShadCn className="bg-easy-black text-white p-3">
+                            <CardHeader>
+                                <CardTitle>Senha</CardTitle>
+                                <CardDescription>
+                                    {/*Traduzido para pt-br: Change your password here. After saving, you'll be logged out. */}
+                                    Altere sua senha aqui. Após salvar, você será deslogado.
+                                </CardDescription>
+                            </CardHeader>
+                            <CardContent className="space-y-2 rounded">
+                                <div className="space-y-1">
+                                    <Label htmlFor="current">Senha atual</Label>
+                                    <Input id="current" type="password" />
+                                </div>
+                                <div className="space-y-1">
+                                    <Label htmlFor="new">Nova senha</Label>
+                                    <Input id="new" type="password" />
+                                </div>
+                            </CardContent>
+                            <CardFooter>
+                                <ButtonBs className="mt-3 w-full bg-black border-black" >Salvar senha</ButtonBs>
+                            </CardFooter>
+                        </CardShadCn>
+                    </TabsContent>
+                </Tabs>
+            </div>
 
         </div>
     )

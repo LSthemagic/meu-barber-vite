@@ -1,82 +1,95 @@
 .container {
-	display: flex;
-	align-items: center;
-	justify-content: center;
-	min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 100vh;
 }
+
 body {
-	margin: 0;
-	padding: 0;
+    margin: 0;
+    padding: 0;
 }
 
 .card {
-	width: 50%;
-	padding: 20px;
-	margin: 20px;
-	box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-	border-radius: 10px;
-	background-color: #fff;
+    width: 50%;
+    padding: 20px;
+    margin: 20px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border-radius: 10px;
+    background-color: #fff;
 }
 
 .input {
-	display: flex;
-	flex-direction: column;
+    display: flex;
+    flex-direction: column;
 }
 
 .input label {
-	font-size: 1.25rem;
-	margin-bottom: 8px;
+    font-size: 1.25rem;
+    margin-bottom: 8px;
 }
 
 .input input {
-	width: 100%;
-	height: 2.5rem;
-	padding: 0.5rem;
-	border: 1px solid #ccc;
-	border-radius: 5px;
-	outline: none;
-	font-size: 1rem;
-	transition: border-color 0.3s ease-in-out;
+    width: 100%;
+    height: 2.5rem;
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    outline: none;
+    font-size: 1rem;
+    transition: border-color 0.3s ease-in-out;
 }
 
 .input input::placeholder {
-	color: #999;
+    color: #999;
 }
 
 .input input:focus,
 .input input:active {
-	border-color: #007bff;
+    border-color: #007bff;
 }
 
 .link {
-	font-style: unset;
-	text-decoration: none;
-	color: #333;
-	display: flex;
-	align-items: end;
-	justify-content: left;
-	margin-top: 1%;
+    font-style: unset;
+    text-decoration: none;
+    color: #333;
+    display: flex;
+    align-items: end;
+    justify-content: left;
+    margin-top: 1%;
 }
 
 .link:hover {
-	color: rgb(134, 43, 10) !important;
+    color: rgb(134, 43, 10) !important;
 }
+
 .button {
-	align-items: center;
-	margin-top: 2%;
-	display: flex;
-	justify-content: space-between;
+    margin-top: 2%;
+    display: flex;
+    justify-content: center; /* Alterado para centralizar o botão */
 }
 
 /* Responsive Styles */
 @media screen and (max-width: 768px) {
-	.card {
-		width: 80%;
+    .card {
+        width: 80%;
+        margin: 10px; /* Adicionado margem inferior para separar os cartões */
+    }
+	.stepper{
+		overflow-x: auto;
 	}
 }
 
 @media screen and (max-width: 576px) {
-	.card {
-		width: 90%;
-	}
+    .card {
+        width: 90%;
+        margin: 10px; /* Adicionado margem inferior para separar os cartões */
+    }
+    .input label {
+        font-size: 1rem; /* Reduzindo o tamanho da fonte do rótulo */
+    }
+    .input input {
+        height: 2rem; /* Reduzindo a altura do input */
+        font-size: 0.9rem; /* Reduzindo o tamanho da fonte do input */
+    }
 }
