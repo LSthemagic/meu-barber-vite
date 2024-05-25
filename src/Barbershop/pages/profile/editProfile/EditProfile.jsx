@@ -1,8 +1,8 @@
 import { Button as ButtonBs, Card, Form, Spinner } from "react-bootstrap";
 import { useEffect, useRef, useState } from "react";
-import imageDefault from "../../../shared/images/imageDefault.jpg";
-import path_url from "../../../shared/config/path_url.json"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../../@/components/ui/tabs"
+import imageDefault from "../../../../shared/images/imageDefault.jpg";
+import path_url from "../../../../shared/config/path_url.json"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "../../../../../@/components/ui/tabs"
 import {
     Card as CardShadCn,
     CardContent,
@@ -10,17 +10,17 @@ import {
     CardFooter,
     CardHeader,
     CardTitle,
-} from "../../../../@/components/ui/card"
-import { Input } from "../../../../@/components/ui/input"
-import { Label } from "../../../../@/components/ui/label"
+} from "../../../../../@/components/ui/card"
+import { Input } from "../../../../../@/components/ui/input"
+import { Label } from "../../../../../@/components/ui/label"
 import styles from "./EditProfile.module.css"
 import { SquarePen } from "lucide-react";
-import Toast from "../../../shared/custom/Toast";
+import Toast from "../../../../shared/custom/Toast";
 import axios from "axios";
 
 
 const EditProfile = ({ props }) => {
-    const [imagem, setImagem] = useState(null);
+    const [imagemForDB, setImagemForDB] = useState(null);
     const [loading, setLoading] = useState(false);
     const [loadingGet, setLoadingGet] = useState(false);
     const [source, setSource] = useState(null)
@@ -30,10 +30,11 @@ const EditProfile = ({ props }) => {
 
     useEffect(() => {
         handleGetImages()
-    }, [imagem])
+    }, [imagemForDB])
 
     const imageResponse = `${path_url.remote}/picture\\${source}`
-    const image = imageResponse ? imageResponse : imageDefault;
+    console.log(imageResponse)
+    const image = source != null ? imageResponse : imageDefault;
 
     const typeImages = {
         "image/jpeg": "image/jpeg",
@@ -46,13 +47,14 @@ const EditProfile = ({ props }) => {
 
     const handleFileChange = (e) => {
         const selectedFile = e.target.files[0];
+        console.log(selectedFile)
         if (!typeImages[selectedFile.type]) {
             Toast.fire({
                 icon: 'error',
                 title: 'Formato de imagem não suportado.'
             });
         } else {
-            setImagem(selectedFile);
+            setImagemForDB(selectedFile);
             Toast.fire({
                 icon: 'info',
                 title: 'Imagem selecionada com sucesso. Para fazer alteração, basta salvar.'
@@ -60,36 +62,41 @@ const EditProfile = ({ props }) => {
         }
     };
 
-    const handleFileInputChange = async (event) => {
-        event.preventDefault();
+    const responseDBImage = (response) => {
+        const res = {
+            icon: null,
+            message: null
+        };
+
+        if (response.data.error) {
+            res.icon = 'error'
+            res.message = response.data.message
+        }
+        else {
+            res.icon = 'success'
+            res.message = "Dados alterados com sucesso."
+        }
+        handleGetImages()
+        Toast.fire({
+            icon: res.icon,
+            title: res.message
+        })
+    }
+
+    const handleUpdateFile = async () => {
+        // event.preventDefault();
         setLoading(true);
         try {
             const formData = new FormData();
-            formData.append("file", imagem);
+            formData.append("file", imagemForDB);
             formData.append("ID", barbershop._id);
             const response = await axios.put(`${path_url.remote}/imageController/putPictureBarbershop`, formData, {
                 headers: {
                     "Content-Type": "multipart/form-data"
                 }
             });
-            const res = {
-                icon: null,
-                message: null
-            };
-            
-            if (response.data.error) {
-                res.icon = 'error'
-                res.message = response.data.message
-            }
-            else {
-                res.icon = 'success'
-                res.message = "Dados alterados com sucesso."
-            }
-            handleGetImages()
-            Toast.fire({
-                icon: res.icon,
-                title: res.message
-            })
+
+            responseDBImage(response)
 
         } catch (e) {
             console.log(e);
@@ -102,6 +109,30 @@ const EditProfile = ({ props }) => {
         }
     };
 
+    const handleFirsFile = async () => {
+        // event.preventDefault();
+        try {
+            const name = imagemForDB.name.split('.')
+            const formData = new FormData();
+            formData.append("id", barbershop._id)
+            formData.append("file", imagemForDB);
+            formData.append("name", name[0]);
+            const response = await axios.post(`${path_url.remote}/barberAuth/uploadImage`, formData, {
+                headers: {
+                    "Content-Type": "multipart/form-data"
+                }
+            })
+            responseDBImage(response)
+        } catch (error) {
+            console.log(error)
+            Toast.fire({
+                icon: 'error',
+                title: 'Erro ao enviar imagem.'
+            })
+        }
+
+    }
+
     const handleGetImages = async () => {
         setLoadingGet(true);
         try {
@@ -110,8 +141,12 @@ const EditProfile = ({ props }) => {
                     ID: barbershop._id,
                 }
             })
-            setSource(response.data[0]?.src)
-            setNameSource(response.data[0].name)
+            // console.log(response.data.length)
+            if (response.data?.length > 0) {
+                setSource(response.data[0]?.src)
+                setNameSource(response.data[0].name)
+            }
+
         } catch (error) {
             console.log("get image error", error)
             Toast.fire({
@@ -121,6 +156,11 @@ const EditProfile = ({ props }) => {
         } finally {
             setLoadingGet(false);
         }
+    }
+
+    const whatHandleImage = (event) => {
+        event.preventDefault()
+        return barbershop.picture?.length > 0 ? handleUpdateFile() : handleFirsFile()
     }
 
     const cardImage = () => {
@@ -135,7 +175,7 @@ const EditProfile = ({ props }) => {
                         onChange={handleFileChange}
                         accept="image/*" />
                     <div className={styles.footerImage}>
-                        <Card.Title style={{ fontSize: "15px" }}>{nameSource}</Card.Title>
+                        <Card.Title style={{ fontSize: "15px" }}>{nameSource ? nameSource : "Imagem Padrão"}</Card.Title>
                         <SquarePen style={{ width: "20px" }} />
                     </div>
                 </div><Card.Body>
@@ -144,12 +184,14 @@ const EditProfile = ({ props }) => {
                         para seus clientes.
                         <br />
                     </Card.Text>
-                    <ButtonBs onClick={handleFileInputChange} className="mt-2 w-full bg-black border-black" variant="primary">{loading ? <Spinner /> : "Salvar"}</ButtonBs>
+                    <ButtonBs onClick={whatHandleImage} className="mt-2 w-full bg-black border-black" variant="primary">{loading ? <Spinner /> : "Salvar"}</ButtonBs>
                 </Card.Body>
             </>
 
         )
     }
+
+ 
 
     return (
         <div className={styles.container}>
@@ -195,7 +237,6 @@ const EditProfile = ({ props }) => {
                             <CardHeader>
                                 <CardTitle>Senha</CardTitle>
                                 <CardDescription>
-                                    {/*Traduzido para pt-br: Change your password here. After saving, you'll be logged out. */}
                                     Altere sua senha aqui. Após salvar, você será deslogado.
                                 </CardDescription>
                             </CardHeader>

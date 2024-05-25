@@ -12,7 +12,7 @@ import {
 } from "lucide-react"
 import { Button, Form, Modal, Spinner } from "react-bootstrap";
 import path_url from "../../../shared/config/path_url.json"
-import EditProfile from "./EditProfile";
+import EditProfile from "./editProfile/EditProfile";
 
 
 const initialStateAddBarber = {
