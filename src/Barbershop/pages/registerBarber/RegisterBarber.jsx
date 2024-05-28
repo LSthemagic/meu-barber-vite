@@ -301,7 +301,7 @@ const RegisterBarber = () => {
 									</button>
 									<Link
 										style={{ marginTop: "1%" }}
-										className="btn btn-primary"
+										className="btn btn-secondary"
 										to={"/barber/authenticateBarber"}
 									>
 										JÁ TENHO UMA CONTA

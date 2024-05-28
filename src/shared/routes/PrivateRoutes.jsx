@@ -9,7 +9,7 @@ export const PrivateRoutes = ({ children }) => {
     const auth = isBarberRoutes ? useAuthBarber() : useAuth()
     const { isLogged } = auth
 
-    const handlePath = () => isBarberRoutes ? "/barber/authenticateBarber" : "authenticate"
+    const handlePath = () => isBarberRoutes ? "/barber/authenticateBarber" : "/authenticate"
 
   
     return isLogged ? children : <Navigate to={handlePath()} />

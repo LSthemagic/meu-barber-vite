@@ -80,7 +80,7 @@ const Authenticate = () => {
 					icon: "success",
 					title: data.message
 				});
-				navigate("/");
+				navigate("/home");
 			} else {
 				Toast.fire({
 					icon: "error",

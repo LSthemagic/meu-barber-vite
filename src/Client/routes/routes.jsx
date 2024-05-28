@@ -8,6 +8,7 @@ import Footer from "../../shared/layout/footer/Footer";
 import BarberRoutes from "../../Barbershop/routes/routes";
 import PageNotFound from "../../shared/pages/PageNotFound";
 import { PrivateRoutes } from "../../shared/routes/PrivateRoutes";
+import LandingPage from "../../shared/pages/landingPage";
 
 
 const AppRoutes = () => {
@@ -16,12 +17,13 @@ const AppRoutes = () => {
 		<BrowserRouter>
 			<Navbar />
 			<Routes>
-
+				
+				<Route path="/" element={<LandingPage />} />
 				<Route path="/register" element={<Register />} />
 				<Route path="/authenticate" element={<Authenticate />} />
 
 
-				<Route path="/" element={
+				<Route path="/home" element={
 					<PrivateRoutes>
 						<Home />
 					</PrivateRoutes>}

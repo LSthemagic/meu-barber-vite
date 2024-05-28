@@ -152,7 +152,7 @@ const Register = () => {
 					title: data.message
 				});
 				setTimeout(() => {
-					navigate("/");
+					navigate("/home");
 				}, 3000);
 			} else {
 				console.error("Erro ao registrar usuário:", data.message);
@@ -246,16 +246,7 @@ const Register = () => {
 							{isLoading ? <Spinner /> : textButton.toUpperCase()}
 						</button>
 
-						<hr />
-						<Link
-							to="/barber/registerBarber"
-							style={{ marginBottom: "1%" }}
-							className="btn btn-primary"
-							type="button"
-						>
-							SOU BARBEIRO
-						</Link>
-						<hr />
+						<hr style={{padding:"3px"}} />
 						<Link className={`btn btn-secondary`} to={"/authenticate"} type="submit">
 							{"Já tenho uma conta".toUpperCase()}
 						</Link>

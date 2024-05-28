@@ -328,7 +328,7 @@ const Home = () => {
 
 	const renderImage = (item) => {
 		
-		console.log((`${path_url.remote}/picture/${item.picture[0]?.src}`))
+		// console.log((`${path_url.remote}/picture/${item.picture[0]?.src}`))
 	}
 
 
