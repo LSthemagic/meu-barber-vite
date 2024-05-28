@@ -9,6 +9,7 @@ import BarberRoutes from "../../Barbershop/routes/routes";
 import PageNotFound from "../../shared/pages/PageNotFound";
 import { PrivateRoutes } from "../../shared/routes/PrivateRoutes";
 import LandingPage from "../../shared/pages/landingPage";
+import Profile from "../pages/Profile/Profile";
 
 
 const AppRoutes = () => {
@@ -21,7 +22,9 @@ const AppRoutes = () => {
 				<Route path="/" element={<LandingPage />} />
 				<Route path="/register" element={<Register />} />
 				<Route path="/authenticate" element={<Authenticate />} />
-
+				<Route path="/profile" element={
+					<PrivateRoutes><Profile/></PrivateRoutes>
+				}></Route>
 
 				<Route path="/home" element={
 					<PrivateRoutes>
