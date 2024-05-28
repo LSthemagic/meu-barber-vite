@@ -326,6 +326,11 @@ const Home = () => {
 
 	const filteredBarbers = showBarbershopFavorites ? barbers.filter((barber) => dbBarberFav?.IDs?.includes(barber._id)) : barbers;
 
+	const renderImage = (item) => {
+		
+		console.log((`${path_url.remote}/picture/${item.picture[0]?.src}`))
+	}
+
 
 	return (
 		<div className={styles.container}>
@@ -336,10 +341,10 @@ const Home = () => {
 					{!isLoading && filteredBarbers?.map((barber) => (
 						<div key={barber._id}>
 							<div className={styles.card}>
-							<ImagemFormatted src={barber.picture[0]?.src ? `${path_url.remote}/picture/${barber.picture[0]?.src}` : imagemDefault} />
+							<ImagemFormatted src={barber.picture[0]?.src ? (`${path_url.remote}/picture/${barber.picture[0]?.src}`) : imagemDefault} />
 								<h3 className={styles.barberNome}>{barber?.name}</h3>
 								<div className={styles.fa5}>
-
+									{renderImage(barber)}
 									{renderHearthFavorites(barber)}
 
 									<i
