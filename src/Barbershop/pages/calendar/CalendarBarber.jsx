@@ -117,7 +117,8 @@ const Calendar = () => {
                 },
                 body: JSON.stringify({
                     email: await emailSelected,
-                    date: unavailableTime,
+                    start:  new Date(unavailableTime?.start).toISOString(),
+                    end: new Date(unavailableTime?.end).toISOString(),
                     type: "barber",
                     name: unavailableTime.title
                 })
