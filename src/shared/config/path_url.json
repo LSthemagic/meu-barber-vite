@@ -1,4 +1,4 @@
 {
     "local": "http://localhost:3001",
-    "remote": "http://localhost:3001"
+    "remote": "https://meu-barber-vite-api-2.onrender.com"
 }
