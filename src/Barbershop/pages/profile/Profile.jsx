@@ -89,12 +89,12 @@ const Profile = () => {
         return <LandingPage />;
     }
 
-    const { dataBarber: { email }, token } = auth;
+    const { dataBarber: { _id }, token } = auth;
 
     useEffect(() => {
         handleDataBarber();
     }, []);
-
+    
     //  Pegar barbeiros via API
     const handleDataBarber = async () => {
         setIsLoading(true)
@@ -103,7 +103,7 @@ const Profile = () => {
                 `${path_url.remote}/dataBarber/profileBarber`,
                 {
                     headers: {
-                        email: email,
+                        id: _id,
                     },
                 }
             );

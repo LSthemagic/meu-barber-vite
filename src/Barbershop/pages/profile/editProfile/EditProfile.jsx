@@ -24,7 +24,6 @@ const EditProfile = ({ props }) => {
     const [loading, setLoading] = useState(false);
     const [loadingGet, setLoadingGet] = useState(false);
     const [source, setSource] = useState(null)
-    const [email, setEmail] = useState("")
     const [nameSource, setNameSource] = useState(null)
     const fileInputRef = useRef(null);
     const [barbershop, setBarbershop] = useState(props);
@@ -32,6 +31,10 @@ const EditProfile = ({ props }) => {
     useEffect(() => {
         handleGetImages()
     }, [imagemForDB])
+
+    useEffect(() => {
+        handleDataBarber()
+    }, [])
 
     const imageResponse = `${path_url.remote}/picture\\${source}`
 
@@ -195,7 +198,6 @@ const EditProfile = ({ props }) => {
     // atualizar dados da conta
     const handleUpdateAccount = async (event) => {
         event.preventDefault()
-
         setLoading(true)
         try {
             const response = axios.put(`${path_url.remote}/updateUser/updateProfileBarbershop`, {
@@ -203,14 +205,13 @@ const EditProfile = ({ props }) => {
                 email: event.target[1].value,
                 id: barbershop._id
             })
-            
+
             if (!response.error) {
                 Toast.fire({
                     icon: 'success',
                     title: 'Dados atualizados com sucesso'
                 })
-                setEmail(event.target[1].value)
-                
+                window.location.reload()
             } else {
                 Toast.fire({
                     icon: 'error',
@@ -228,6 +229,83 @@ const EditProfile = ({ props }) => {
             setLoading(false)
         }
     }
+
+    //  Pegar barbeiros via API
+    const handleDataBarber = async () => {
+        setLoading(true)
+        try {
+            const response = await axios.get(
+                `${path_url.remote}/dataBarber/profileBarber`,
+                {
+                    headers: {
+                        id: barbershop._id,
+                    },
+                }
+            );
+
+            if (response.error) {
+                Toast.fire({
+                    icon: "error",
+                    title: response.data.message,
+                });
+            }
+            setBarbershop(response.data);
+            console.log(response.data)
+        } catch (err) {
+            console.log(err);
+            Toast.fire({
+                icon: "error",
+                title: err.message,
+            });
+        } finally {
+            setLoading(false)
+        }
+    };
+
+    // Atualizar senha
+    const handleUpdatePassword = async (event) => {
+        event.preventDefault();
+        setLoading(true);
+        const password = event.target[0].value;
+        const passwordConfirmation = event.target[1].value;
+        try {
+            const response = await axios.put(`${path_url.remote}/updateUser/updatePasswordBarbershop`, {
+                // Passar dados via body
+                password: password,
+                password_confirmation: passwordConfirmation,
+                id: barbershop._id,
+            });
+
+            // Checar se há um erro na resposta
+
+            Toast.fire({
+                icon: response.data.error ? "error" : "success",
+                title: response.data.message,
+            });
+            if (!response.data.error) {
+                handleDataBarber()
+                
+            }
+
+        } catch (e) {
+            console.error('Erro ao atualizar senha:', e);
+            if (e.response && e.response.data && e.response.data.message) {
+                Toast.fire({
+                    icon: 'error',
+                    title: e.response.data.message,
+                });
+            } else {
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Erro ao atualizar senha.',
+                });
+            }
+        } finally {
+            setLoading(false);
+        }
+    }
+
+
 
     return (
         <div className={styles.container}>
@@ -284,19 +362,23 @@ const EditProfile = ({ props }) => {
                                     Altere sua senha aqui. Após salvar, você será deslogado.
                                 </CardDescription>
                             </CardHeader>
-                            <CardContent className="space-y-2 rounded">
-                                <div className="space-y-1">
-                                    <Label htmlFor="current">Senha atual</Label>
-                                    <Input id="current" type="password" />
-                                </div>
-                                <div className="space-y-1">
-                                    <Label htmlFor="new">Nova senha</Label>
-                                    <Input id="new" type="password" />
-                                </div>
-                            </CardContent>
-                            <CardFooter>
-                                <ButtonBs className="mt-3 w-full bg-black border-black" >Salvar senha</ButtonBs>
-                            </CardFooter>
+                            <Form onSubmit={handleUpdatePassword}>
+                                <CardContent className="space-y-2 rounded">
+                                    <div className="space-y-1">
+                                        <Label htmlFor="current">Senha atual</Label>
+                                        <Input id="current" type="password" />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <Label htmlFor="new">Nova senha</Label>
+                                        <Input id="new" type="password" />
+                                    </div>
+                                </CardContent>
+                                <CardFooter>
+                                    <ButtonBs
+                                        type="submit"
+                                        className="mt-3 w-full bg-black border-black" >{loading ? <Spinner /> : "Salvar senha"}</ButtonBs>
+                                </CardFooter>
+                            </Form>
                         </CardShadCn>
                     </TabsContent>
                 </Tabs>
