@@ -24,16 +24,17 @@ const EditProfile = ({ props }) => {
     const [loading, setLoading] = useState(false);
     const [loadingGet, setLoadingGet] = useState(false);
     const [source, setSource] = useState(null)
+    const [email, setEmail] = useState("")
     const [nameSource, setNameSource] = useState(null)
     const fileInputRef = useRef(null);
-    const barbershop = (props);
+    const [barbershop, setBarbershop] = useState(props);
 
     useEffect(() => {
         handleGetImages()
     }, [imagemForDB])
 
     const imageResponse = `${path_url.remote}/picture\\${source}`
-    console.log(imageResponse)
+
     const image = source != null ? imageResponse : imageDefault;
 
     const typeImages = {
@@ -191,7 +192,42 @@ const EditProfile = ({ props }) => {
         )
     }
 
- 
+    // atualizar dados da conta
+    const handleUpdateAccount = async (event) => {
+        event.preventDefault()
+
+        setLoading(true)
+        try {
+            const response = axios.put(`${path_url.remote}/updateUser/updateProfileBarbershop`, {
+                name: event.target[0].value,
+                email: event.target[1].value,
+                id: barbershop._id
+            })
+            
+            if (!response.error) {
+                Toast.fire({
+                    icon: 'success',
+                    title: 'Dados atualizados com sucesso'
+                })
+                setEmail(event.target[1].value)
+                
+            } else {
+                Toast.fire({
+                    icon: 'error',
+                    title: 'Erro ao atualizar dados'
+                })
+            }
+
+        } catch (error) {
+            console.log(error)
+            Toast.fire({
+                icon: 'error',
+                title: 'Erro ao atualizar dados da conta'
+            })
+        } finally {
+            setLoading(false)
+        }
+    }
 
     return (
         <div className={styles.container}>
@@ -217,19 +253,27 @@ const EditProfile = ({ props }) => {
                                     Faça alterações em sua conta aqui. Clique em salvar quando estiver pronto.
                                 </CardDescription>
                             </CardHeader>
-                            <CardContent className="space-y-2">
-                                <div className="space-y-1">
-                                    <Label htmlFor="name">Nome</Label>
-                                    <Input id="name" defaultValue={barbershop?.name} />
-                                </div>
-                                <div className="space-y-1">
-                                    <Label htmlFor="username">Email</Label>
-                                    <Input id="username" defaultValue={barbershop?.email} />
-                                </div>
-                            </CardContent>
-                            <CardFooter>
-                                <ButtonBs className="mt-3 w-full bg-black border-black">Salvar Alterações</ButtonBs>
-                            </CardFooter>
+                            <Form onSubmit={handleUpdateAccount}>
+                                <CardContent className="space-y-2">
+                                    <div className="space-y-1">
+                                        <Label htmlFor="name">Nome</Label>
+                                        <Input id="name" defaultValue={barbershop?.name}
+
+                                        />
+                                    </div>
+                                    <div className="space-y-1">
+                                        <Label htmlFor="username">Email</Label>
+                                        <Input id="username" defaultValue={barbershop?.email}
+
+                                        />
+                                    </div>
+                                </CardContent>
+                                <CardFooter>
+                                    <ButtonBs
+                                        type="submit"
+                                        className="mt-3 w-full bg-black border-black">{loading ? <Spinner /> : "Salvar Alterações"}</ButtonBs>
+                                </CardFooter>
+                            </Form>
                         </CardShadCn>
                     </TabsContent>
                     <TabsContent value="password">

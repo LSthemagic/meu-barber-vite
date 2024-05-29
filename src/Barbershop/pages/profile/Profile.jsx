@@ -111,8 +111,8 @@ const Profile = () => {
             if (response.error) {
                 Toast.fire({
                     icon: "error",
-                    text: "esse aq",
-                });
+                    title: response.data.message,
+                    });
             }
             setBarbershop(response.data);
             // console.log(response.data)
