@@ -133,8 +133,6 @@ const AuthenticateBarber = () => {
 							}}
 						/>
 
-
-
 						<button
 							style={{ marginTop: "4%" }}
 							className="btn btn-primary"

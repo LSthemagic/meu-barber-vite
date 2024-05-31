@@ -10,7 +10,7 @@ import StepButton from "@mui/material/StepButton";
 import Toast from "../../../shared/custom/Toast";
 import ImageLogin from "../../../shared/images/ImageLogin.svg";
 import { useAuth } from "../../context/BarberContext";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import path_url from "../../../shared/config/path_url.json"
 
 
@@ -53,6 +53,7 @@ const RegisterBarber = () => {
 	const [activeStep, setActiveStep] = useState(0);
 	const [code, setCode] = useState(null);
 	const { signIn, authToken } = useAuth();
+	const navigate = useNavigate();
 
 	useEffect(() => {
 		// Obtendo a localização atual usando a API de Geolocalização do navegador
@@ -152,6 +153,7 @@ const RegisterBarber = () => {
 				});
 				signIn(data.data);
 				authToken(data.token);
+				navigate("/barber/homeBarber")
 			} else {
 				Toast.fire({
 					icon: "error",

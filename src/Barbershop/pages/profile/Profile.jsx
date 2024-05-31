@@ -17,6 +17,8 @@ import { DeleteAccount } from "./deleteAccount/DeleteAccount";
 import { useNavigate } from "react-router-dom";
 import { EditBarbers } from "./editBarbers/EditBarbers";
 import { deleteDependencies } from "./deleteDependencies/DeleteDependecies";
+import { Label } from "../../../../@/components/ui/label";
+import { EditServices } from "./editServices/EditServices";
 
 
 const initialStateAddBarber = {
@@ -244,11 +246,20 @@ const Profile = () => {
             email: showModal?.data?.email,
         }
 
+        const dataEditServices = {
+            id: _id,
+            service_id: showModal?.data?.id,
+            nameService: showModal?.data?.nameService,
+            price: showModal?.data?.price,
+            duration: showModal?.data?.duration,
+        }
+
         const contentTypeModal = {
             "editProfile": contentEditProfile(),
             "addBarbers": contentAddBarber(),
             "addServices": contentServices(),
-            "editBarbers": <EditBarbers props={dataEditBarber} />
+            "editBarbers": <EditBarbers props={dataEditBarber} />,
+            "editServices": <EditServices props={dataEditServices} />
         }
         return (
             <Modal
@@ -302,9 +313,11 @@ const Profile = () => {
                     onChange={(e) => mascaraMoeda(e)} maxLength={15}
                 />
                 <br />
+                <Label className="text-gray-400 mb-0">Duração do serviço</Label>
                 <Form.Control
                     required
                     type="time"
+                    defaultValue={'00:40'}
                     placeholder="Duração do serviço"
                     onChange={(e) => handleDispatchService("SET_DURATION", e)}
                 />
@@ -464,11 +477,12 @@ const Profile = () => {
                                             Duração: {item.duration}
 
 
-                                            {/* <SquarePen onClick={() => openModal("editBarbers", {
+                                            <SquarePen onClick={() => openModal("editServices", {
                                                 id: item._id,
-                                                name: item.name,
-                                                email: item.email
-                                            })} style={{ cursor: 'pointer', height: '20px' }} /> */}
+                                                nameService: item.nameService,
+                                                price: item.price,
+                                                duration: item.duration
+                                            })} style={{ cursor: 'pointer', height: '20px' }} />
                                             <Trash2 onClick={() => deleteDependence({
                                                 id: _id,
                                                 type: 'deleteService',

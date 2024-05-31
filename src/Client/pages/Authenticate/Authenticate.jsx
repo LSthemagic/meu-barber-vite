@@ -8,6 +8,7 @@ import ImageLogin from "../../../shared/images/ImageLogin.svg";
 import path_url from "../../../shared/config/path_url.json"
 import { BeatLoader } from "react-spinners";
 import { LineChart } from "recharts";
+import Toast from "../../../shared/custom/Toast";
 
 const initialState = {
 	email: "",
@@ -39,18 +40,6 @@ const Authenticate = () => {
 			data: event.target.value
 		});
 	};
-
-	const Toast = Swal.mixin({
-		toast: true,
-		position: "top-end",
-		showConfirmButton: false,
-		timer: 3000,
-		timerProgressBar: true,
-		didOpen: (toast) => {
-			toast.onmouseenter = Swal.stopTimer;
-			toast.onmouseleave = Swal.resumeTimer;
-		}
-	});
 
 	const handleSubmit = async (event) => {
 		event.preventDefault();
