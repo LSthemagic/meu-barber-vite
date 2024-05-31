@@ -13,6 +13,8 @@ import {
 import { Button, Form, Modal, Spinner } from "react-bootstrap";
 import path_url from "../../../shared/config/path_url.json"
 import EditProfile from "./editProfile/EditProfile";
+import { DeleteAccount } from "./deleteAccount/DeleteAccount";
+import { useNavigate } from "react-router-dom";
 
 
 const initialStateAddBarber = {
@@ -53,34 +55,18 @@ const reducerServices = (state, action) => {
 
 const Profile = () => {
     const [isLoading, setIsLoading] = useState(false);
-    const [isEditProfile, setIsEditProfile] = useState(false);
     const [barbershop, setBarbershop] = useState([]);
-    const auth = useAuth();
-
-    // states para add barber
-    const [showModalAddBarber, setShowModalAddBarber] = useState(false)
-
+    const [showModal, setShowModal] = useState({})
     const [stateAddBarber, dispatchAddBarber] = useReducer(reducerAddBarber, initialStateAddBarber);
-
     const [stateService, dispatchService] = useReducer(reducerServices, initialStateServices);
-
-    // states para adicionar services oferecidos
-    const [showModalServices, setShowModalServices] = useState(false)
-
-    // funções para abrir e fechar modal de add barber 
-    const handleOpenModalAddBarber = () => setShowModalAddBarber(true)
-    const handleCloseModalAddBarber = () => setShowModalAddBarber(false)
-
-
-    // funções para abrir e fechar modal de adicionar serviços
-    const handleOpenModalServices = () => setShowModalServices(true)
-    const handleCloseModalServices = () => setShowModalServices(false)
-
-    // funções para abrir e fechar modal de adicionar serviços
-    const handleOpenModalEditProfile = () => setIsEditProfile(true)
-    const handleCloseModalEditProfile = () => setIsEditProfile(false)
-
-
+    const openModal = (type) => {
+        setShowModal({ show: true, type });
+    }
+    const closeModal = () => {
+        setShowModal({ show: false, type: null });
+    }
+    const navigate = useNavigate()
+    const auth = useAuth();
     if (!auth) {
         Toast.fire({
             icon: "info",
@@ -89,43 +75,15 @@ const Profile = () => {
         return <LandingPage />;
     }
 
-    const { dataBarber: { _id }, token } = auth;
+    const { dataBarber: { _id }, token, signOut } = auth;
 
     useEffect(() => {
         handleDataBarber();
     }, []);
-    
-    //  Pegar barbeiros via API
-    const handleDataBarber = async () => {
-        setIsLoading(true)
-        try {
-            const response = await axios.get(
-                `${path_url.remote}/dataBarber/profileBarber`,
-                {
-                    headers: {
-                        id: _id,
-                    },
-                }
-            );
 
-            if (response.error) {
-                Toast.fire({
-                    icon: "error",
-                    title: response.data.message,
-                    });
-            }
-            setBarbershop(response.data);
-            // console.log(response.data)
-        } catch (err) {
-            console.log(err);
-            Toast.fire({
-                icon: "error",
-                title: err.message,
-            });
-        } finally {
-            setIsLoading(false)
-        }
-    };
+    useEffect(() => {
+        handleDataBarber();
+    }, [showModal]);
 
     //  Adiciona um novo barbeiro no state via reducer
     const handleDispatchAddBarber = (type, event) => {
@@ -143,80 +101,55 @@ const Profile = () => {
         })
     }
 
-    // modal para cadastro do barbeiro
-    const handleModalAddBarber = () => {
-        return (
 
-            <Modal
-                show={showModalAddBarber}
-                onHide={handleCloseModalAddBarber}
-                backdrop="static"
-                keyboard={false}
-                className={styles.modal}
-                size="lg"
-                aria-labelledby="contained-modal-title-vcenter"
-                centered
-            >
-                <Modal.Header closeButton>
-                    <Modal.Title className="text-black">Adicionar Barbeiro</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-
-                    <Form className={styles.input} onSubmit={handleAddBarber}>
-                        <Form.Control
-                            required
-                            type="email"
-                            placeholder="Email do Barbeiro"
-                            onChange={(e) => handleDispatchAddBarber("SET_EMAIL", e)}
-                        />
-                        <Form.Control
-                            required
-                            type="text"
-                            placeholder="Nome do Barbeiro"
-                            onChange={(e) => handleDispatchAddBarber("SET_NAME", e)}
-                        />
-
-                        <div className="modal-footer">
-                            <Button variant="secondary" onClick={handleCloseModalAddBarber}>
-                                FECHAR
-                            </Button>
-                            <Button variant="primary" type="submit">
-                                {isLoading ? <Spinner /> : "SALVAR"}
-                            </Button>
-                        </div>
-                    </Form>
-                </Modal.Body>
-
-                {/* <Modal.Footer> */}
-                {/* </Modal.Footer> */}
-            </Modal>
-        );
+    function mascaraMoeda(event) {
+        const onlyDigits = event.target.value
+            .split('')
+            .filter((s) => /\d/.test(s))
+            .join('')
+            .padStart(3, '0');
+        const digitsFloat = onlyDigits.slice(0, -2) + '.' + onlyDigits.slice(-2);
+        event.target.value = maskCurrency(digitsFloat);
+        handleDispatchService("SET_PRICE", event)
     }
-    const handleModalEditProfile = () => {
-        return (
-            <Modal
-                show={isEditProfile}
-                onHide={handleCloseModalEditProfile}
-                backdrop="static"
-                keyboard={false}
-                className={styles.modal}
-                size="lg"
-                aria-labelledby="contained-modal-title-vcenter"
-                centered
-            >
-                <div className="rounded" style={{background:"#333", color:"white",}}>
-                    <Modal.Header closeButton closeVariant="white">
-                        <Modal.Title className="text-white">Editar Perfil</Modal.Title>
-                    </Modal.Header>
-                    <Modal.Body>
-                        <EditProfile props={barbershop} />
-                    </Modal.Body>
-                </div>
-                {/* <Modal.Footer> */}
-                {/* </Modal.Footer> */}
-            </Modal>
-        );
+
+    function maskCurrency(valor, locale = 'pt-BR', currency = 'BRL') {
+        return new Intl.NumberFormat(locale, {
+            style: 'currency',
+            currency,
+        }).format(valor);
     }
+
+    //  Pegar barbeiros via API
+    const handleDataBarber = async () => {
+        setIsLoading(true)
+        try {
+            const response = await axios.get(
+                `${path_url.remote}/dataBarber/profileBarber`,
+                {
+                    headers: {
+                        id: _id,
+                    },
+                }
+            );
+
+            if (response.error) {
+                Toast.fire({
+                    icon: "error",
+                    title: response.data.message,
+                });
+            }
+            setBarbershop(response.data);
+        } catch (err) {
+            console.log(err);
+            Toast.fire({
+                icon: "error",
+                title: err.message,
+            });
+        } finally {
+            setIsLoading(false)
+        }
+    };
 
     // adicionar o barbeiro via API no banco de dados
     const handleAddBarber = async (e) => {
@@ -262,25 +195,6 @@ const Profile = () => {
         }
     }
 
-    function mascaraMoeda(event) {
-        const onlyDigits = event.target.value
-            .split('')
-            .filter((s) => /\d/.test(s))
-            .join('')
-            .padStart(3, '0');
-        const digitsFloat = onlyDigits.slice(0, -2) + '.' + onlyDigits.slice(-2);
-        event.target.value = maskCurrency(digitsFloat);
-        // console.log(`target value: ${event.target.value}`)
-        // console.log(`only: ${onlyDigits}`)
-        handleDispatchService("SET_PRICE", event)
-    }
-
-    function maskCurrency(valor, locale = 'pt-BR', currency = 'BRL') {
-        return new Intl.NumberFormat(locale, {
-            style: 'currency',
-            currency,
-        }).format(valor);
-    }
     // salvar serviço via API
     const handleSaveService = async (e) => {
         e.preventDefault();
@@ -319,12 +233,17 @@ const Profile = () => {
         }
     }
 
-    // modal de serviços oferecidos
-    const handleModalServices = () => {
+    // modal genérico
+    const handleModal = () => {
+        const contentTypeModal = {
+            "editProfile": contentEditProfile(),
+            "addBarbers": contentAddBarber(),
+            "addServices": contentServices(),
+        }
         return (
             <Modal
-                show={showModalServices}
-                onHide={handleCloseModalServices}
+                show={showModal.show}
+                onHide={closeModal}
                 backdrop="static"
                 keyboard={false}
                 className={styles.modal}
@@ -332,48 +251,108 @@ const Profile = () => {
                 aria-labelledby="contained-modal-title-vcenter"
                 centered
             >
-                <Modal.Header closeButton>
-                    <Modal.Title className="text-black">Adicionar Barbeiro</Modal.Title>
-                </Modal.Header>
-                <Modal.Body>
-                    <Form className={styles.input} onSubmit={handleSaveService}>
-                        <Form.Control
-                            required
-                            type="text"
-                            placeholder="Serviço oferecido"
-                            onChange={(e) => handleDispatchService("SET_SERVICE", e)}
-                        />
-                        <br />
-                        <Form.Control
-                            required
-                            type="text"
-                            placeholder="Valor (apenas números)"
-                            onChange={(e) => mascaraMoeda(e)} maxLength={15}
-                        />
-                        <br />
-                        <Form.Control
-                            required
-                            type="time"
-                            placeholder="Duração do serviço"
-                            onChange={(e) => handleDispatchService("SET_DURATION", e)}
-                        />
-                        <Modal.Footer>
-                            <Button onClick={handleCloseModalServices} variant="secondary" >CANCELAR</Button>
-                            <Button type="submit" variant="primary" >
-                                {isLoading ? <Spinner /> : "SALVAR"}
-                            </Button>
-                        </Modal.Footer>
-
-                    </Form>
-
-                </Modal.Body>
-
+                <div className="rounded" style={{ background: "#333", color: "white", }}>
+                    <Modal.Header closeButton closeVariant="white">
+                        <Modal.Title className="text-white ml-auto">Seu Barber && seu estilo</Modal.Title>
+                    </Modal.Header>
+                    <Modal.Body>
+                        {contentTypeModal[showModal.type]}
+                    </Modal.Body>
+                </div>
                 {/* <Modal.Footer> */}
                 {/* </Modal.Footer> */}
             </Modal>
+        );
+    }
+
+    // conteúdo do modal para editar perfil
+    const contentEditProfile = () => {
+        return (
+            <div className="rounded" style={{ background: "#333", color: "white", }}>
+                <EditProfile props={barbershop} />
+            </div>
+        );
+    }
+
+    // conteúdo do modal de serviços oferecidos
+    const contentServices = () => {
+        return (
+            <Form className={styles.input} onSubmit={handleSaveService}>
+                <Form.Control
+                    required
+                    type="text"
+                    placeholder="Serviço oferecido"
+                    onChange={(e) => handleDispatchService("SET_SERVICE", e)}
+                />
+                <br />
+                <Form.Control
+                    required
+                    type="text"
+                    placeholder="Valor (apenas números)"
+                    onChange={(e) => mascaraMoeda(e)} maxLength={15}
+                />
+                <br />
+                <Form.Control
+                    required
+                    type="time"
+                    placeholder="Duração do serviço"
+                    onChange={(e) => handleDispatchService("SET_DURATION", e)}
+                />
+                <Modal.Footer>
+                    <Button onClick={closeModal} variant="secondary" >CANCELAR</Button>
+                    <Button type="submit" variant="primary" >
+                        {isLoading ? <Spinner /> : "SALVAR"}
+                    </Button>
+                </Modal.Footer>
+
+            </Form>
+
         )
     }
 
+    // conteúdo do modal para cadastro do barbeiro
+    const contentAddBarber = () => {
+        return (
+            <Form className={styles.input} onSubmit={handleAddBarber}>
+                <Form.Control
+                    required
+                    type="email"
+                    placeholder="Email do Barbeiro"
+                    onChange={(e) => handleDispatchAddBarber("SET_EMAIL", e)}
+                />
+                <Form.Control
+                    required
+                    type="text"
+                    placeholder="Nome do Barbeiro"
+                    onChange={(e) => handleDispatchAddBarber("SET_NAME", e)}
+                />
+
+                <div className="modal-footer">
+                    <Button variant="secondary" onClick={closeModal}>
+                        FECHAR
+                    </Button>
+                    <Button variant="primary" type="submit">
+                        {isLoading ? <Spinner /> : "SALVAR"}
+                    </Button>
+                </div>
+            </Form>
+
+
+        );
+    }
+
+    const deleteAcc = () => {
+        DeleteAccount(_id)
+        if (DeleteAccount(_id)) {
+            Toast.fire({
+                icon: 'success',
+                title: 'Conta deletada com sucesso!'
+            })
+            navigate("/")
+            signOut()
+        }
+
+    }
 
     return (
         <div className={styles.container}>
@@ -391,11 +370,13 @@ const Profile = () => {
 
                         <div className={styles.cardContent}>
                             <div className={styles.textWrapper}>
-                                <button onClick={handleOpenModalEditProfile} className={styles.button}>
+                                <button onClick={() => openModal("editProfile")} className={styles.button}>
                                     EDITAR PERFIL
                                     <SquarePen />
                                 </button>
-                                <button className={styles.button}>
+                                <button
+                                    onClick={deleteAcc}
+                                    className={styles.button}>
                                     EXCLUIR CONTA
                                     <Trash2 />
                                 </button>
@@ -406,7 +387,7 @@ const Profile = () => {
                     <div className={styles.card2}>
                         <div className={styles.headerCard2}>
                             <h1>PERFIL DE BARBEIROS</h1>
-                            <UserRoundPlus onClick={handleOpenModalAddBarber} style={{ cursor: 'pointer' }} />
+                            <UserRoundPlus onClick={() => openModal("addBarbers")} style={{ cursor: 'pointer' }} />
                         </div>
                         <div className={styles.cardContent}>
                             {barbershop.barbers?.length === 0 ? (
@@ -441,7 +422,7 @@ const Profile = () => {
                             }}
                         >
                             SERVIÇOS OFERECIDOS
-                            <ClipboardPlus onClick={handleOpenModalServices} style={{ cursor: 'pointer', height: '20px' }} />
+                            <ClipboardPlus onClick={() => openModal("addServices")} style={{ cursor: 'pointer', height: '20px' }} />
                         </h2>
 
                         <div className={styles.cardContent}>
@@ -467,9 +448,7 @@ const Profile = () => {
                     </div>
                 </div>
             )}
-            {showModalAddBarber && handleModalAddBarber()}
-            {showModalServices && handleModalServices()}
-            {isEditProfile && handleModalEditProfile()}
+            {showModal && handleModal()}
         </div>
     );
 

@@ -51,7 +51,6 @@ const EditProfile = ({ props }) => {
 
     const handleFileChange = (e) => {
         const selectedFile = e.target.files[0];
-        console.log(selectedFile)
         if (!typeImages[selectedFile.type]) {
             Toast.fire({
                 icon: 'error',
@@ -145,7 +144,6 @@ const EditProfile = ({ props }) => {
                     ID: barbershop._id,
                 }
             })
-            // console.log(response.data.length)
             if (response.data?.length > 0) {
                 setSource(response.data[0]?.src)
                 setNameSource(response.data[0].name)
@@ -211,7 +209,7 @@ const EditProfile = ({ props }) => {
                     icon: 'success',
                     title: 'Dados atualizados com sucesso'
                 })
-                window.location.reload()
+               
             } else {
                 Toast.fire({
                     icon: 'error',
@@ -250,7 +248,6 @@ const EditProfile = ({ props }) => {
                 });
             }
             setBarbershop(response.data);
-            console.log(response.data)
         } catch (err) {
             console.log(err);
             Toast.fire({
@@ -284,7 +281,7 @@ const EditProfile = ({ props }) => {
             });
             if (!response.data.error) {
                 handleDataBarber()
-                
+
             }
 
         } catch (e) {

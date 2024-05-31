@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import { Link, Navigate, useLocation, useNavigate } from 'react-router-dom';
 import Slider from 'react-slick';
 import { useAuth as useAuthBarbershop } from '../../Barbershop/context/BarberContext';
@@ -12,6 +12,8 @@ const LandingPage = () => {
   const navigate = useNavigate()
   const isLoggedForRoute = (isBarberRoutes && isLoggedBarber) || (!isBarberRoutes && isLogged);
 
+
+
   const settings = {
     dots: true,
     infinite: true,
@@ -24,7 +26,7 @@ const LandingPage = () => {
 
   return (
     <div>
-      {!isLoggedForRoute ? (
+      {!isLoggedForRoute && (
         <div className="min-h-screen bg-gray-900 flex flex-col">
           <header className="bg-gray-800 shadow w-full py-6 mb-12">
             <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -40,14 +42,14 @@ const LandingPage = () => {
                 </p>
                 <div className="flex justify-center space-x-4">
                   <Link
-                    to={isLogged ? "/home" :  "/authenticate"}
+                    to={isLogged ? "/home" : "/authenticate"}
 
                     className="px-8 py-3 border border-transparent text-base font-medium rounded-md bg-blue-600 text-white hover:bg-blue-700"
                   >
                     Sou Cliente
                   </Link>
                   <Link
-                    to={ isLoggedBarber ? "/barber/homeBarber" :"/barber/registerBarber"}
+                    to={isLoggedBarber ? "/barber/homeBarber" : "/barber/registerBarber"}
                     className="px-8 py-3 border border-transparent text-base font-medium rounded-md bg-green-600 text-white hover:bg-green-700"
                   >
                     Sou Barbearia
@@ -132,7 +134,7 @@ const LandingPage = () => {
               </p>
             </div>
           </footer>
-        </div>) : navigate(isBarberRoutes ? "/barber/homeBarber" : "/home")}
+        </div>)}
     </div>
   );
 };
