@@ -302,8 +302,6 @@ const EditProfile = ({ props }) => {
         }
     }
 
-
-
     return (
         <div className={styles.container}>
             <div>

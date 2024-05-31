@@ -15,6 +15,8 @@ import path_url from "../../../shared/config/path_url.json"
 import EditProfile from "./editProfile/EditProfile";
 import { DeleteAccount } from "./deleteAccount/DeleteAccount";
 import { useNavigate } from "react-router-dom";
+import { EditBarbers } from "./editBarbers/EditBarbers";
+import { deleteDependencies } from "./deleteDependencies/DeleteDependecies";
 
 
 const initialStateAddBarber = {
@@ -59,11 +61,11 @@ const Profile = () => {
     const [showModal, setShowModal] = useState({})
     const [stateAddBarber, dispatchAddBarber] = useReducer(reducerAddBarber, initialStateAddBarber);
     const [stateService, dispatchService] = useReducer(reducerServices, initialStateServices);
-    const openModal = (type) => {
-        setShowModal({ show: true, type });
+    const openModal = (type, data) => {
+        setShowModal({ show: true, type, data });
     }
     const closeModal = () => {
-        setShowModal({ show: false, type: null });
+        setShowModal({ show: false, type: null, data: null });
     }
     const navigate = useNavigate()
     const auth = useAuth();
@@ -235,10 +237,18 @@ const Profile = () => {
 
     // modal genérico
     const handleModal = () => {
+        const dataEditBarber = {
+            id: _id,
+            item_id: showModal?.data?.id,
+            name: showModal?.data?.name,
+            email: showModal?.data?.email,
+        }
+
         const contentTypeModal = {
             "editProfile": contentEditProfile(),
             "addBarbers": contentAddBarber(),
             "addServices": contentServices(),
+            "editBarbers": <EditBarbers props={dataEditBarber} />
         }
         return (
             <Modal
@@ -354,6 +364,13 @@ const Profile = () => {
 
     }
 
+    const deleteDependence = (props) => {
+        deleteDependencies(props)
+        setTimeout(() => {
+            handleDataBarber()
+        }, 1000);
+    }
+
     return (
         <div className={styles.container}>
             {isLoading ? (
@@ -400,8 +417,16 @@ const Profile = () => {
                                         <div className={styles.listBarbers} key={index}>
                                             <button className={styles.button2}>
                                                 {item.name?.toUpperCase()}
-                                                <SquarePen style={{ cursor: 'pointer', height: '20px' }} />
-                                                <Trash2 style={{ cursor: 'pointer', height: '20px' }} />
+                                                <SquarePen onClick={() => openModal("editBarbers", {
+                                                    id: item._id,
+                                                    name: item.name,
+                                                    email: item.email
+                                                })} style={{ cursor: 'pointer', height: '20px' }} />
+                                                <Trash2 onClick={() => deleteDependence({
+                                                    id: _id,
+                                                    type: 'deleteBarber',
+                                                    item_id: item._id
+                                                })} style={{ cursor: 'pointer', height: '20px' }} />
                                             </button>
                                         </div>
                                     ))}
@@ -429,16 +454,27 @@ const Profile = () => {
                             <div className={styles.textWrapper}>
                                 {barbershop?.services ? (
                                     barbershop.services?.map((item, index) => (
-                                        <button
+                                        <div
                                             style={{ textAlign: 'left' }}
                                             className={styles.button}
-                                            disabled
                                             key={index}
                                         >
                                             Serviço: {item.nameService} <br />
                                             Valor: {item.price} <br />
                                             Duração: {item.duration}
-                                        </button>
+
+
+                                            {/* <SquarePen onClick={() => openModal("editBarbers", {
+                                                id: item._id,
+                                                name: item.name,
+                                                email: item.email
+                                            })} style={{ cursor: 'pointer', height: '20px' }} /> */}
+                                            <Trash2 onClick={() => deleteDependence({
+                                                id: _id,
+                                                type: 'deleteService',
+                                                item_id: item._id
+                                            })} style={{ cursor: 'pointer', height: '20px' }} />
+                                        </div>
                                     ))
                                 ) : (
                                     'Ainda não há serviços cadastrados.'
