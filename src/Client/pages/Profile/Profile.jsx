@@ -13,7 +13,7 @@ const Profile = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [isFlipped, setIsFlipped] = useState(false);
-    const { data: dataUser, logout, offDataAuth } = useAuth();
+    const { data: dataUser, logout, offDataAuth, token } = useAuth();
     const navigate = useNavigate()
     useEffect(() => {
         handleGetDataUser();
@@ -27,7 +27,7 @@ const Profile = () => {
                     "Content-Type": "application/json",
                     id: dataUser._id,
                     // authenticate via authorization
-                    "Authorization": `Bearer ${dataUser.token}`
+                    "Authorization": `Bearer ${token}`
                 },
             });
 
