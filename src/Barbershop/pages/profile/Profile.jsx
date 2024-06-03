@@ -114,15 +114,16 @@ const Profile = () => {
             .padStart(3, '0');
         const digitsFloat = onlyDigits.slice(0, -2) + '.' + onlyDigits.slice(-2);
         event.target.value = maskCurrency(digitsFloat);
-        handleDispatchService("SET_PRICE", event)
+        handleDispatchService("SET_PRICE", event);
     }
-
+    
     function maskCurrency(valor, locale = 'pt-BR', currency = 'BRL') {
         return new Intl.NumberFormat(locale, {
             style: 'currency',
             currency,
-        }).format(valor);
+        }).format(valor).replace(/\u00A0/g, ' ');
     }
+    
 
     //  Pegar barbeiros via API
     const handleDataBarber = async () => {

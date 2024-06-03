@@ -246,15 +246,12 @@ const Calendar = ({ props, children }) => {
 						plugins={[dayGridPlugin, timeGridPlugin, interactionPlugin]}
 						initialView="timeGridWeek"
 						headerToolbar={{
-							start: "today prev,next",
+							start: "",
 							center: "",
-							end: "dayGridMonth,timeGridWeek,timeGridDay"
+							end: "timeGridWeek,timeGridDay"
+							// passar um texto aqui
+							
 						}}
-						// validRange={(now) => ({ // Permite a partir de agora
-						// 	start: now,
-						//   })}
-						//   selectConstraint="businessHours" // Restringe às horas de funcionamento
-						// />
 						validRange={(now) => ({
 							start: now, //permite a partir do horário atual
 						})}
@@ -272,6 +269,7 @@ const Calendar = ({ props, children }) => {
 						height={"90vh"}
 						locale={"pt-br"}
 						buttonText={{
+							teste: "é um teste ái",
 							today: "Hoje",
 							month: "Mês",
 							week: "Semana",
@@ -296,7 +294,7 @@ const Calendar = ({ props, children }) => {
 							meridiem: "uppercase"
 						}}
 						slotMinTime="08:00" // Horário mínimo (8h)
-						slotMaxTime="18:00" // Horário máximo (18h)
+						slotMaxTime="20:00" // Horário máximo (20h)
 						hiddenDays={[0]}
 						editable={false}
 						selectable={true}

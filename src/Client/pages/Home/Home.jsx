@@ -32,7 +32,7 @@ const Home = () => {
 		return <LandingPage />;
 	}
 
-	const { data: { email }, showBarbershopFavorites, logout, offDataAuth } = auth;
+	const { data: { email }, showBarbershopFavorites, logout, offDataAuth, token } = auth;
 
 	const onBarbershopFav = () => setBarbershopFav(true);
 
@@ -163,12 +163,23 @@ const Home = () => {
 			const response = await axios.get(`${path_url.remote}/dataUser/getFav`,
 				{
 					headers: {
-						email: email ? email : null
+						email: email ? email : null,
+						// authorization with jwt 
+						"Authorization": `Bearer ${token}`
 					}
 				}
 			)
 			setDbBarberFav(response.data);
 		} catch (error) {
+			if (err.response.data.error) {
+				Toast.fire({
+					icon: "info",
+					title: err.response.data.message
+				});
+				logout()
+				offDataAuth()
+				navigate("/authenticate")
+			}
 			console.error("Erro ao obter favoritos da barbearia", error);
 		} finally {
 			setIsLoading(false)
