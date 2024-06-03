@@ -26,8 +26,9 @@ const EditProfile = ({ props }) => {
     const [source, setSource] = useState(null)
     const [nameSource, setNameSource] = useState(null)
     const fileInputRef = useRef(null);
-    const [barbershop, setBarbershop] = useState(props);
-
+    const [barbershop, setBarbershop] = useState(props.barbershop);
+    console.log(barbershop)
+    
     useEffect(() => {
         handleGetImages()
     }, [imagemForDB])
@@ -209,7 +210,7 @@ const EditProfile = ({ props }) => {
                     icon: 'success',
                     title: 'Dados atualizados com sucesso'
                 })
-               
+
             } else {
                 Toast.fire({
                     icon: 'error',
@@ -237,6 +238,8 @@ const EditProfile = ({ props }) => {
                 {
                     headers: {
                         id: barbershop._id,
+                        // authenticate via authorization
+                        Authorization: `Bearer ${props.token}`,
                     },
                 }
             );
@@ -250,10 +253,20 @@ const EditProfile = ({ props }) => {
             setBarbershop(response.data);
         } catch (err) {
             console.log(err);
-            Toast.fire({
-                icon: "error",
-                title: err.message,
-            });
+            if (err.response.data.error) {
+                Toast.fire({
+                    icon: "info",
+                    title: err.response.data.message,
+                });
+                offAuthToken()
+                signOut()
+                navigate("/barber/authenticateBarber")
+            } else {
+                Toast.fire({
+                    icon: "error",
+                    title: "Erro ao buscar dados.",
+                });
+            }
         } finally {
             setLoading(false)
         }

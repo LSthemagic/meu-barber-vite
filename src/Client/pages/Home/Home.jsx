@@ -14,6 +14,7 @@ import Swal from "sweetalert2";
 import path_url from "../../../shared/config/path_url.json"
 import { BeatLoader, PuffLoader } from "react-spinners";
 import imagemDefault from "../../../shared/images/imageDefault.jpg"
+import { useNavigate } from "react-router-dom";
 const Home = () => {
 	const [barbers, setBarbers] = useState([]);
 	const [showModalCalendar, setShowModalCalendar] = useState(false);
@@ -25,12 +26,13 @@ const Home = () => {
 	const [isLoadingFavorite, setIsLoadingFavorite] = useState(false);
 
 	const auth = useAuth();
+	const navigate = useNavigate()
 
 	if (!auth.isLogged) {
 		return <LandingPage />;
 	}
 
-	const { data: { email }, showBarbershopFavorites } = auth;
+	const { data: { email }, showBarbershopFavorites, logout, offDataAuth } = auth;
 
 	const onBarbershopFav = () => setBarbershopFav(true);
 
@@ -45,12 +47,29 @@ const Home = () => {
 					`${path_url.remote}/dataBarber/barbers`,
 					{
 						headers: {
-							"Content-Type": "application/json"
+							"Content-Type": "application/json",
+							"Authorization": `Bearer ${auth.token}`
 						}
 					}
 				);
+				if (response.data.error) {
+					Toast.fire({
+						icon: "error",
+						title: response.data.message
+					})
+
+				}
 				setBarbers(response.data);
 			} catch (err) {
+				if (err.response.data.error) {
+					Toast.fire({
+						icon: "info",
+						title: err.response.data.message
+					})
+					logout()
+					offDataAuth()
+					navigate("/authenticate")
+				}
 				console.error("Error getBarbers", err.response);
 			} finally {
 				setIsLoading(false)
@@ -327,7 +346,7 @@ const Home = () => {
 	const filteredBarbers = showBarbershopFavorites ? barbers.filter((barber) => dbBarberFav?.IDs?.includes(barber._id)) : barbers;
 
 	const renderImage = (item) => {
-		
+
 		// console.log((`${path_url.remote}/picture/${item.picture[0]?.src}`))
 	}
 
@@ -341,7 +360,7 @@ const Home = () => {
 					{!isLoading && filteredBarbers?.map((barber) => (
 						<div key={barber._id}>
 							<div className={styles.card}>
-							<ImagemFormatted src={barber.picture[0]?.src ? (`${path_url.remote}/picture/${barber.picture[0]?.src}`) : imagemDefault} />
+								<ImagemFormatted src={barber.picture[0]?.src ? (`${path_url.remote}/picture/${barber.picture[0]?.src}`) : imagemDefault} />
 								<h3 className={styles.barberNome}>{barber?.name}</h3>
 								<div className={styles.fa5}>
 									{renderImage(barber)}

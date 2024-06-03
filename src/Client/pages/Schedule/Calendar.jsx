@@ -55,7 +55,6 @@ const Calendar = ({ props, children }) => {
 	}, []);
 
 	// // Combinar dados de agendamento e eventos indisponíveis quando ambos estiverem disponíveis
-
 	useEffect(() => {
 		const events = dataFromDB?.map((appointment, index) => ({
 			title: appointment.name,
@@ -173,23 +172,11 @@ const Calendar = ({ props, children }) => {
 				`${path_url.remote}/dataBarber/unavailableTimeBarber`,
 				{
 					headers: {
-						Authorization: `Bearer ${token}`,
+						"Authorization": `Bearer ${token}`,
 						Email: emailBarber
 					}
 				}
 			);
-
-			if (await response.data.message === "Token invalid or expired.") {
-				Toast.fire({
-					icon: "info",
-					title: "Por segurança, faça o login novamente."
-				});
-				offDataAuth()
-				logout()
-				setTimeout(() => {
-					<Link to={"/register"} />
-				}, 3000);
-			}
 
 			if (await response.data.message === "Nenhum cliente agendado.") {
 				Toast.fire({
@@ -202,10 +189,20 @@ const Calendar = ({ props, children }) => {
 
 		} catch (err) {
 			console.log("Erro ao buscar horários marcados", err);
-			Toast.fire({
-				icon: "error",
-				title: "Erro interno ao buscar horários marcados"
-			});
+			if (err.response.data.error) {
+				Toast.fire({
+					icon: "info",
+					title: err.response.data.message
+				});
+				logout()
+				offDataAuth()
+				navigate("/authenticate")
+			} else {
+				Toast.fire({
+					icon: "error",
+					title: "Erro interno ao buscar horários marcados"
+				});
+			}
 		} finally {
 			setIsLoading(false)
 		}

@@ -4,6 +4,7 @@ import ReactCardFlip from "react-card-flip";
 import path_url from "../../../shared/config/path_url.json";
 import Toast from "../../../shared/custom/Toast";
 import { useAuth } from "../../context/AuthContext";
+import { useNavigate } from "react-router-dom";
 
 const Profile = () => {
     const [user, setUser] = useState(null);
@@ -12,9 +13,8 @@ const Profile = () => {
     const [name, setName] = useState("");
     const [email, setEmail] = useState("");
     const [isFlipped, setIsFlipped] = useState(false);
-
-    const { data: dataUser, logout } = useAuth();
-
+    const { data: dataUser, logout, offDataAuth } = useAuth();
+    const navigate = useNavigate()
     useEffect(() => {
         handleGetDataUser();
     }, []);
@@ -26,6 +26,8 @@ const Profile = () => {
                 headers: {
                     "Content-Type": "application/json",
                     id: dataUser._id,
+                    // authenticate via authorization
+                    "Authorization": `Bearer ${dataUser.token}`
                 },
             });
 
@@ -39,12 +41,22 @@ const Profile = () => {
                 setName(response.data.name);
                 setEmail(response.data.email);
             }
-        } catch (error) {
-            console.error(error);
-            Toast.fire({
-                icon: "error",
-                title: "Erro ao buscar dados.",
-            });
+        } catch (e) {
+            console.error(e);
+            if (e.response.data.error) {
+                Toast.fire({
+                    icon: "info",
+                    title: e.response.data.message,
+                });
+                logout()
+                offDataAuth()
+                navigate("/authenticate")
+            } else {
+                Toast.fire({
+                    icon: "error",
+                    title: "Erro ao buscar dados.",
+                });
+            }
         } finally {
             setLoading(false);
         }

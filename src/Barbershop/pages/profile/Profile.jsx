@@ -79,7 +79,7 @@ const Profile = () => {
         return <LandingPage />;
     }
 
-    const { dataBarber: { _id }, token, signOut } = auth;
+    const { dataBarber: { _id }, token, signOut, offAuthToken } = auth;
 
     useEffect(() => {
         handleDataBarber();
@@ -133,6 +133,8 @@ const Profile = () => {
                 {
                     headers: {
                         id: _id,
+                        // authenticate via authorization
+                        Authorization: `Bearer ${token}`,
                     },
                 }
             );
@@ -146,10 +148,20 @@ const Profile = () => {
             setBarbershop(response.data);
         } catch (err) {
             console.log(err);
-            Toast.fire({
-                icon: "error",
-                title: err.message,
-            });
+            if (err.response.data.error) {
+                Toast.fire({
+                    icon: "info",
+                    title: err.response.data.message,
+                });
+                offAuthToken()
+                signOut()
+                navigate("/barber/authenticateBarber")
+            } else {
+                Toast.fire({
+                    icon: "error",
+                    title: "Erro ao buscar dados.",
+                });
+            }
         } finally {
             setIsLoading(false)
         }
@@ -290,7 +302,7 @@ const Profile = () => {
     const contentEditProfile = () => {
         return (
             <div className="rounded" style={{ background: "#333", color: "white", }}>
-                <EditProfile props={barbershop} />
+                <EditProfile props={{barbershop, token}} />
             </div>
         );
     }
@@ -373,6 +385,7 @@ const Profile = () => {
             })
             navigate("/")
             signOut()
+            offAuthToken()
         }
 
     }

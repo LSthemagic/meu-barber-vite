@@ -26,7 +26,7 @@ const Calendar = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [emailSelected, setEmailSelected] = useState(null);
     // Obter informações de autenticação do barbeiro do contexto
-    const { token, dataBarber } = useAuthBarber();
+    const { token, dataBarber, offAuthToken, signOut } = useAuthBarber();
 
     // Redirecionar para a página inicial se não houver token ou dados do barbeiro
     if (!token || !dataBarber) return <LandingPage />;
@@ -117,7 +117,7 @@ const Calendar = () => {
                 },
                 body: JSON.stringify({
                     email: await emailSelected,
-                    start:  new Date(unavailableTime?.start).toISOString(),
+                    start: new Date(unavailableTime?.start).toISOString(),
                     end: new Date(unavailableTime?.end).toISOString(),
                     type: "barber",
                     name: unavailableTime.title
@@ -155,28 +155,28 @@ const Calendar = () => {
             const response = await axios.get(`${path_url.remote}/dataBarber/barbersPerBarbershop`,
                 {
                     headers: {
-                        Authorization: `Bearer ${token}`,
+                        "Authorization": `Bearer ${token}`,
                         id: dataBarber._id
                     }
                 })
 
-            // Lidar com expiração do token
-            if (response.data.message === "Token inválido ou expirado") {
-                Toast.fire({
-                    icon: "info",
-                    title: "Por segurança, faça o login novamente.",
-                });
-                setTimeout(() => {
-                    window.location.href = "/barber/registerBarber";
-                }, 3000);
-            }
             setBarbers(response.data.barbers);
         } catch (e) {
             console.log(e);
-            Toast.fire({
-                icon: "error",
-                title: "Ocorreu um erro ao processar os dados. Tente novamente mais tarde."
-            })
+            if (e.response.data.error) {
+                Toast.fire({
+                    icon: "error",
+                    title: e.response.data.message
+                })
+                signOut()
+                offAuthToken()
+                Navigate("/barber/authenticateBarber")
+            } else {
+                Toast.fire({
+                    icon: "error",
+                    title: "Ocorreu um erro ao processar os dados.\nTente novamente mais tarde."
+                })
+            }
         } finally {
             setIsLoading(false)
         }
